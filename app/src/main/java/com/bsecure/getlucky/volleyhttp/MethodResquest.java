@@ -81,6 +81,10 @@ public class MethodResquest implements MethodHandler {
                     @Override
                     public void onResponse(JSONObject response) {
                         requestHandler.requestCompleted(response, reqId);
+
+                        Log.e("RequestURL:::",request_url);
+                        Log.e("Postdata:::",json.toString());
+                        Log.e("Response:::",response.toString());
                         setLogsFiles(request_url, json, response);
                     }
                 }, new Response.ErrorListener() {

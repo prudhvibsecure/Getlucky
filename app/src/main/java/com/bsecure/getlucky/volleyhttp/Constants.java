@@ -5,6 +5,7 @@ package com.bsecure.getlucky.volleyhttp;
  */
 
 public class Constants {
-    public static final String PATH = "base path here";
+
+    public static final String PATH = "https://bsecuresoftechsolutions.com/get-lucky/";
 
 }

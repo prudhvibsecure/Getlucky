@@ -20,12 +20,12 @@
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
 
-            <ImageView
+           <!-- <ImageView
                 android:layout_width="100dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
                 android:src="@drawable/logo"
-                />
+                />-->
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -49,6 +49,7 @@
            android:layout_height="wrap_content"
            android:background="@drawable/square"
            android:padding="15dp"
+           android:drawableRight="@drawable/search"
            android:hint="Location"/>
 
        <androidx.appcompat.widget.AppCompatEditText

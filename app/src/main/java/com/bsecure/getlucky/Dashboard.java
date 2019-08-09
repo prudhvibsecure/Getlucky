@@ -29,6 +29,7 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
         setContentView(R.layout.activity_dashboard);
 
         toolbar=findViewById(R.id.toolbar);
+
         drawer=findViewById(R.id.drawer_layout);
 
         toggle = new ActionBarDrawerToggle(

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".OtpScreen">
 
 
@@ -58,6 +59,7 @@
             android:background="@drawable/btnsquare"
             android:layout_margin="5dp"
             android:elevation="6dp"
+            android:maxLength="1"
             android:gravity="center"/>
 
         <androidx.appcompat.widget.AppCompatEditText
@@ -68,6 +70,7 @@
             android:layout_margin="5dp"
             android:background="@drawable/btnsquare"
             android:elevation="6dp"
+            android:maxLength="1"
             android:gravity="center"/>
 
         <androidx.appcompat.widget.AppCompatEditText
@@ -78,7 +81,9 @@
             android:layout_margin="5dp"
             android:background="@drawable/btnsquare"
             android:elevation="6dp"
+            android:maxLength="1"
             android:gravity="center"/>
+
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/otp4"
             android:layout_width="0dp"
@@ -87,6 +92,7 @@
             android:layout_margin="5dp"
             android:background="@drawable/btnsquare"
             android:elevation="6dp"
+            android:maxLength="1"
             android:gravity="center"
             />
 
