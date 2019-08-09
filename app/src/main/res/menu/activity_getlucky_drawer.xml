@@ -6,7 +6,8 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_materials"
-            android:title="Registration/Login"/>
+            android:title="Registration/Login"
+            android:icon="@drawable/user"/>
     </group>
 
 </menu>
