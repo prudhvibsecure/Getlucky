@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="170dp"
+        android:layout_height="170dp"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/getlucky"
+        android:layout_centerHorizontal="true"/>
+
+
+    <TextView
+        android:id="@+id/addpin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/logo"
+        android:layout_margin="30dp"
+        android:text="ADD PIN"
+        android:textSize="25sp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimaryDark"/>
+
+
+    <LinearLayout
+        android:id="@+id/otp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="4"
+        android:layout_below="@id/addpin"
+        android:layout_margin="30dp"
+        android:orientation="horizontal"
+        android:layout_centerInParent="true"
+        android:gravity="center">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/otp1"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@drawable/btnsquare"
+            android:layout_margin="5dp"
+            android:elevation="6dp"
+            android:gravity="center"/>
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/otp2"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:background="@drawable/btnsquare"
+            android:elevation="6dp"
+            android:gravity="center"/>
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/otp3"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:background="@drawable/btnsquare"
+            android:elevation="6dp"
+            android:gravity="center"/>
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/otp4"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:background="@drawable/btnsquare"
+            android:elevation="6dp"
+            android:gravity="center"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>

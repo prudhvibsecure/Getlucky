@@ -51,6 +51,8 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
+
+
         int id = item.getItemId();
 
         if (id == R.id.nav_materials) {
