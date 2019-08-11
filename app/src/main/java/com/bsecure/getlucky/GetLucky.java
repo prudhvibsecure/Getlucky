@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -21,21 +20,17 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.bsecure.getlucky.fragments.HomeFragment;
 import com.bsecure.getlucky.fragments.ParentFragment;
 import com.bsecure.getlucky.utils.TraceUtils;
 import com.google.android.material.navigation.NavigationView;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Stack;
 
 public class GetLucky extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, ParentFragment.OnFragmentInteractionListener, View.OnClickListener {
 
-    private final List blockedKeys = new ArrayList(Arrays.asList(new Integer[]{Integer.valueOf(25), Integer.valueOf(24)}));
     private Toolbar toolbar;
 
     private ActionBarDrawerToggle toggle;
@@ -46,19 +41,13 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
     private Stack<ParentFragment> fragStack = null;
 
-    private JSONObject customerDetails;
-
-    private JSONArray allQuestions = new JSONArray();
-
     ParentFragment tempFrag = null;
 
-    public int check = 0;
-    public String myData = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_get_lucky);
+        setContentView(R.layout.activity_dashboard);
 
         toolbar = findViewById(R.id.toolbar);
 
@@ -93,7 +82,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
         }
 
-       // swiftFragments(Dashboard.newInstance(), "home");
+        swiftFragments(HomeFragment.newInstance(), "home");
 
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
@@ -109,12 +98,9 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
         navigationView.setNavigationItemSelectedListener(this);
 
-    }
+        View header = navigationView.getHeaderView(0);
 
-    public JSONObject getCustomerDetails() {
-
-        return customerDetails;
-
+        ((TextView) header.findViewById(R.id.mobile_no)).setText("9100239922");
     }
 
     @Override
@@ -151,6 +137,25 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_login) {
+            Intent login = new Intent(this, Login.class);
+            startActivity(login);
+
+        }
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+
+        drawer.closeDrawer(GravityCompat.START);
+
+        return true;
+
+    }
 
     @Override
     public void onFragmentInteraction(int stringid, boolean blockMenu) {
@@ -175,16 +180,6 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-
-        drawer.closeDrawer(GravityCompat.START);
-
-        return true;
-    }
-
     public void lockUnLockMenu(boolean mode) {
 
         toggle.setDrawerIndicatorEnabled(mode);
@@ -202,7 +197,8 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
             switch (position) {
 
-
+                case 1:
+                    break;
 
             }
 
@@ -253,7 +249,6 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
         }
 
 
-
     }
 
     private void removeAllFragments() {
@@ -292,16 +287,12 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
                     if (fragStack.size() > 0) {
                         ParentFragment pf1 = fragStack.get(fragStack.size() - 1);
                         trans.show(pf1);
-                    } /*else {
-                        swiftHomeFragments(null, fragHomeStack.peek());
-                    }*/
+                    }
 
                     trans.commit();
 
                     return true;
                 }
-
-                //showExitDialog();
                 return false;
 
             }
@@ -310,27 +301,6 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
         }
 
         return super.onKeyDown(keyCode, event);
-    }
-
-    public boolean isNetworkAvailable() {
-
-        ConnectivityManager manager = (ConnectivityManager) this
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (manager == null) {
-            return false;
-        }
-
-        NetworkInfo net = manager.getActiveNetworkInfo();
-        if (net != null) {
-            if (net.isConnected()) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-
     }
 
 }

@@ -38,56 +38,45 @@ public class Login extends AppCompatActivity implements RequestHandler {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
 
-        toolbar=findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
 
-        drawer=findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
 
-        btn=findViewById(R.id.send);
-
-        toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-
-        drawer.addDrawerListener(toggle);
-
-        toggle.syncState();
+        btn = findViewById(R.id.send);
 
         phoneno = findViewById(R.id.phoneno);
-
-
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                phone = phoneno.getText().toString().trim();
-
-                if(TextUtils.isEmpty(phone))
-                {
-                    Toast.makeText(Login.this, "Please Enter Phone Number", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if(phone.length() < 10)
-                {
-                    Toast.makeText(Login.this, "Phone Number Should be 10 Digits", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                getLogin(phone);
-               // startActivity(new Intent(Login.this,OtpScreen.class));
+                getLogin();
             }
         });
     }
 
-    private void getLogin(String phone) {
+    private void getLogin() {
 
         try {
+            phone = phoneno.getText().toString().trim();
 
-            JSONObject object=new JSONObject();
+            if (TextUtils.isEmpty(phone)) {
+                Toast.makeText(Login.this, "Please Enter Phone Number", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (phone.length() < 10) {
+                Toast.makeText(Login.this, "Phone Number Should be 10 Digits", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            JSONObject object = new JSONObject();
 
             object.put("phone_number", phone);
 
-            new MethodResquest(this,this, Constants.PATH+"send_otp", object.toString(),100);
+            new MethodResquest(this, this, Constants.PATH + "send_otp", object.toString(), 100);
 
         } catch (Exception e) {
 
@@ -113,26 +102,22 @@ public class Login extends AppCompatActivity implements RequestHandler {
 
                     JSONObject result = new JSONObject(response.toString());
 
-                    if(result.optString("statuscode").equalsIgnoreCase("200"))
-                    {
+                    if (result.optString("statuscode").equalsIgnoreCase("200")) {
+
                         Intent in = new Intent(Login.this, OtpScreen.class);
-
                         in.putExtra("phone", phone);
-
                         startActivity(in);
-                    }
-                    else
-                    {
+                    } else {
                         Toast.makeText(this, result.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
 
                     break;
 
-                    default:
+                default:
 
-                        break;
+                    break;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
 
             e.printStackTrace();
 

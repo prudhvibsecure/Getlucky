@@ -51,50 +51,80 @@
         android:layout_centerInParent="true"
         android:gravity="center">
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/otp1"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:background="@drawable/btnsquare"
-            android:layout_margin="5dp"
-            android:elevation="6dp"
-            android:maxLength="1"
-            android:gravity="center"/>
+        <!--<androidx.appcompat.widget.AppCompatEditText-->
+            <!--android:id="@+id/otp1"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@drawable/btnsquare"-->
+            <!--android:layout_margin="5dp"-->
+            <!--android:elevation="6dp"-->
+            <!--android:maxLength="1"-->
+            <!--android:gravity="center"/>-->
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/otp2"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:layout_margin="5dp"
-            android:background="@drawable/btnsquare"
-            android:elevation="6dp"
-            android:maxLength="1"
-            android:gravity="center"/>
+        <!--<androidx.appcompat.widget.AppCompatEditText-->
+            <!--android:id="@+id/otp2"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_margin="5dp"-->
+            <!--android:background="@drawable/btnsquare"-->
+            <!--android:elevation="6dp"-->
+            <!--android:maxLength="1"-->
+            <!--android:gravity="center"/>-->
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/otp3"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:layout_margin="5dp"
-            android:background="@drawable/btnsquare"
-            android:elevation="6dp"
-            android:maxLength="1"
-            android:gravity="center"/>
+        <!--<androidx.appcompat.widget.AppCompatEditText-->
+            <!--android:id="@+id/otp3"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_margin="5dp"-->
+            <!--android:background="@drawable/btnsquare"-->
+            <!--android:elevation="6dp"-->
+            <!--android:maxLength="1"-->
+            <!--android:gravity="center"/>-->
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/otp4"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:layout_margin="5dp"
-            android:background="@drawable/btnsquare"
-            android:elevation="6dp"
-            android:maxLength="1"
-            android:gravity="center"
-            />
+        <!--<androidx.appcompat.widget.AppCompatEditText-->
+            <!--android:id="@+id/otp4"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_margin="5dp"-->
+            <!--android:background="@drawable/btnsquare"-->
+            <!--android:elevation="6dp"-->
+            <!--android:maxLength="1"-->
+            <!--android:gravity="center"-->
+            <!--/>-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+            <com.chaos.view.PinView
+                android:id="@+id/pinView"
+                style="@style/PinWidget.PinView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:cursorVisible="true"
+                android:gravity="center_horizontal"
+                android:hint="*"
+                android:inputType="numberPassword"
+                android:padding="10dp"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:cursorColor="@color/black"
+                app:cursorWidth="2dp"
+                app:itemCount="4"
+                app:itemHeight="50dp"
+                app:itemRadius="4dp"
+                app:itemSpacing="0dp"
+                app:itemWidth="80dp"
+                app:lineColor="@color/colorPrimary"
+                app:lineWidth="2dp"
+                app:viewType="rectangle" />
+        </RelativeLayout>
 
     </LinearLayout>
 

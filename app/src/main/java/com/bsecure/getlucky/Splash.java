@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.bsecure.getlucky.fragments.HomeFragment;
+
 public class Splash extends AppCompatActivity {
 
     @Override
@@ -18,7 +20,8 @@ public class Splash extends AppCompatActivity {
             @Override
             public void run() {
 
-                startActivity(new Intent(Splash.this, Dashboard.class));
+                startActivity(new Intent(Splash.this, GetLucky.class));
+                finish();
 
             }
 

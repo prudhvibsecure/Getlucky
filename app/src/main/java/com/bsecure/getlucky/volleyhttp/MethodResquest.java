@@ -2,9 +2,13 @@ package com.bsecure.getlucky.volleyhttp;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -17,6 +21,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bsecure.getlucky.R;
 import com.bsecure.getlucky.interfaces.MethodHandler;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 
@@ -65,6 +70,7 @@ public class MethodResquest implements MethodHandler {
 
         requestHandler.requestStarted();
         if (isNetworkAvailable()) {
+            showProgress(message, context);
             try {
                 json = new JSONObject(postdata);
             } catch (JSONException e) {
@@ -72,7 +78,6 @@ public class MethodResquest implements MethodHandler {
             }
         } else {
             message = "Cannot connect to Internet...Please check your connection!";
-            showProgress(message, context);
             typeError = 1;
         }
         RequestQueue queue = Volley.newRequestQueue(context);
@@ -80,6 +85,7 @@ public class MethodResquest implements MethodHandler {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        dismissProgress(context);
                         requestHandler.requestCompleted(response, reqId);
 
                         Log.e("RequestURL:::",request_url);
@@ -93,28 +99,34 @@ public class MethodResquest implements MethodHandler {
                 if (error instanceof NetworkError) {
 
                     message = "Cannot connect to Internet...Please check your connection!";
-                    showProgress(message, context);
+                   // showProgress(message, context);
                     typeError = 1;
+                    dismissProgress(context);
                 } else if (error instanceof ServerError) {
                     typeError = 2;
                     message = "The server could not be found. Please try again after some time!!";
-                    showProgress(message, context);
+                   // showProgress(message, context);
+                    dismissProgress(context);
                 } else if (error instanceof AuthFailureError) {
                     typeError = 3;
                     message = "Cannot connect to Internet...Please check your connection!";
-                    showProgress(message, context);
+                    dismissProgress(context);
+                   // showProgress(message, context);
                 } else if (error instanceof ParseError) {
                     typeError = 4;
                     message = "No Data Found";
-                    showProgress(message, context);
+                    dismissProgress(context);
+                    //showProgress(message, context);
                 } else if (error instanceof NoConnectionError) {
                     typeError = 5;
                     message = "Cannot connect to Internet...Please check your connection!";
-                    showProgress(message, context);
+                    dismissProgress(context);
+                   // showProgress(message, context);
                 } else if (error instanceof TimeoutError) {
                     typeError = 6;
                     message = "TimeOut! Please check your internet connection.";
-                    showProgress(message, context);
+                    dismissProgress(context);
+                    //showProgress(message, context);
                 }
                 requestHandler.requestEndedWithError(message, typeError);
             }
@@ -185,6 +197,30 @@ public class MethodResquest implements MethodHandler {
     }
 
     public static void showProgress(String title, final Context context) {
+        try {
+
+            dialog = new Dialog(context);
+
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+            if (dialog.getWindow() != null) {
+
+                dialog.getWindow().setBackgroundDrawable(
+                        new ColorDrawable(Color.TRANSPARENT));
+
+            }
+
+            dialog.setCancelable(false);
+
+            View view = View.inflate(context, R.layout.loading, null);
+
+            dialog.setContentView(view);
+
+            dialog.show();
+
+        } catch (Exception e) {
+           e.printStackTrace();
+        }
 
     }
 
