@@ -103,7 +103,6 @@ public class Login extends AppCompatActivity implements RequestHandler {
                     JSONObject result = new JSONObject(response.toString());
 
                     if (result.optString("statuscode").equalsIgnoreCase("200")) {
-
                         Intent in = new Intent(Login.this, OtpScreen.class);
                         in.putExtra("phone", phone);
                         startActivity(in);

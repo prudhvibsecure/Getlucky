@@ -35,6 +35,7 @@ public class OtpScreen extends AppCompatActivity implements RequestHandler {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_otp_screen);
@@ -160,7 +161,7 @@ public class OtpScreen extends AppCompatActivity implements RequestHandler {
                         JSONArray array = result.getJSONArray("customer_details");
 
                         if (array.length() == 0) {
-                            startActivity(new Intent(OtpScreen.this, GetLucky.class));
+                            startActivity(new Intent(OtpScreen.this, Register.class));
                             return;
 
                         }

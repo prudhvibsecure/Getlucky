@@ -293,7 +293,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
                     return true;
                 }
-                return false;
+                return true;
 
             }
         } catch (Exception e) {

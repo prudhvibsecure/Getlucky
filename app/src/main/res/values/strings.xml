@@ -11,5 +11,14 @@
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" /> <string name="no_address_found">No address found</string>
+
+    <string name="invalid_lat_long_used">LatLang Faild</string>
+
+    <string name="service_not_available">Service not availble</string>
+
+    <string name="no_geocoder_available">No data found</string>
+
+    <string name="no_location_data_provided">no location provided</string>
+
 </resources>
