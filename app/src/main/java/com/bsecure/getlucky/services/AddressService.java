@@ -25,11 +25,11 @@ import java.util.Locale;
  * TODO: Customize class - update intent actions, extra parameters and static
  * helper methods.
  */
-public class FetchAddressIntentService extends IntentService {
+public class AddressService extends IntentService {
     protected ResultReceiver mReceiver;
     public double latitude,longitude;
 
-    public FetchAddressIntentService() {
+    public AddressService() {
         super("FetchAddressIntentService");
     }
 
@@ -92,12 +92,8 @@ public class FetchAddressIntentService extends IntentService {
             for(int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
                 addressFragments.add(address.getAddressLine(i));
             }
-            //Log.i(TAG, getString(R.string.address_found));
-            deliverResultToReceiver(Constants.SUCCESS_RESULT,
-                    TextUtils.join(System.getProperty("line.separator"),
-                            addressFragments));
-//            deliverResultToReceiverSet(Constants.SUCCESS_RESULT_1,
-//                            address.getSubLocality(),address.getPostalCode(),address.getLocality(),address.getCountryName());
+            deliverResultToReceiverSet(Constants.SUCCESS_RESULT_1,
+                            address.getSubLocality(),address.getPostalCode(),address.getLocality(),address.getCountryName());
         }
     }
     private void deliverResultToReceiver(int resultCode, String message) {

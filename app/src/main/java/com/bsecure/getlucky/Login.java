@@ -1,10 +1,5 @@
 package com.bsecure.getlucky;
 
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,12 +8,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Login extends AppCompatActivity implements RequestHandler {
@@ -43,7 +41,7 @@ public class Login extends AppCompatActivity implements RequestHandler {
 
         toolbar = findViewById(R.id.toolbar);
 
-        drawer = findViewById(R.id.drawer_layout);
+       // drawer = findViewById(R.id.drawer_layout);
 
         btn = findViewById(R.id.send);
 
@@ -106,6 +104,7 @@ public class Login extends AppCompatActivity implements RequestHandler {
                         Intent in = new Intent(Login.this, OtpScreen.class);
                         in.putExtra("phone", phone);
                         startActivity(in);
+                        this.finish();
                     } else {
                         Toast.makeText(this, result.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }

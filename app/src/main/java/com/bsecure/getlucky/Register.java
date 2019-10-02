@@ -7,7 +7,10 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,20 +19,29 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.interfaces.RequestHandler;
+import com.bsecure.getlucky.services.AddressService;
 import com.bsecure.getlucky.services.FetchAddressIntentService;
 import com.bsecure.getlucky.volleyhttp.Constants;
+import com.bsecure.getlucky.volleyhttp.MethodResquest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class Register extends AppCompatActivity implements RequestHandler, View.OnClickListener ,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+public class Register extends AppCompatActivity implements RequestHandler, View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String ADDRESS_REQUESTED_KEY = "address-request-pending";
     private static final String LOCATION_ADDRESS_KEY = "location-address";
@@ -37,12 +49,25 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
     String mAddressOutput;
     Location mLastLocation;
     private FusedLocationProviderClient mFusedLocationClient;
+    private EditText et_name, et_refer;
+    private Button sub_register;
+    private String pin_code,area,city,country,phone,otpone;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        Intent in = getIntent();
 
+        Bundle bd = in.getExtras();
+
+        phone = bd.getString("phone");
+        otpone = bd.getString("otpone");
+
+        sub_register = findViewById(R.id.submit);
+        sub_register.setOnClickListener(this);
+        et_name = findViewById(R.id.name);
+        et_refer = findViewById(R.id.referral);
         mResultReceiver = new AddressResultReceiver(new Handler());
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]
@@ -53,6 +78,7 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
                     }, 7);
             return;
         }
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mFusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
@@ -73,7 +99,7 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
 
                         // Start service and update UI to reflect new location
                         startIntentService();
-                       // updateUI();
+                        // updateUI();
                     }
                 });
     }
@@ -86,6 +112,28 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
     @Override
     public void requestCompleted(JSONObject response, int requestType) {
 
+        try {
+            switch (requestType){
+                case 100:
+                    JSONObject result = new JSONObject(response.toString());
+
+                    if (result.optString("statuscode").equalsIgnoreCase("200")) {
+                        JSONArray array = result.getJSONArray("customer_details");
+                        AppPreferences.getInstance(this).addToStore("userData",array.toString(),true);
+                        Intent in = new Intent(this, GetLucky.class);
+                        startActivity(in);
+                        finish();
+                    } else {
+                        Toast.makeText(this, result.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                    }
+
+                    break;
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -95,10 +143,48 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
 
     @Override
     public void onClick(View view) {
+        try {
+            switch (view.getId()) {
+
+                case R.id.submit:
+                    getRegister();
+                    break;
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
+
+    private void getRegister() {
+        try{
+            String name = et_name.getText().toString().trim();
+            if (TextUtils.isEmpty(name)) {
+                Toast.makeText(this, "Please Enter User Name", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            JSONObject object = new JSONObject();
+
+            object.put("name", name);
+            object.put("phone_number", phone);
+            object.put("area", area);
+            object.put("city", city);
+            object.put("country", country);
+            object.put("pin_code", pin_code);
+            object.put("otp", otpone);
+            object.put("regidand", AppPreferences.getInstance(this).getFromStore("token"));
+
+            new MethodResquest(this, this, Constants.PATH + "customer_registration", object.toString(), 100);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     protected void startIntentService() {
-        Intent intent = new Intent(this, FetchAddressIntentService.class);
+        Intent intent = new Intent(this, AddressService.class);
         intent.putExtra(Constants.RECEIVER, mResultReceiver);
         intent.putExtra(Constants.LOCATION_DATA_EXTRA, mLastLocation);
         startService(intent);
@@ -155,15 +241,16 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
 
             // Display the address string
             // or an error message sent from the intent service.
-            mAddressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
-            if (mAddressOutput == null) {
-                mAddressOutput = "";
-            }
+            area = resultData.getString("area");
+            city = resultData.getString("city");
+            pin_code = resultData.getString("postalcode");
+            country = resultData.getString("country");
+
             //((TextView) findViewById(R.id.user_location_add)).setText(mAddressOutput);
             // displayAddressOutput();
 
             // Show a toast message if an address was found.
-            if (resultCode == Constants.SUCCESS_RESULT) {
+            if (resultCode == Constants.SUCCESS_RESULT_1) {
                 //  showToast(getString(R.string.address_found));
             }
 

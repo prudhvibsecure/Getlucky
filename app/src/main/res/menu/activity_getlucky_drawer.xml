@@ -8,6 +8,11 @@
             android:id="@+id/nav_login"
             android:title="Registration/Login"
             android:icon="@drawable/user"/>
+
+        <item
+            android:id="@+id/nav_profile"
+            android:title="Edit Profile"
+            android:icon="@drawable/user"/>
     </group>
 
 </menu>

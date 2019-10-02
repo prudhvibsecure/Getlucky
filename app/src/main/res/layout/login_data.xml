@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbarlayout"
@@ -18,34 +17,46 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:minHeight="?attr/actionBarSize"
-            app:popupTheme="@style/AppTheme.PopupOverlay" >
+            app:popupTheme="@style/AppTheme.PopupOverlay">
 
 
-            <!--<ImageView
-                android:layout_width="100dp"
-                android:layout_height="60dp"
-                android:layout_gravity="center"
-                android:src="@drawable/logo"
-                />-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/bacl_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/ic_back" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/logo" />
+
+            </LinearLayout>
 
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_getlucky"/>
+    <include layout="@layout/content_getlucky" />
 
     <TextView
         android:id="@+id/logtext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/appbarlayout"
-        android:layout_marginTop="100dp"
-        android:text="LOGIN"
-        android:textStyle="bold"
         android:layout_centerInParent="true"
+        android:layout_marginTop="100dp"
         android:gravity="center"
+        android:text="LOGIN"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="40dp"
-        android:textColor="@color/colorPrimaryDark"/>
+        android:textStyle="bold" />
 
 
     <EditText
@@ -54,29 +65,29 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/logtext"
         android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="80dp"
+        android:layout_marginRight="20dp"
         android:background="@drawable/square"
-        android:hint="Mobile Number"
-        android:padding="15dp"
-        android:maxLength="10"
         android:drawableLeft="@drawable/phone"
         android:drawablePadding="10dp"
+        android:hint="Mobile Number"
         android:inputType="number"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"/>
+        android:maxLength="10"
+        android:padding="15dp" />
 
     <Button
         android:id="@+id/send"
         android:layout_width="200dp"
         android:layout_height="50dp"
-        android:hint="Send OTP"
-        android:textStyle="bold"
-        android:layout_centerHorizontal="true"
         android:layout_below="@+id/phoneno"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:textColorHint="#fff"
+        android:background="@drawable/gradient"
+        android:hint="Send OTP"
         android:padding="10dp"
-        android:background="@drawable/gradient"/>
+        android:textColorHint="#fff"
+        android:textStyle="bold" />
 
 
 </RelativeLayout>

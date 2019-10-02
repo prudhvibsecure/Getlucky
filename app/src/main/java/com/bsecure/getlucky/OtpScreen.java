@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.fragments.HomeFragment;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.volleyhttp.Constants;
@@ -132,7 +133,7 @@ public class OtpScreen extends AppCompatActivity implements RequestHandler {
 
             object.put("phone_number", phone);
 
-            object.put("regidand", "");
+            object.put("regidand", AppPreferences.getInstance(this).getFromStore("token"));
 
             new MethodResquest(this, this, Constants.PATH + "verify_otp", object.toString(), 100);
 
@@ -161,13 +162,18 @@ public class OtpScreen extends AppCompatActivity implements RequestHandler {
                         JSONArray array = result.getJSONArray("customer_details");
 
                         if (array.length() == 0) {
-                            startActivity(new Intent(OtpScreen.this, Register.class));
+                            Intent in = new  Intent(OtpScreen.this, Register.class);
+                            in.putExtra("phone", phone);
+                            in.putExtra("otpone", otpone);
+                            startActivity(in);
+                            finish();
                             return;
 
                         }
 
                         Intent in = new Intent(OtpScreen.this, GetLucky.class);
                         startActivity(in);
+                        finish();
                     } else {
                         Toast.makeText(this, result.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }

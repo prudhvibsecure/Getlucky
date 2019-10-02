@@ -19,13 +19,12 @@
             android:minHeight="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
-
-            <!-- <ImageView
-                 android:layout_width="100dp"
+            <ImageView
+                 android:layout_width="match_parent"
                  android:layout_height="60dp"
                  android:layout_gravity="center"
                  android:src="@drawable/logo"
-                 />-->
+                 />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -34,57 +33,6 @@
     <include layout="@layout/content_getlucky" />
 
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="70dp"
-        android:layout_marginRight="10dp"
-        android:background="#fff"
-        android:padding="15dp">
-
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/location"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/square"
-            android:drawableRight="@drawable/search"
-            android:hint="Location"
-            android:padding="15dp" />
-
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/keyword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/location"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/square"
-            android:hint="Categories,Stores,Keywords"
-            android:padding="15dp" />
-
-
-        <Button
-            android:id="@+id/search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/keyword"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/btnsquare"
-            android:padding="15dp"
-            android:text="Find Store"
-            android:textColor="@color/colorPrimaryDark" />
-
-
-        <View
-            android:id="@+id/line"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@+id/search"
-            android:layout_marginTop="10dp"
-            android:background="#000" />
-    </RelativeLayout>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

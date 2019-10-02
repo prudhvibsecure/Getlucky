@@ -7,6 +7,7 @@ package com.bsecure.getlucky.volleyhttp;
 public class Constants {
     public static final String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
     public static final int SUCCESS_RESULT = 0;
+    public static final int SUCCESS_RESULT_1 = 2;
     public static final int FAILURE_RESULT = 1;
     public static final String PACKAGE_NAME =
             "com.bsecure.getlucky.locationaddress";

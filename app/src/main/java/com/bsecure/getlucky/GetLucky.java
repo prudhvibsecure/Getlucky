@@ -1,9 +1,6 @@
 package com.bsecure.getlucky;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -11,7 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -148,6 +144,11 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
             startActivity(login);
 
         }
+        if (id == R.id.nav_profile) {
+            Intent login = new Intent(this, ProfilePage.class);
+            startActivity(login);
+
+        }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
@@ -248,7 +249,17 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
             fragStack.push(frag);
         }
 
+        try {
 
+            if (LuckyApp.isInterestingActivityVisible()) {
+                trans.commit();
+            } else {
+                trans.commitAllowingStateLoss();
+            }
+
+        } catch (IllegalStateException e) {
+            TraceUtils.logException(e);
+        }
     }
 
     private void removeAllFragments() {
@@ -293,7 +304,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
                     return true;
                 }
-                return true;
+                //return false;
 
             }
         } catch (Exception e) {
