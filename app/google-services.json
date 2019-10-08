@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "483056947382",
+    "firebase_url": "https://getlucky-20e43.firebaseio.com",
+    "project_id": "getlucky-20e43",
+    "storage_bucket": "getlucky-20e43.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:483056947382:android:3abeec4c043823d4c3d617",
+        "android_client_info": {
+          "package_name": "com.bsecure.getlucky"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "483056947382-pqvkpjavegv2aqe1r9lf68oqmq82rcse.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9OqYRWG8paZvkzRNPvdYeKQYvrJpLDDs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "483056947382-pqvkpjavegv2aqe1r9lf68oqmq82rcse.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
