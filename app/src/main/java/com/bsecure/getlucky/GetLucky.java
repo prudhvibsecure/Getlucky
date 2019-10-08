@@ -2,6 +2,7 @@ package com.bsecure.getlucky;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,11 +17,15 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.fragments.HomeFragment;
 import com.bsecure.getlucky.fragments.ParentFragment;
+import com.bsecure.getlucky.store.AddEditStore;
 import com.bsecure.getlucky.utils.TraceUtils;
 import com.google.android.material.navigation.NavigationView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Stack;
@@ -37,8 +42,11 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
     private Stack<ParentFragment> fragStack = null;
 
-    ParentFragment tempFrag = null;
+    private ParentFragment tempFrag = null;
 
+    private String session_data = null;
+
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +85,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
             removeAllFragments();
 
         }
-
+        session_data = AppPreferences.getInstance(this).getFromStore("userData");
         swiftFragments(HomeFragment.newInstance(), "home");
 
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
@@ -90,13 +98,24 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
         });
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
 
         navigationView.setNavigationItemSelectedListener(this);
 
         View header = navigationView.getHeaderView(0);
 
-        ((TextView) header.findViewById(R.id.mobile_no)).setText("9100239922");
+        if (session_data != null &&!TextUtils.isEmpty(session_data)) {
+            try {
+                JSONArray ayArray = new JSONArray(session_data);
+                ((TextView) header.findViewById(R.id.mobile_no)).setText(ayArray.getJSONObject(0).optString("name"));
+                ((TextView) header.findViewById(R.id.refer_code)).setText("Refer Code - " + ayArray.getJSONObject(0).optString("referral_code"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            ((TextView) header.findViewById(R.id.mobile_no)).setText("Unknown");
+        }
     }
 
     @Override
@@ -115,6 +134,16 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.activity_getlucky_drawer, menu);
+        Menu nav_Menu = navigationView.getMenu();
+        if (session_data != null&&!TextUtils.isEmpty(session_data)) {
+            nav_Menu.findItem(R.id.nav_profile).setVisible(true);
+            nav_Menu.findItem(R.id.nav_login).setVisible(false);
+            nav_Menu.findItem(R.id.nav_store).setVisible(true);
+        } else {
+            nav_Menu.findItem(R.id.nav_profile).setVisible(false);
+            nav_Menu.findItem(R.id.nav_login).setVisible(true);
+            nav_Menu.findItem(R.id.nav_store).setVisible(false);
+        }
         return true;
     }
 
@@ -137,17 +166,22 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        //int id = item.getItemId();
+        switch (item.getItemId()) {
+            case R.id.nav_login:
+                Intent login = new Intent(this, Login.class);
+                startActivity(login);
+                break;
+            case R.id.nav_profile:
 
-        if (id == R.id.nav_login) {
-            Intent login = new Intent(this, Login.class);
-            startActivity(login);
+                Intent prof = new Intent(this, ProfilePage.class);
+                startActivity(prof);
+                break;
+            case R.id.nav_store:
 
-        }
-        if (id == R.id.nav_profile) {
-            Intent login = new Intent(this, ProfilePage.class);
-            startActivity(login);
-
+                Intent store = new Intent(this, AddEditStore.class);
+                startActivity(store);
+                break;
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

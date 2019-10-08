@@ -93,19 +93,20 @@ public class AddressService extends IntentService {
                 addressFragments.add(address.getAddressLine(i));
             }
             deliverResultToReceiverSet(Constants.SUCCESS_RESULT_1,
-                            address.getSubLocality(),address.getPostalCode(),address.getLocality(),address.getCountryName());
+                            address.getSubLocality(),address.getPostalCode(),address.getLocality(),address.getCountryName(),address.getAdminArea());
         }
     }
     private void deliverResultToReceiver(int resultCode, String message) {
         Bundle bundle = new Bundle();
         bundle.putString(Constants.RESULT_DATA_KEY, message);
         mReceiver.send(resultCode, bundle);
-    } private void deliverResultToReceiverSet(int resultCode, String area,String postalcode,String city,String country) {
+    } private void deliverResultToReceiverSet(int resultCode, String area,String postalcode,String city,String country,String state) {
         Bundle bundle = new Bundle();
         bundle.putString("area", area);
         bundle.putString("postalcode", postalcode);
         bundle.putString("city", city);
         bundle.putString("country", country);
+        bundle.putString("state", state);
         mReceiver.send(resultCode, bundle);
     }
 }

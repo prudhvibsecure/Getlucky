@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +52,7 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
     private FusedLocationProviderClient mFusedLocationClient;
     private EditText et_name, et_refer;
     private Button sub_register;
-    private String pin_code,area,city,country,phone,otpone;
+    private String pin_code,area,city,country,phone,otpone,state;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +69,12 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
         sub_register.setOnClickListener(this);
         et_name = findViewById(R.id.name);
         et_refer = findViewById(R.id.referral);
+        findViewById(R.id.bacl_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         mResultReceiver = new AddressResultReceiver(new Handler());
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]
@@ -171,6 +178,7 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
             object.put("phone_number", phone);
             object.put("area", area);
             object.put("city", city);
+            object.put("state", city);
             object.put("country", country);
             object.put("pin_code", pin_code);
             object.put("otp", otpone);
@@ -245,6 +253,7 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
             city = resultData.getString("city");
             pin_code = resultData.getString("postalcode");
             country = resultData.getString("country");
+            state = resultData.getString("state");
 
             //((TextView) findViewById(R.id.user_location_add)).setText(mAddressOutput);
             // displayAddressOutput();

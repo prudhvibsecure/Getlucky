@@ -27,6 +27,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:padding="5dp"
                     android:src="@mipmap/ic_back" />
 
                 <ImageView
@@ -61,8 +62,8 @@
         android:background="@drawable/square"
         android:hint="Name"
         android:drawableLeft="@drawable/user"
-        android:drawablePadding="10dp"
-        android:padding="15dp"
+        android:drawablePadding="8dp"
+        android:padding="10dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"/>
 
@@ -94,7 +95,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/square"
             android:layout_marginLeft="20dp"
-            android:padding="15dp" />
+            android:padding="10dp" />
 
     </LinearLayout>
 
@@ -110,12 +111,11 @@
             android:id="@+id/radioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-             />
+            android:text="Terms &amp; Conditions"/>
         <TextView
             android:id="@+id/terms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Terms &amp; Conditions"
             android:textSize="20sp"
             android:textStyle="bold"/>
 
