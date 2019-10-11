@@ -81,7 +81,7 @@
             android:layout_width="@dimen/_60sdp"
             android:layout_height="@dimen/_60sdp"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/profile_image"/>
+            android:src="@mipmap/profile_image"/>
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/name"
             android:layout_width="match_parent"
