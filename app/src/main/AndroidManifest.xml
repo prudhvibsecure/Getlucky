@@ -18,6 +18,10 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCvdgdoCZc4bkufNsTKmaKGRw3egMIn_cs" />
         <activity
             android:name=".GetLucky"
             android:screenOrientation="portrait">
@@ -93,6 +97,8 @@
             android:exported="false" /><service
             android:name=".services.AddressService"
             android:exported="false" />
+
+
     </application>
 
 </manifest>

@@ -12,6 +12,7 @@ import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Splash extends AppCompatActivity implements RequestHandler {
@@ -56,6 +57,10 @@ public class Splash extends AppCompatActivity implements RequestHandler {
 
                 case 100:
                     JSONObject object=new JSONObject(response.toString());
+                    if (object.optString("statuscode").equalsIgnoreCase("200")){
+                        JSONArray array=object.getJSONArray("category_details");
+                        AppPreferences.getInstance(this).addToStore("category",array.toString(),true);
+                    }
                     break;
             }
         }catch (Exception e){

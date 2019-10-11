@@ -27,7 +27,7 @@
 
                 <ImageView
                     android:id="@+id/bacl_btn"
-                    android:layout_width="32dp"
+                    android:layout_width="22dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:src="@mipmap/ic_back" />
@@ -54,7 +54,9 @@
         android:textColor="@color/colorPrimaryDark"
         android:layout_below="@+id/appbarlayout"
         android:gravity="center"
-        android:layout_marginTop="50dp"/>
+        android:layout_marginTop="10dp"/>
+
+
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card"
@@ -64,7 +66,7 @@
         card_view:cardBackgroundColor="@color/white"
         card_view:cardCornerRadius="8dp"
         card_view:cardElevation="8dp"
-        android:layout_margin="20dp">
+        android:layout_margin="15dp">
 
     <RelativeLayout
         android:id="@+id/details"
@@ -74,10 +76,16 @@
         android:layout_below="@+id/editprofile"
         android:background="@color/white"
         >
-
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/pf_image"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="@dimen/_60sdp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/profile_image"/>
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/name"
             android:layout_width="match_parent"
+            android:layout_below="@+id/pf_image"
             android:layout_height="wrap_content"
             android:background="@drawable/square"
             android:hint="Name"
@@ -98,24 +106,32 @@
             android:clickable="true"
             android:layout_marginTop="20dp"/>
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/gender"
+        <LinearLayout
+            android:id="@+id/gender_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/dateofbirth"
             android:background="@drawable/square"
+            android:layout_marginTop="20dp"
+            android:layout_below="@+id/dateofbirth">
+        <Spinner
+            android:id="@+id/gender"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
             android:hint="Gender"
             android:drawableRight="@mipmap/ic_down"
             android:padding="15dp"
-            android:layout_marginTop="20dp"/>
+            />
+        </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/gender"
+            android:layout_below="@+id/gender_ll"
             android:background="@drawable/square"
             android:hint="Location"
+            android:editable="false"
+            android:singleLine="true"
             android:padding="15dp"
             android:layout_marginTop="20dp"/>
 

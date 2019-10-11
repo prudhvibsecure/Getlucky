@@ -1,17 +1,44 @@
 package com.bsecure.getlucky;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class ProfilePage extends AppCompatActivity implements View.OnClickListener {
+import com.bsecure.getlucky.common.AppPreferences;
+import com.bsecure.getlucky.interfaces.RequestHandler;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+public class ProfilePage extends AppCompatActivity implements View.OnClickListener , RequestHandler {
+
+    private String session_data = null;
+    private EditText name,dob,gender,location;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_profile);
+
+        try {
+            session_data = AppPreferences.getInstance(this).getFromStore("userData");
+            Log.e("data",session_data);
+            JSONArray ayArray = new JSONArray(session_data);
+            name=findViewById(R.id.name);
+            name.setText(ayArray.getJSONObject(0).optString("name"));
+            dob=findViewById(R.id.dateofbirth);
+            dob.setText(ayArray.getJSONObject(0).optString("date_of_birth"));
+          //  gender=findViewById(R.id.gender);
+          //  gender.setText(ayArray.getJSONObject(0).optString("date_of_birth"));
+            location=findViewById(R.id.location);
+            location .setText(ayArray.getJSONObject(0).optString("area")+","+ayArray.getJSONObject(0).optString("city")+","+ayArray.getJSONObject(0).optString("state")+","+ayArray.getJSONObject(0).optString("country")+","+ayArray.getJSONObject(0).optString("pin_code"));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         findViewById(R.id.bacl_btn).setOnClickListener(this);
     }
 
@@ -22,6 +49,21 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
                 finish();
                 break;
         }
+
+    }
+
+    @Override
+    public void requestStarted() {
+
+    }
+
+    @Override
+    public void requestCompleted(JSONObject response, int requestType) {
+
+    }
+
+    @Override
+    public void requestEndedWithError(String error, int errorcode) {
 
     }
 }

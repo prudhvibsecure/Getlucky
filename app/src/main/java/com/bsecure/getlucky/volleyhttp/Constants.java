@@ -16,6 +16,8 @@ public class Constants {
             ".RESULT_DATA_KEY";
     public static final String LOCATION_DATA_EXTRA = PACKAGE_NAME +
             ".LOCATION_DATA_EXTRA";
+    public String SHA1="9A:54:8A:6C:B9:1C:19:1E:0D:DF:66:42:B9:3D:D9:05:91:40:F9:EA";
+    public static String key="AIzaSyCvdgdoCZc4bkufNsTKmaKGRw3egMIn_cs";
 
     /*
     * @ Rest api call

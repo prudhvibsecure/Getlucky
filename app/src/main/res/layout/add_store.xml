@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbarlayout"
@@ -49,41 +49,40 @@
         android:id="@+id/editprofile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Store"
-        android:textSize="20sp"
-        android:textColor="@color/colorPrimaryDark"
         android:layout_below="@+id/appbarlayout"
+        android:layout_marginTop="50dp"
         android:gravity="center"
-        android:layout_marginTop="50dp"/>
+        android:text="Add Store"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/editprofile"
+        android:layout_margin="20dp"
         card_view:cardBackgroundColor="@color/white"
         card_view:cardCornerRadius="8dp"
-        card_view:cardElevation="8dp"
-        android:layout_margin="20dp">
+        card_view:cardElevation="8dp">
 
         <RelativeLayout
             android:id="@+id/details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="30dp"
             android:layout_below="@+id/editprofile"
-            android:background="@color/white"
-            >
+            android:layout_margin="30dp"
+            android:background="@color/white">
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/st_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/square"
                 android:hint="Store Name"
-                android:singleLine="true"
                 android:padding="15dp"
-                android:layout_marginTop="20dp"/>
+                android:singleLine="true" />
 
 
             <androidx.appcompat.widget.AppCompatEditText
@@ -91,60 +90,65 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/st_name"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/square"
-                android:hint="Category"
-                android:editable="false"
-                android:focusable="false"
                 android:clickable="true"
                 android:drawableRight="@mipmap/ic_down"
+                android:editable="false"
+                android:focusable="false"
+                android:hint="Category"
                 android:padding="14dp"
-                android:layout_marginTop="20dp"/>
+                android:singleLine="true" />
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/st_keywords"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/st_category"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/square"
                 android:hint="Keywords"
-                android:padding="15dp"
-
-                android:layout_marginTop="20dp"/>
+                android:maxLines="3"
+                android:padding="15dp" />
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/st_keywords"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/square"
-                android:hint="Location"
-                android:padding="15dp"
+                android:clickable="true"
                 android:editable="false"
                 android:focusable="false"
-                android:clickable="true"
-                android:layout_marginTop="20dp"/>
+                android:hint="Location"
+                android:padding="15dp"
+                android:singleLine="true" />
+
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/mobile_no"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/location"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/square"
                 android:hint="Phone Number"
-                android:padding="15dp"
                 android:inputType="number"
-                android:layout_marginTop="20dp"/>
+                android:padding="15dp"
+                android:singleLine="true" />
+
             <Button
                 android:id="@+id/submit"
                 android:layout_width="200dp"
                 android:layout_height="50dp"
-                android:hint="Add"
-                android:textStyle="bold"
-                android:layout_centerHorizontal="true"
                 android:layout_below="@+id/mobile_no"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="30dp"
-                android:textColorHint="#fff"
+                android:background="@drawable/gradient"
+                android:hint="Add"
                 android:padding="10dp"
-                android:background="@drawable/gradient"/>
+                android:textColorHint="#fff"
+                android:textStyle="bold" />
 
         </RelativeLayout>
 

@@ -1,6 +1,5 @@
 package com.bsecure.getlucky.fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,23 +20,28 @@ import androidx.core.app.ActivityCompat;
 
 import com.bsecure.getlucky.GetLucky;
 import com.bsecure.getlucky.R;
-import com.bsecure.getlucky.Register;
+import com.bsecure.getlucky.common.AppPreferences;
+import com.bsecure.getlucky.interfaces.RequestHandler;
+import com.bsecure.getlucky.services.AddressService;
 import com.bsecure.getlucky.services.FetchAddressIntentService;
 import com.bsecure.getlucky.volleyhttp.Constants;
+import com.bsecure.getlucky.volleyhttp.MethodResquest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class HomeFragment extends ParentFragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+public class HomeFragment extends ParentFragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RequestHandler {
 
     private GetLucky getLucky;
+    private String pin_code, area, city, country, phone, category_ids = "", state;
     private OnListFragmentInteractionListener mListener;
     private OnFragmentInteractionListener mFragListener;
     private View laView;
@@ -47,6 +51,8 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
     String mAddressOutput;
     Location mLastLocation;
     private FusedLocationProviderClient mFusedLocationClient;
+    private EditText serach;
+
     public HomeFragment() {
 
     }
@@ -68,7 +74,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                             ACCESS_COARSE_LOCATION
 
                     }, 7);
-            return ;
+            return;
         }
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
         mFusedLocationClient.getLastLocation()
@@ -94,8 +100,32 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                         // updateUI();
                     }
                 });
+
+
     }
 
+    private void getStoreData() {
+        try {
+            String serch_word = serach.getText().toString();
+            String category = AppPreferences.getInstance(getActivity()).getFromStore("category");
+            JSONArray ayArray = new JSONArray(category);
+            if (ayArray.length() > 0) {
+                for (int f = 0; f < ayArray.length(); f++) {
+                    JSONObject oob = ayArray.getJSONObject(f);
+                    category_ids = category_ids + "," + oob.optString("category_id");
+                }
+            }
+
+            category_ids = category_ids.replaceFirst(",", "");
+            JSONObject object = new JSONObject();
+            object.put("category_ids", category_ids.trim());
+            MethodResquest ms=new MethodResquest(getActivity(), this, Constants.PATH + "get_keywords", object.toString(), 100);
+            ms.dismissProgress(getActivity());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
 
     @Override
@@ -103,7 +133,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                              Bundle savedInstanceState) {
 
         laView = inflater.inflate(R.layout.activity_home_pg, container, false);
-
+        serach = laView.findViewById(R.id.keyword);
         return laView;
 
     }
@@ -112,7 +142,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
-       // mListener = (OnListFragmentInteractionListener) context;
+        // mListener = (OnListFragmentInteractionListener) context;
 
         mFragListener = (GetLucky) context;
 
@@ -125,6 +155,45 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
         super.onDetach();
         mListener = null;
         mFragListener = null;
+    }
+
+    @Override
+    public void requestStarted() {
+
+    }
+
+    @Override
+    public void requestCompleted(JSONObject response, int requestType) {
+
+        try {
+
+            switch (requestType) {
+                case 100:
+
+                    JSONObject object = new JSONObject(response.toString());
+                    if (object.optString("statuscode").equalsIgnoreCase("200")) {
+                       String keywords= object.optString("keywords");
+                    }
+
+//                    object.put("area", area);
+//                    object.put("city", city);
+//                    object.put("state", city);
+//                    object.put("country", country);
+//                    object.put("search_key", pin_code);
+//                    object.put("pageno", otpone);
+//                    new MethodResquest(getActivity(), this, Constants.PATH + "search_store", object.toString(), 101);
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void requestEndedWithError(String error, int errorcode) {
+
     }
 
     public interface OnListFragmentInteractionListener {
@@ -148,8 +217,9 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
         mFragListener.onFragmentInteraction(R.string.app_name, true);
 
     }
+
     protected void startIntentService() {
-        Intent intent = new Intent(getActivity(), FetchAddressIntentService.class);
+        Intent intent = new Intent(getActivity(), AddressService.class);
         intent.putExtra(Constants.RECEIVER, mResultReceiver);
         intent.putExtra(Constants.LOCATION_DATA_EXTRA, mLastLocation);
         getActivity().startService(intent);
@@ -206,16 +276,24 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
             // Display the address string
             // or an error message sent from the intent service.
-            mAddressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
+          /*  mAddressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
             if (mAddressOutput == null) {
                 mAddressOutput = "";
-            }
+            }*/
+
+            area = resultData.getString("area");
+            city = resultData.getString("city");
+            pin_code = resultData.getString("postalcode");
+            country = resultData.getString("country");
+            state = resultData.getString("state");
+            mAddressOutput = area + "," + city + "," + state + "," + state;
             ((EditText) laView.findViewById(R.id.location)).setText(mAddressOutput);
             // displayAddressOutput();
-
+            getStoreData();
             // Show a toast message if an address was found.
             if (resultCode == Constants.SUCCESS_RESULT) {
                 //  showToast(getString(R.string.address_found));
+
             }
 
         }
