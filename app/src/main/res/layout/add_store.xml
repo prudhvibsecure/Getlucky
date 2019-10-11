@@ -33,10 +33,10 @@
                     android:src="@mipmap/ic_back" />
 
                 <ImageView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/logo" />
+                    android:src="@mipmap/logo" />
 
             </LinearLayout>
 
@@ -44,24 +44,42 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-
+   <RelativeLayout
+       android:id="@+id/banner"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="horizontal"
+       android:layout_below="@+id/appbarlayout">
     <TextView
         android:id="@+id/editprofile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/appbarlayout"
-        android:layout_marginTop="50dp"
         android:gravity="center"
-        android:text="Add Store"
+        android:layout_centerInParent="true"
+        android:text="Add Store (+)"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="20sp" />
 
+       <androidx.constraintlayout.widget.ConstraintLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content">
+
+           <ImageView
+               android:layout_width="match_parent"
+               android:layout_height="0dp"
+               android:id="@+id/post_image"
+               app:layout_constraintDimensionRatio="2:1"/>
+
+       </androidx.constraintlayout.widget.ConstraintLayout>
+   </RelativeLayout>
     <androidx.cardview.widget.CardView
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editprofile"
-        android:layout_margin="20dp"
+        android:layout_below="@+id/banner"
+        android:layout_marginTop="-40dp"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:layout_marginRight="@dimen/_10sdp"
         card_view:cardBackgroundColor="@color/white"
         card_view:cardCornerRadius="8dp"
         card_view:cardElevation="8dp">

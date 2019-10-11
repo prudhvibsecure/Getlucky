@@ -1,7 +1,9 @@
 package com.bsecure.getlucky.utils;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +13,8 @@ import android.os.Environment;
 import android.provider.Settings.Secure;
 import android.util.DisplayMetrics;
 import android.webkit.MimeTypeMap;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,6 +23,7 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import javax.crypto.Cipher;
@@ -204,5 +209,22 @@ public class Utils {
         cis.close();
     }
 */
+public static  void openListDialogView(final TextView tv_location, String tittle,
+                               final ArrayList<String> list_data,Context context) {
 
+    AlertDialog.Builder builderSingle = new AlertDialog.Builder(context );
+    builderSingle.setTitle(tittle);
+    final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, list_data);
+    arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+    builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            String strName = arrayAdapter.getItem(which);
+            tv_location.setText(strName);
+        }
+    });
+    builderSingle.show();
+
+}
 }

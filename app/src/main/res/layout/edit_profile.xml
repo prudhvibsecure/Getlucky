@@ -33,10 +33,10 @@
                     android:src="@mipmap/ic_back" />
 
                 <ImageView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/logo" />
+                    android:src="@mipmap/logo" />
 
             </LinearLayout>
 
@@ -106,28 +106,28 @@
             android:clickable="true"
             android:layout_marginTop="20dp"/>
 
-        <LinearLayout
-            android:id="@+id/gender_ll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/square"
-            android:layout_marginTop="20dp"
-            android:layout_below="@+id/dateofbirth">
-        <Spinner
+
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/gender"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:hint="Gender"
+            android:layout_marginTop="20dp"
+            android:editable="false"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:background="@drawable/square"
+            android:layout_below="@+id/dateofbirth"
             android:drawableRight="@mipmap/ic_down"
             android:padding="15dp"
             />
-        </LinearLayout>
+
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/gender_ll"
+            android:layout_below="@+id/gender"
             android:background="@drawable/square"
             android:hint="Location"
             android:editable="false"

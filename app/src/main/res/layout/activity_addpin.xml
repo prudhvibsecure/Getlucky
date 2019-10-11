@@ -5,10 +5,10 @@
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="170dp"
-        android:layout_height="170dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginTop="50dp"
-        android:src="@drawable/getlucky"
+        android:src="@mipmap/ic_launcher"
         android:layout_centerHorizontal="true"/>
 
 
