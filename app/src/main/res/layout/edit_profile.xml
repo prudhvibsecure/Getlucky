@@ -136,7 +136,7 @@
             android:layout_marginTop="20dp"/>
 
         <Button
-            android:id="@+id/submit"
+            android:id="@+id/submit_p"
             android:layout_width="200dp"
             android:layout_height="50dp"
             android:hint="Update"

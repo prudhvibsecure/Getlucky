@@ -87,6 +87,7 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.banner).setOnClickListener(this);
         poster = findViewById(R.id.post_image);
         et_storenm = findViewById(R.id.st_name);
+        et_mobile = findViewById(R.id.mobile_no);
         et_cat = findViewById(R.id.st_category);
         et_cat.setOnClickListener(this);
         et_keywords = findViewById(R.id.st_keywords);
@@ -212,11 +213,12 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
             object.put("city", city);
             object.put("state", state);
             object.put("country", country);
+            object.put("pin_code", pin_code);
             object.put("store_phone_number", mobile);
             object.put("categories", st_cat);
             object.put("keywords", keyword);
             object.put("store_image", poaste_img);
-            MethodResquest ms = new MethodResquest(this, this, Constants.PATH + "add_store", object.toString(), 100);
+            new MethodResquest(this, this, Constants.PATH + "add_store", object.toString(), 100);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -349,7 +351,7 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
 
             File myfilename = new File(mImageUri.getPath());
             String displayName = myfilename.getName();
-            String url = Constants.PATH + "assets/upload/avatar";
+            String url = Constants.PATH + "upload_photo";
             AttachmentUpload uploader = new AttachmentUpload(this, this);
             uploader.setFileName(displayName, displayName);
             uploader.userRequest("", 11, url, mImageUri.getPath());

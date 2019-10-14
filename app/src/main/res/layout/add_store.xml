@@ -49,6 +49,7 @@
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:orientation="horizontal"
+       android:background="@mipmap/add_store"
        android:layout_below="@+id/appbarlayout">
     <TextView
         android:id="@+id/editprofile"
@@ -62,12 +63,14 @@
 
        <androidx.constraintlayout.widget.ConstraintLayout
            android:layout_width="match_parent"
+
            android:layout_height="wrap_content">
 
            <ImageView
                android:layout_width="match_parent"
                android:layout_height="0dp"
                android:id="@+id/post_image"
+               android:adjustViewBounds="true"
                app:layout_constraintDimensionRatio="2:1"/>
 
        </androidx.constraintlayout.widget.ConstraintLayout>
