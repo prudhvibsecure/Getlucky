@@ -1,10 +1,12 @@
 package com.bsecure.getlucky;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +22,8 @@ import com.bsecure.getlucky.store.AddEditStore;
 import com.bsecure.getlucky.utils.Utils;
 import com.bsecure.getlucky.volleyhttp.AttachmentUpload;
 import com.bsecure.getlucky.volleyhttp.Constants;
+import com.bsecure.getlucky.volleyhttp.MethodResquest;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
@@ -30,20 +34,27 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class ProfilePage extends AppCompatActivity implements View.OnClickListener, RequestHandler, IFileUploadCallback {
 
-    private String session_data = null,user_img;
+    private String session_data = null, user_img;
     private EditText name, dob, gender, location;
     private Uri mImageUri;
     private ImageView userImage;
+    private DatePickerDialog datePickerDialog;
+    private SimpleDateFormat dateFormatter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_profile);
 
         try {
+            dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
             userImage = findViewById(R.id.pf_image);
             session_data = AppPreferences.getInstance(this).getFromStore("userData");
             Log.e("data", session_data);
@@ -51,6 +62,7 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
             name = findViewById(R.id.name);
             name.setText(ayArray.getJSONObject(0).optString("name"));
             dob = findViewById(R.id.dateofbirth);
+            dob.setOnClickListener(this);
             dob.setText(ayArray.getJSONObject(0).optString("date_of_birth"));
             gender = findViewById(R.id.gender);
             gender.setOnClickListener(this);
@@ -59,6 +71,7 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
             location.setText(ayArray.getJSONObject(0).optString("area") + "," + ayArray.getJSONObject(0).optString("city") + "," + ayArray.getJSONObject(0).optString("state") + "," + ayArray.getJSONObject(0).optString("country") + "," + ayArray.getJSONObject(0).optString("pin_code"));
             findViewById(R.id.pf_image).setOnClickListener(this);
             findViewById(R.id.submit_p).setOnClickListener(this);
+            Glide.with(this).load(Constants.PATH+"assets/upload/avatar/"+ayArray.getJSONObject(0).optString("profile_image")).into(userImage);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,7 +88,7 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
                         .setAspectRatio(1, 1)
                         .start(ProfilePage.this);
                 break;
-                case R.id.bacl_btn:
+            case R.id.bacl_btn:
                 finish();
                 break;
             case R.id.gender:
@@ -89,14 +102,62 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
             case R.id.submit_p:
                 updateProfile();
                 break;
+            case R.id.dateofbirth:
+                showDate();
+                break;
         }
 
     }
 
-    private void updateProfile() {
-        try{
+    private void showDate() {
 
-        }catch (Exception e){
+        Calendar newCalendar = Calendar.getInstance();
+        datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+                dob.setText(dateFormatter.format(newDate.getTime()));
+            }
+
+        }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
+    }
+
+    private void updateProfile() {
+        try {
+            String session_data = AppPreferences.getInstance(this).getFromStore("userData");
+            JSONArray ayArray = new JSONArray(session_data);
+            // customer_id,name,area,city,state,country,pin_code,date_of_birth,gender,profile_image
+
+            String u_name = name.getText().toString();
+            if (u_name.length() == 0) {
+                Toast.makeText(this, "Please Enter Username", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            String dobs = dob.getText().toString();
+            if (dobs.length() == 0) {
+                Toast.makeText(this, "Please Select Date Of Birth", Toast.LENGTH_SHORT).show();
+                return;
+            }String genders = gender.getText().toString();
+            if (genders.length() == 0) {
+                Toast.makeText(this, "Please Select Gender", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            JSONObject object = new JSONObject();
+
+            object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
+            object.put("name", u_name);
+            object.put("area", ayArray.getJSONObject(0).optString("area"));
+            object.put("city", ayArray.getJSONObject(0).optString("city"));
+            object.put("state", ayArray.getJSONObject(0).optString("state"));
+            object.put("country", ayArray.getJSONObject(0).optString("country"));
+            object.put("pin_code", ayArray.getJSONObject(0).optString("pin_code"));
+            object.put("date_of_birth", dobs);
+            object.put("gender", genders);
+            object.put("profile_image", user_img);
+            new MethodResquest(this, this, Constants.PATH + "update_profile", object.toString(), 100);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -108,6 +169,23 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void requestCompleted(JSONObject response, int requestType) {
+        try {
+
+            switch (requestType) {
+                case 100:
+                    JSONObject myObj = new JSONObject(response.toString());
+                    if (myObj.optString("statuscode").equalsIgnoreCase("200")) {
+                        Toast.makeText(this, myObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                        JSONArray array = myObj.getJSONArray("customer_details");
+                        AppPreferences.getInstance(this).addToStore("userData",array.toString(),true);
+                        this.finish();
+                    }
+                    break;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -146,6 +224,7 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
 
 
     }
+
     @Override
     public void onStateChange(int what, int arg1, int arg2, Object obj, int reqID) {
         try {
@@ -166,7 +245,7 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
                     //     {"status":"0","status_description":"File Uploaded Successfully","attachname":"1552318451_Screenshot_20181203-194010_20190311_090349.png"}
 //                    if (mime_type == null) {
                     //if (reply_Id.isEmpty()) {
-                    user_img=object.optString("attachname");
+                    user_img = object.optString("attachname");
                     //sendImage();
                     break;
 
@@ -178,7 +257,6 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
             e.printStackTrace();
             // TODO: handle exception
         }
-
 
 
     }

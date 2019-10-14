@@ -1,12 +1,14 @@
 package com.bsecure.getlucky;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -22,6 +24,8 @@ import com.bsecure.getlucky.fragments.HomeFragment;
 import com.bsecure.getlucky.fragments.ParentFragment;
 import com.bsecure.getlucky.store.AddEditStore;
 import com.bsecure.getlucky.utils.TraceUtils;
+import com.bsecure.getlucky.volleyhttp.Constants;
+import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONArray;
@@ -107,6 +111,10 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
         if (session_data != null &&!TextUtils.isEmpty(session_data)) {
             try {
                 JSONArray ayArray = new JSONArray(session_data);
+               /*
+                */
+                ImageView profile=(ImageView) header.findViewById(R.id.tv_profileicon);
+                Glide.with(this).load(Constants.PATH+"assets/upload/avatar/"+ayArray.getJSONObject(0).optString("profile_image")).into(profile);
                 ((TextView) header.findViewById(R.id.mobile_no)).setText(ayArray.getJSONObject(0).optString("name"));
                 ((TextView) header.findViewById(R.id.refer_code)).setText("Refer Code - " + ayArray.getJSONObject(0).optString("referral_code"));
             } catch (JSONException e) {
