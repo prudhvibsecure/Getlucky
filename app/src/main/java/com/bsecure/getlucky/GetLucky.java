@@ -114,7 +114,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
                /*
                 */
                 ImageView profile=(ImageView) header.findViewById(R.id.tv_profileicon);
-                Glide.with(this).load(Constants.PATH+"assets/upload/avatar/"+ayArray.getJSONObject(0).optString("profile_image")).into(profile);
+                Glide.with(this).load(ayArray.getJSONObject(0).optString("profile_image")).into(profile);
                 ((TextView) header.findViewById(R.id.mobile_no)).setText(ayArray.getJSONObject(0).optString("name"));
                 ((TextView) header.findViewById(R.id.refer_code)).setText("Refer Code - " + ayArray.getJSONObject(0).optString("referral_code"));
             } catch (JSONException e) {

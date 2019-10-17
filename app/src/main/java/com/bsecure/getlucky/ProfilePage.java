@@ -69,9 +69,10 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
             gender.setText(ayArray.getJSONObject(0).optString("gender"));
             location = findViewById(R.id.location);
             location.setText(ayArray.getJSONObject(0).optString("area") + "," + ayArray.getJSONObject(0).optString("city") + "," + ayArray.getJSONObject(0).optString("state") + "," + ayArray.getJSONObject(0).optString("country") + "," + ayArray.getJSONObject(0).optString("pin_code"));
+
             findViewById(R.id.pf_image).setOnClickListener(this);
             findViewById(R.id.submit_p).setOnClickListener(this);
-            Glide.with(this).load(Constants.PATH+"assets/upload/avatar/"+ayArray.getJSONObject(0).optString("profile_image")).into(userImage);
+            Glide.with(this).load(ayArray.getJSONObject(0).optString("profile_image")).into(userImage);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -176,7 +177,7 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
                     JSONObject myObj = new JSONObject(response.toString());
                     if (myObj.optString("statuscode").equalsIgnoreCase("200")) {
                         Toast.makeText(this, myObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
-                        JSONArray array = myObj.getJSONArray("customer_details");
+                        JSONArray array = myObj.optJSONArray("customer_details");
                         AppPreferences.getInstance(this).addToStore("userData",array.toString(),true);
                         this.finish();
                     }
@@ -214,7 +215,7 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
 
             File myfilename = new File(mImageUri.getPath());
             String displayName = myfilename.getName();
-            String url = Constants.PATH + "assets/upload/avatar";
+            String url = Constants.PATH + "upload_photo";
             AttachmentUpload uploader = new AttachmentUpload(this, this);
             uploader.setFileName(displayName, displayName);
             uploader.userRequest("", 11, url, mImageUri.getPath());
