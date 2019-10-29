@@ -17,11 +17,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bsecure.getlucky.GetLucky;
 import com.bsecure.getlucky.R;
+import com.bsecure.getlucky.adpters.StoreListAdapter;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.interfaces.RequestHandler;
+import com.bsecure.getlucky.models.StoreListModel;
 import com.bsecure.getlucky.services.AddressService;
 import com.bsecure.getlucky.services.FetchAddressIntentService;
 import com.bsecure.getlucky.volleyhttp.Constants;
@@ -35,10 +39,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class HomeFragment extends ParentFragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RequestHandler {
+public class HomeFragment extends ParentFragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RequestHandler,StoreListAdapter.StoreAdapterListener {
 
     private GetLucky getLucky;
     private String pin_code, area, city, country, phone, category_ids = "", state;
@@ -52,7 +59,10 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
     Location mLastLocation;
     private FusedLocationProviderClient mFusedLocationClient;
     private EditText serach;
-
+    private RecyclerView mRecyclerView;
+    private List<StoreListModel> storeListModelList=new ArrayList<>();
+    private StoreListAdapter adapter;
+    private int count=0;
     public HomeFragment() {
 
     }
@@ -119,7 +129,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
             category_ids = category_ids.replaceFirst(",", "");
             JSONObject object = new JSONObject();
             object.put("category_ids", category_ids.trim());
-            MethodResquest ms=new MethodResquest(getActivity(), this, Constants.PATH + "get_keywords", object.toString(), 100);
+            MethodResquest ms = new MethodResquest(getActivity(), this, Constants.PATH + "get_keywords", object.toString(), 100);
             ms.dismissProgress(getActivity());
         } catch (Exception e) {
             e.printStackTrace();
@@ -134,6 +144,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
         laView = inflater.inflate(R.layout.activity_home_pg, container, false);
         serach = laView.findViewById(R.id.keyword);
+        mRecyclerView=laView.findViewById(R.id.mrecycler);
         return laView;
 
     }
@@ -172,16 +183,35 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
                     JSONObject object = new JSONObject(response.toString());
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
-                       String keywords= object.optString("keywords");
+                        String keywords = object.optString("keywords");
                     }
 
-//                    object.put("area", area);
-//                    object.put("city", city);
-//                    object.put("state", city);
-//                    object.put("country", country);
-//                    object.put("search_key", pin_code);
-//                    object.put("pageno", otpone);
-//                    new MethodResquest(getActivity(), this, Constants.PATH + "search_store", object.toString(), 101);
+                    searchStore();
+                    break;
+                case 101:
+
+                    JSONObject object1 = new JSONObject(response.toString());
+                    if (object1.optString("statuscode").equalsIgnoreCase("200")) {
+                        JSONArray jsonarray2 = object1.getJSONArray("store_details");
+                        if (jsonarray2.length() > 0) {
+                            for (int i = 0; i < jsonarray2.length(); i++) {
+                                JSONObject jsonobject = jsonarray2.getJSONObject(i);
+                                StoreListModel storeListModel = new StoreListModel();
+                                storeListModel.setStore_name(jsonobject.optString("store_name"));
+                                storeListModel.setAddress(jsonobject.optString("address"));
+                                storeListModel.setCity(jsonobject.optString("city"));
+                                storeListModel.setOffer(jsonobject.optString("offer"));
+                                storeListModel.setSpecial_offer(jsonobject.optString("special_offer"));
+                                storeListModel.setStore_image(jsonobject.optString("store_image"));
+                                storeListModelList.add(storeListModel);
+                            }
+                            adapter = new StoreListAdapter(storeListModelList, getActivity(), this);
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+                            mRecyclerView.setLayoutManager(linearLayoutManager);
+                            mRecyclerView.setAdapter(adapter);
+                        }
+                    }
+                    break;
 
             }
 
@@ -191,8 +221,29 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
     }
 
+    private void searchStore() {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("area", area);
+            object.put("city", city);
+            object.put("state", state);
+            object.put("country", country);
+            object.put("search_key", "");
+            object.put("pageno", count);
+            MethodResquest req=new MethodResquest(getActivity(), this, Constants.PATH + "search_store", object.toString(), 101);
+            req.dismissProgress(getActivity());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void requestEndedWithError(String error, int errorcode) {
+
+    }
+
+    @Override
+    public void onRowClicked(List<StoreListModel> matchesList, boolean value) {
 
     }
 
