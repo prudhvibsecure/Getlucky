@@ -34,7 +34,7 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:src="@mipmap/logo" />
 
@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/square"
             android:hint="Name"
-            android:padding="15dp"
+            android:padding="10dp"
             android:layout_marginTop="20dp"/>
 
         <androidx.appcompat.widget.AppCompatEditText
@@ -100,7 +100,7 @@
             android:background="@drawable/square"
             android:hint="Date Of Birth"
             android:drawableRight="@drawable/calendar"
-            android:padding="15dp"
+            android:padding="10dp"
             android:editable="false"
             android:focusable="false"
             android:clickable="true"
@@ -119,7 +119,7 @@
             android:background="@drawable/square"
             android:layout_below="@+id/dateofbirth"
             android:drawableRight="@mipmap/ic_down"
-            android:padding="15dp"
+            android:padding="10dp"
             />
 
 
@@ -132,13 +132,13 @@
             android:hint="Location"
             android:editable="false"
             android:singleLine="true"
-            android:padding="15dp"
+            android:padding="10dp"
             android:layout_marginTop="20dp"/>
 
         <Button
             android:id="@+id/submit_p"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
             android:hint="Update"
             android:textStyle="bold"
             android:layout_centerHorizontal="true"

@@ -133,7 +133,7 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
 
             String u_name = name.getText().toString();
             if (u_name.length() == 0) {
-                Toast.makeText(this, "Please Enter Username", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please Enter Name", Toast.LENGTH_SHORT).show();
                 return;
             }
             String dobs = dob.getText().toString();

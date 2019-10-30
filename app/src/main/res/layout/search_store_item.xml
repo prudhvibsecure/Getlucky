@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
     android:animationCache="true"
+    android:id="@+id/ll_item"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="@dimen/_2sdp"
     app:cardElevation="@dimen/_5sdp">
@@ -60,6 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginTop="5dp"
             android:weightSum="2">
 
             <TextView
@@ -67,7 +69,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="5dp"
+                android:textColor="@color/white"
                 android:text="Special Offer"
+                android:background="@color/orangebg"
                 android:textSize="@dimen/_13sdp"
                 android:textStyle="bold" />
 
@@ -77,8 +81,10 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:padding="5dp"
+                android:textColor="@color/white"
+                android:background="@color/red"
                 android:text="Get Lucky Offer"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/_13sdp"
                 android:textStyle="bold" />
         </LinearLayout>
 

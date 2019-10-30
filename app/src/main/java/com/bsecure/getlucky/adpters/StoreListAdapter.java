@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bsecure.getlucky.R;
@@ -83,7 +84,7 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
         try {
             final StoreListModel mycontactlist = matchesList.get(position);
             contactViewHolder.store_name.setText(mycontactlist.getStore_name());
-            contactViewHolder.tv_address.setText(mycontactlist.getCity());
+            contactViewHolder.tv_address.setText(mycontactlist.getArea()+","+mycontactlist.getCity());
             Glide.with(context).load(Constants.PATH+"assets/upload/avatar/" + mycontactlist.getStore_image()).into(contactViewHolder.store_image);
             applyClickEvents(contactViewHolder, matchesList, position);
         } catch (Exception e) {
@@ -102,16 +103,16 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
     }
 
     private void applyClickEvents(ContactViewHolder contactViewHolder, final List<StoreListModel> matchesList, final int position) {
-//        contactViewHolder.chk_name.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                try {
-//                    listener.onRowClicked(matchesList, value, chk_name, position);
-//                } catch (Exception e) {
-//
-//                }
-//            }
-//        });
+        contactViewHolder.ll_item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    listener.onRowClicked(matchesList, position);
+                } catch (Exception e) {
+
+                }
+            }
+        });
 
     }
 
@@ -131,6 +132,7 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
         LinearLayout special_offer;
         LinearLayout lucky_offer;
         ImageView store_image;
+        CardView ll_item;
 
         public ContactViewHolder(View v) {
             super(v);
@@ -140,13 +142,14 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
             special_offer = (LinearLayout) v.findViewById(R.id.special_offer);
             lucky_offer = (LinearLayout) v.findViewById(R.id.lucky_offer);
             store_image = (ImageView) v.findViewById(R.id.store_image);
+            ll_item =  v.findViewById(R.id.ll_item);
 
         }
     }
 
     public interface StoreAdapterListener {
 
-        void onRowClicked(List<StoreListModel> matchesList, boolean value);
+        void onRowClicked(List<StoreListModel> matchesList, int pos);
     }
 
 }

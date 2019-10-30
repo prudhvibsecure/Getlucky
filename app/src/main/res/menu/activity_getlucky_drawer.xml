@@ -5,16 +5,24 @@
         <item
             android:id="@+id/nav_login"
             android:title="Registration/Login"
-            android:icon="@drawable/user" />
+            android:icon="@mipmap/ic_user" />
 
         <item
             android:id="@+id/nav_profile"
             android:title="Edit Profile"
-            android:icon="@drawable/user"/>
+            android:icon="@mipmap/ic_user"/>
         <item
             android:id="@+id/nav_store"
             android:title="Add Store"
-            android:icon="@drawable/user"/>
+            android:icon="@mipmap/ic_shop"/>
+        <item
+            android:id="@+id/nav_view_store"
+            android:title="View Store"
+            android:icon="@mipmap/ic_shop"/>
+        <item
+            android:id="@+id/nav_bar_code"
+            android:title="Scan Code"
+            android:icon="@mipmap/ic_barcode"/>
 
 
 </menu>

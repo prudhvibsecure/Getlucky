@@ -13,8 +13,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/tv_profileicon"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
         android:contentDescription="@string/app_name"
         android:paddingTop="8dp"
         android:layout_gravity="center"
@@ -40,8 +40,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="8dp"
+            android:textAllCaps="true"
+            android:visibility="gone"
             android:textColor="@color/white"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:textStyle="normal" />
     </LinearLayout>
 

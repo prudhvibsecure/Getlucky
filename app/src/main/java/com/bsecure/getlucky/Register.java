@@ -10,6 +10,7 @@ import android.os.ResultReceiver;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -53,6 +54,7 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
     private EditText et_name, et_refer;
     private Button sub_register;
     private String pin_code,area,city,country,phone,otpone,state;
+    private CheckBox ch_terms;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
         sub_register.setOnClickListener(this);
         et_name = findViewById(R.id.name);
         et_refer = findViewById(R.id.referral);
+        ch_terms = findViewById(R.id.ch_terms);
         findViewById(R.id.bacl_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -169,7 +172,11 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
         try{
             String name = et_name.getText().toString().trim();
             if (TextUtils.isEmpty(name)) {
-                Toast.makeText(this, "Please Enter User Name", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please Enter Name", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (!ch_terms.isChecked()){
+                Toast.makeText(this, "Please Select Terms & Conditions", Toast.LENGTH_SHORT).show();
                 return;
             }
             JSONObject object = new JSONObject();

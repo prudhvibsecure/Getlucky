@@ -116,7 +116,8 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
                 ImageView profile=(ImageView) header.findViewById(R.id.tv_profileicon);
                 Glide.with(this).load(ayArray.getJSONObject(0).optString("profile_image")).into(profile);
                 ((TextView) header.findViewById(R.id.mobile_no)).setText(ayArray.getJSONObject(0).optString("name"));
-                ((TextView) header.findViewById(R.id.refer_code)).setText("Refer Code - " + ayArray.getJSONObject(0).optString("referral_code"));
+                ((TextView) header.findViewById(R.id.refer_code)).setVisibility(View.VISIBLE);
+            ((TextView) header.findViewById(R.id.refer_code)).setText("Refer Code - " + ayArray.getJSONObject(0).optString("customer_referral_code"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -147,10 +148,14 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
             nav_Menu.findItem(R.id.nav_profile).setVisible(true);
             nav_Menu.findItem(R.id.nav_login).setVisible(false);
             nav_Menu.findItem(R.id.nav_store).setVisible(true);
+            nav_Menu.findItem(R.id.nav_view_store).setVisible(true);
+            nav_Menu.findItem(R.id.nav_bar_code).setVisible(true);
         } else {
             nav_Menu.findItem(R.id.nav_profile).setVisible(false);
             nav_Menu.findItem(R.id.nav_login).setVisible(true);
             nav_Menu.findItem(R.id.nav_store).setVisible(false);
+            nav_Menu.findItem(R.id.nav_view_store).setVisible(false);
+            nav_Menu.findItem(R.id.nav_bar_code).setVisible(false);
         }
         return true;
     }

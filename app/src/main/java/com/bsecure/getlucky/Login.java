@@ -53,6 +53,12 @@ public class Login extends AppCompatActivity implements RequestHandler {
                 getLogin();
             }
         });
+        findViewById(R.id.bacl_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void getLogin() {
@@ -61,12 +67,12 @@ public class Login extends AppCompatActivity implements RequestHandler {
             phone = phoneno.getText().toString().trim();
 
             if (TextUtils.isEmpty(phone)) {
-                Toast.makeText(Login.this, "Please Enter Phone Number", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Login.this, "Please Enter Mobile Number", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (phone.length() < 10) {
-                Toast.makeText(Login.this, "Phone Number Should be 10 Digits", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Login.this, "Mobile Number Must Be 10 Digits", Toast.LENGTH_SHORT).show();
                 return;
             }
 

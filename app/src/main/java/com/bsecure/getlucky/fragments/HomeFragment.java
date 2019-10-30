@@ -8,6 +8,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bsecure.getlucky.GetLucky;
+import com.bsecure.getlucky.Login;
 import com.bsecure.getlucky.R;
+import com.bsecure.getlucky.ViewStoreDetails;
 import com.bsecure.getlucky.adpters.StoreListAdapter;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.interfaces.RequestHandler;
@@ -192,6 +195,8 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
                     JSONObject object1 = new JSONObject(response.toString());
                     if (object1.optString("statuscode").equalsIgnoreCase("200")) {
+                        laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
+                        laView.findViewById(R.id.no_data).setVisibility(View.GONE);
                         JSONArray jsonarray2 = object1.getJSONArray("store_details");
                         if (jsonarray2.length() > 0) {
                             for (int i = 0; i < jsonarray2.length(); i++) {
@@ -199,6 +204,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                                 StoreListModel storeListModel = new StoreListModel();
                                 storeListModel.setStore_name(jsonobject.optString("store_name"));
                                 storeListModel.setAddress(jsonobject.optString("address"));
+                                storeListModel.setArea(jsonobject.optString("area"));
                                 storeListModel.setCity(jsonobject.optString("city"));
                                 storeListModel.setOffer(jsonobject.optString("offer"));
                                 storeListModel.setSpecial_offer(jsonobject.optString("special_offer"));
@@ -209,6 +215,9 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
                             mRecyclerView.setLayoutManager(linearLayoutManager);
                             mRecyclerView.setAdapter(adapter);
+                        }else{
+                            laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
+                            laView.findViewById(R.id.no_data).setVisibility(View.VISIBLE);
                         }
                     }
                     break;
@@ -243,7 +252,21 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
     }
 
     @Override
-    public void onRowClicked(List<StoreListModel> matchesList, boolean value) {
+    public void onRowClicked(List<StoreListModel> matchesList, int pos) {
+        String data= AppPreferences.getInstance(getActivity()).getFromStore("userData");
+        if (data!=null &&!TextUtils.isEmpty(data)){
+            Intent login=new Intent(getActivity(), ViewStoreDetails.class);
+            login.putExtra("store_name",matchesList.get(pos).getStore_name());
+            login.putExtra("store_image",matchesList.get(pos).getStore_image());
+            login.putExtra("store_add",matchesList.get(pos).getArea()+","+matchesList.get(pos).getCity()+","+matchesList.get(pos).getState());
+            login.putExtra("store_offer",matchesList.get(pos).getOffer());
+            login.putExtra("store_spofer",matchesList.get(pos).getSpecial_offer());
+            login.putExtra("store_ph",matchesList.get(pos).getStore_phone_number());
+            startActivity(login);
+        }else{
+            Intent login=new Intent(getActivity(), Login.class);
+            startActivity(login);
+        }
 
     }
 
@@ -337,7 +360,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
             pin_code = resultData.getString("postalcode");
             country = resultData.getString("country");
             state = resultData.getString("state");
-            mAddressOutput = area + "," + city + "," + state + "," + state;
+            mAddressOutput = area + "," + city + "," + state + "," + country;
             ((EditText) laView.findViewById(R.id.location)).setText(mAddressOutput);
             // displayAddressOutput();
             getStoreData();

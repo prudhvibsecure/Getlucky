@@ -18,19 +18,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/square"
-
             android:singleLine="true"
-            android:drawableRight="@drawable/search"
+            android:drawablePadding="5dp"
+            android:drawableRight="@mipmap/tracker"
             android:hint="Location"
             android:padding="10dp" />
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/keyword"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:layout_below="@+id/location"
+            android:orientation="horizontal"
             android:layout_marginTop="10dp"
+            android:layout_below="@+id/location">
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/keyword"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+           android:layout_weight="1"
+            android:layout_gravity="left|center"
             android:background="@drawable/square"
             android:hint="Categories,Stores,Keywords"
             android:padding="10dp" />
@@ -38,23 +44,47 @@
 
         <Button
             android:id="@+id/search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/keyword"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/btnsquare"
-            android:padding="15dp"
-            android:text="Find Store"
-            android:textColor="@color/colorPrimaryDark" />
-
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:background="@drawable/template_pop_but_sel_red"
+            android:padding="10dp"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:text="Go"
+            android:textColor="@color/white" />
+        </LinearLayout>
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_below="@+id/llv"
+        android:layout_height="match_parent">
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/mrecycler"
-        android:layout_below="@+id/llv"
+
         android:padding="10dp" />
+
+        <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/spin_kit"
+            style="@style/SpinKitView.Large.Circle"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:padding="5dp"
+            app:SpinKit_Color="@color/colorPrimaryDark" />
+
+        <TextView
+            android:id="@+id/no_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No Data Found"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:textSize="@dimen/_16sdp"
+            android:gravity="center"/>
+    </RelativeLayout>
 </LinearLayout>
