@@ -2,10 +2,12 @@ package com.bsecure.getlucky;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
@@ -47,6 +49,7 @@ import java.util.List;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
+import androidmads.library.qrgenearator.QRGSaver;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -62,6 +65,7 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
     private EditText et_name, et_refer;
     private Button sub_register;
     private String pin_code,area,city,country,phone,otpone,state;
+    String savePath = Environment.getExternalStorageDirectory() + "/GetLucky/QRCode/";
     private CheckBox ch_terms;
 
     @Override
@@ -138,6 +142,7 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
                     if (result.optString("statuscode").equalsIgnoreCase("200")) {
                         JSONArray array = result.getJSONArray("customer_details");
                         AppPreferences.getInstance(this).addToStore("userData",array.toString(),true);
+                       getCode();
                         Intent in = new Intent(this, GetLucky.class);
                         startActivity(in);
                         finish();
@@ -154,6 +159,34 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
 
     }
 
+    private void getCode() {
+        try {
+            String session_data = AppPreferences.getInstance(this).getFromStore("userData");
+            JSONArray ayArray = new JSONArray(session_data);
+            AppPreferences.getInstance(this).addToStore("customer_referral_code",ayArray.getJSONObject(0).optString("customer_referral_code"),true);
+            WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
+            Display display = manager.getDefaultDisplay();
+            Point point = new Point();
+            display.getSize(point);
+            int width = point.x;
+            int height = point.y;
+            int smallerDimension = width < height ? width : height;
+            smallerDimension = smallerDimension * 3 / 4;
+            String inputValue = ayArray.getJSONObject(0).optString("name") + "," +
+                    ayArray.getJSONObject(0).optString("customer_referral_code");
+            QRGEncoder qrgEncoder = new QRGEncoder(
+                    inputValue, null,
+                    QRGContents.Type.TEXT,
+                    smallerDimension);
+            try {
+                Bitmap bitmap = qrgEncoder.encodeAsBitmap();
+                QRGSaver.save(savePath, inputValue, bitmap, QRGContents.ImageType.IMAGE_JPEG);
+            } catch (WriterException e) {
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
 
     @Override

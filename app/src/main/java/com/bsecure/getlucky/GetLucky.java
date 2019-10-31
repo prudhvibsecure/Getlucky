@@ -1,19 +1,12 @@
 package com.bsecure.getlucky;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Point;
-import android.media.Image;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,10 +24,8 @@ import com.bsecure.getlucky.fragments.HomeFragment;
 import com.bsecure.getlucky.fragments.ParentFragment;
 import com.bsecure.getlucky.store.AddEditStore;
 import com.bsecure.getlucky.utils.TraceUtils;
-import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
-import com.google.zxing.WriterException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,15 +33,9 @@ import org.json.JSONObject;
 
 import java.util.Stack;
 
-import androidmads.library.qrgenearator.QRGContents;
-import androidmads.library.qrgenearator.QRGEncoder;
-import androidmads.library.qrgenearator.QRGSaver;
-
 public class GetLucky extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, ParentFragment.OnFragmentInteractionListener, View.OnClickListener {
 
     private Toolbar toolbar;
-
-    String savePath = Environment.getExternalStorageDirectory().getPath() + "/GetLucky/QRCode/";
 
     private ActionBarDrawerToggle toggle;
 
@@ -125,33 +110,11 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
         if (session_data != null && !TextUtils.isEmpty(session_data)) {
             try {
                 JSONArray ayArray = new JSONArray(session_data);
-                /*
-                 */
-
-                WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
-                Display display = manager.getDefaultDisplay();
-                Point point = new Point();
-                display.getSize(point);
-                int width = point.x;
-                int height = point.y;
-                int smallerDimension = width < height ? width : height;
-                smallerDimension = smallerDimension * 3 / 4;
-                String inputValue = ayArray.getJSONObject(0).optString("name") + "," +
-                        ayArray.getJSONObject(0).optString("customer_referral_code");
-                QRGEncoder qrgEncoder = new QRGEncoder(
-                        inputValue, null,
-                        QRGContents.Type.TEXT,
-                        smallerDimension);
-                try {
-                    Bitmap bitmap = qrgEncoder.encodeAsBitmap();
-                    QRGSaver.save(savePath, inputValue, bitmap, QRGContents.ImageType.IMAGE_JPEG);
-                } catch (WriterException e) {
-                }
                 ImageView profile = (ImageView) header.findViewById(R.id.tv_profileicon);
                 Glide.with(this).load(ayArray.getJSONObject(0).optString("profile_image")).into(profile);
                 ((TextView) header.findViewById(R.id.mobile_no)).setText(ayArray.getJSONObject(0).optString("name"));
                 ((TextView) header.findViewById(R.id.refer_code)).setVisibility(View.VISIBLE);
-                ((TextView) header.findViewById(R.id.refer_code)).setText("Refer Code - " + ayArray.getJSONObject(0).optString("customer_referral_code"));
+                ((TextView) header.findViewById(R.id.refer_code)).setText("Refer Code - " + AppPreferences.getInstance(this).getFromStore("customer_referral_code"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
