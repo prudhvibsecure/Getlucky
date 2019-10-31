@@ -1,13 +1,19 @@
 package com.bsecure.getlucky;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.media.Image;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,6 +25,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.bsecure.getlucky.barcode.Mybarcode;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.fragments.HomeFragment;
 import com.bsecure.getlucky.fragments.ParentFragment;
@@ -27,6 +34,7 @@ import com.bsecure.getlucky.utils.TraceUtils;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
+import com.google.zxing.WriterException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,9 +42,15 @@ import org.json.JSONObject;
 
 import java.util.Stack;
 
+import androidmads.library.qrgenearator.QRGContents;
+import androidmads.library.qrgenearator.QRGEncoder;
+import androidmads.library.qrgenearator.QRGSaver;
+
 public class GetLucky extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, ParentFragment.OnFragmentInteractionListener, View.OnClickListener {
 
     private Toolbar toolbar;
+
+    String savePath = Environment.getExternalStorageDirectory().getPath() + "/GetLucky/QRCode/";
 
     private ActionBarDrawerToggle toggle;
 
@@ -108,16 +122,36 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
         View header = navigationView.getHeaderView(0);
 
-        if (session_data != null &&!TextUtils.isEmpty(session_data)) {
+        if (session_data != null && !TextUtils.isEmpty(session_data)) {
             try {
                 JSONArray ayArray = new JSONArray(session_data);
-               /*
-                */
-                ImageView profile=(ImageView) header.findViewById(R.id.tv_profileicon);
+                /*
+                 */
+
+                WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
+                Display display = manager.getDefaultDisplay();
+                Point point = new Point();
+                display.getSize(point);
+                int width = point.x;
+                int height = point.y;
+                int smallerDimension = width < height ? width : height;
+                smallerDimension = smallerDimension * 3 / 4;
+                String inputValue = ayArray.getJSONObject(0).optString("name") + "," +
+                        ayArray.getJSONObject(0).optString("customer_referral_code");
+                QRGEncoder qrgEncoder = new QRGEncoder(
+                        inputValue, null,
+                        QRGContents.Type.TEXT,
+                        smallerDimension);
+                try {
+                    Bitmap bitmap = qrgEncoder.encodeAsBitmap();
+                    QRGSaver.save(savePath, inputValue, bitmap, QRGContents.ImageType.IMAGE_JPEG);
+                } catch (WriterException e) {
+                }
+                ImageView profile = (ImageView) header.findViewById(R.id.tv_profileicon);
                 Glide.with(this).load(ayArray.getJSONObject(0).optString("profile_image")).into(profile);
                 ((TextView) header.findViewById(R.id.mobile_no)).setText(ayArray.getJSONObject(0).optString("name"));
                 ((TextView) header.findViewById(R.id.refer_code)).setVisibility(View.VISIBLE);
-            ((TextView) header.findViewById(R.id.refer_code)).setText("Refer Code - " + ayArray.getJSONObject(0).optString("customer_referral_code"));
+                ((TextView) header.findViewById(R.id.refer_code)).setText("Refer Code - " + ayArray.getJSONObject(0).optString("customer_referral_code"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -144,7 +178,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.activity_getlucky_drawer, menu);
         Menu nav_Menu = navigationView.getMenu();
-        if (session_data != null&&!TextUtils.isEmpty(session_data)) {
+        if (session_data != null && !TextUtils.isEmpty(session_data)) {
             nav_Menu.findItem(R.id.nav_profile).setVisible(true);
             nav_Menu.findItem(R.id.nav_login).setVisible(false);
             nav_Menu.findItem(R.id.nav_store).setVisible(true);
@@ -194,6 +228,11 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
                 Intent store = new Intent(this, AddEditStore.class);
                 startActivity(store);
+                break;
+            case R.id.nav_bar_code:
+
+                Intent code = new Intent(this, Mybarcode.class);
+                startActivity(code);
                 break;
         }
 

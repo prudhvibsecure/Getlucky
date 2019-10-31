@@ -2,13 +2,17 @@ package com.bsecure.getlucky;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -32,6 +36,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.zxing.WriterException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -39,6 +44,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import androidmads.library.qrgenearator.QRGContents;
+import androidmads.library.qrgenearator.QRGEncoder;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -145,6 +153,8 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
         }
 
     }
+
+
 
     @Override
     public void requestEndedWithError(String error, int errorcode) {

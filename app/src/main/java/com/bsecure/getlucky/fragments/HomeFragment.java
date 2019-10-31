@@ -10,9 +10,11 @@ import android.os.Handler;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -89,6 +91,11 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                     }, 7);
             return;
         }
+      locationFind();
+    }
+
+    private void locationFind() {
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
         mFusedLocationClient.getLastLocation()
                 .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
@@ -219,6 +226,10 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                             laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
                             laView.findViewById(R.id.no_data).setVisibility(View.VISIBLE);
                         }
+                    }else{
+                        laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
+                        laView.findViewById(R.id.no_data).setVisibility(View.VISIBLE);
+                        ((TextView)laView.findViewById(R.id.no_data)).setText(object1.optString("statusdescription"));
                     }
                     break;
 
@@ -258,10 +269,11 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
             Intent login=new Intent(getActivity(), ViewStoreDetails.class);
             login.putExtra("store_name",matchesList.get(pos).getStore_name());
             login.putExtra("store_image",matchesList.get(pos).getStore_image());
-            login.putExtra("store_add",matchesList.get(pos).getArea()+","+matchesList.get(pos).getCity()+","+matchesList.get(pos).getState());
+            login.putExtra("store_add",matchesList.get(pos).getCity()+","+matchesList.get(pos).getState());
             login.putExtra("store_offer",matchesList.get(pos).getOffer());
             login.putExtra("store_spofer",matchesList.get(pos).getSpecial_offer());
             login.putExtra("store_ph",matchesList.get(pos).getStore_phone_number());
+            //login.putExtra("store_ph",matchesList.get(pos).getp());
             startActivity(login);
         }else{
             Intent login=new Intent(getActivity(), Login.class);
@@ -311,7 +323,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                     boolean thirdPermissionResult = grantResults[1] == PackageManager.PERMISSION_GRANTED;
 
                     if (secondPermissionResult && thirdPermissionResult) {
-
+                        locationFind();
                     } else {
 
                     }
@@ -347,13 +359,6 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
             if (resultData == null) {
                 return;
             }
-
-            // Display the address string
-            // or an error message sent from the intent service.
-          /*  mAddressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
-            if (mAddressOutput == null) {
-                mAddressOutput = "";
-            }*/
 
             area = resultData.getString("area");
             city = resultData.getString("city");
