@@ -64,6 +64,16 @@
         android:layout_marginTop="50dp"
         android:src="@mipmap/profile_image"/>
 
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_16sdp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="@dimen/_5sdp"/>
+
     <androidx.cardview.widget.CardView
         android:id="@+id/card"
         android:layout_width="match_parent"

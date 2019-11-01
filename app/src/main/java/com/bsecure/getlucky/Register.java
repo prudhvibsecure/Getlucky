@@ -27,6 +27,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.bsecure.getlucky.barcode.TermsPage;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.services.AddressService;
@@ -65,7 +66,7 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
     private EditText et_name, et_refer;
     private Button sub_register;
     private String pin_code,area,city,country,phone,otpone,state;
-    String savePath = Environment.getExternalStorageDirectory() + "/GetLucky/QRCode/";
+    String savePath = Environment.getExternalStorageDirectory().toString() + "/GetLucky/QRCode/";
     private CheckBox ch_terms;
 
     @Override
@@ -84,6 +85,8 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
         et_name = findViewById(R.id.name);
         et_refer = findViewById(R.id.referral);
         ch_terms = findViewById(R.id.ch_terms);
+        ch_terms.setOnClickListener(this);
+        findViewById(R.id.help_icon).setOnClickListener(this);
         findViewById(R.id.bacl_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -201,6 +204,13 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
 
                 case R.id.submit:
                     getRegister();
+                    break;
+                    case R.id.help_icon:
+
+                    break;
+                    case R.id.ch_terms:
+                    Intent terms=new Intent(this, TermsPage.class);
+                    startActivity(terms);
                     break;
                 default:
                     break;

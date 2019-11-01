@@ -1,16 +1,17 @@
 package com.bsecure.getlucky.fragments;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -19,7 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,7 +33,6 @@ import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.models.StoreListModel;
 import com.bsecure.getlucky.services.AddressService;
-import com.bsecure.getlucky.services.FetchAddressIntentService;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 import com.google.android.gms.common.ConnectionResult;
@@ -46,9 +46,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class HomeFragment extends ParentFragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RequestHandler,StoreListAdapter.StoreAdapterListener {
 
@@ -81,21 +78,23 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mResultReceiver = new AddressResultReceiver(new Handler());
-        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]
-                    {
-                            ACCESS_FINE_LOCATION,
-                            ACCESS_COARSE_LOCATION
 
-                    }, 7);
-            return;
+
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED) {
+            locationFind();
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                        101);
+            }
         }
-      locationFind();
+
     }
 
     private void locationFind() {
-
+        mResultReceiver = new AddressResultReceiver(new Handler());
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
         mFusedLocationClient.getLastLocation()
                 .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
@@ -312,28 +311,6 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-
-            case 7:
-
-                if (grantResults.length > 0) {
-
-                    boolean secondPermissionResult = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    boolean thirdPermissionResult = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-
-                    if (secondPermissionResult && thirdPermissionResult) {
-                        locationFind();
-                    } else {
-
-                    }
-                }
-
-                break;
-        }
-    }
-
-    @Override
     public void onConnected(@Nullable Bundle bundle) {
 
     }
@@ -376,5 +353,14 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
             }
 
         }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 101
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+           locationFind();
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
     }
 }

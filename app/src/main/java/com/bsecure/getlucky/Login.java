@@ -1,7 +1,9 @@
 package com.bsecure.getlucky;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -47,13 +50,18 @@ public class Login extends AppCompatActivity implements RequestHandler {
 
         toolbar = findViewById(R.id.toolbar);
 
-       // drawer = findViewById(R.id.drawer_layout);
-        if (CheckingPermissionIsEnabledOrNot()) {
-            // Toast.makeText(getApplicationContext(),"Permissions Accessed",Toast.LENGTH_LONG).show();
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_GRANTED) {
+
         } else {
-            RequestMultiplePermission();
-            //CheckingPermissionIsEnabledOrNot();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        101);
+            }
         }
+
         btn = findViewById(R.id.send);
 
         phoneno = findViewById(R.id.phoneno);
@@ -143,6 +151,7 @@ public class Login extends AppCompatActivity implements RequestHandler {
     public void requestEndedWithError(String error, int errorcode) {
 
     }
+
     public boolean CheckingPermissionIsEnabledOrNot() {
 
         int FirstPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
@@ -165,27 +174,12 @@ public class Login extends AppCompatActivity implements RequestHandler {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
-            case 101:
-
-                if (grantResults.length > 0) {
-
-                    boolean FirstPermissionResult = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    boolean SecondPermissionResult = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-
-                    if (FirstPermissionResult && SecondPermissionResult ) {
-
-                        // Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_LONG).show();
-                    } else {
-                        //Toast.makeText(MainActivity.this,"Permission Denied",Toast.LENGTH_LONG).show();
-
-                    }
-                }
-
-                break;
+        if (requestCode == 101
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
         }
-    }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+    }
 }
