@@ -152,26 +152,6 @@ public class Login extends AppCompatActivity implements RequestHandler {
 
     }
 
-    public boolean CheckingPermissionIsEnabledOrNot() {
-
-        int FirstPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
-        int SecondPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE);
-        return FirstPermissionResult == PackageManager.PERMISSION_GRANTED &&
-                SecondPermissionResult == PackageManager.PERMISSION_GRANTED;
-    }
-
-    //Permission function starts from here
-    private void RequestMultiplePermission() {
-
-        // Creating String Array with Permissions.
-        ActivityCompat.requestPermissions(this, new String[]
-                {
-                        WRITE_EXTERNAL_STORAGE,
-                        READ_EXTERNAL_STORAGE,
-
-                }, 101);
-
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

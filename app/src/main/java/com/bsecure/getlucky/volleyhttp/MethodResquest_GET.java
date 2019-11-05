@@ -43,7 +43,7 @@ import java.util.Map;
  * Created by prudhvi on 2018-05-02.
  */
 
-public class MethodResquest implements MethodHandler {
+public class MethodResquest_GET implements MethodHandler {
 
     private Context context;
 
@@ -63,7 +63,7 @@ public class MethodResquest implements MethodHandler {
 
     private String request_url = null;
 
-    public MethodResquest(final Context context, final RequestHandler requestHandler, String url, String postdata, int request) {
+    public MethodResquest_GET(final Context context, final RequestHandler requestHandler, String url,int request) {
         this.context = context;
         this.requestHandler = requestHandler;
         this.reqId = request;
@@ -72,17 +72,13 @@ public class MethodResquest implements MethodHandler {
         requestHandler.requestStarted();
         if (isNetworkAvailable()) {
             showProgress(message, context);
-            try {
-                json = new JSONObject(postdata);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+
         } else {
             message = "Cannot connect to Internet...Please check your connection!";
             typeError = 1;
         }
         RequestQueue queue = Volley.newRequestQueue(context);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(POST, url, json,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -90,7 +86,6 @@ public class MethodResquest implements MethodHandler {
                         requestHandler.requestCompleted(response, reqId);
 
                         Log.e("RequestURL:::",request_url);
-                        Log.e("Postdata:::",json.toString());
                         Log.e("Response:::",response.toString());
                         setLogsFiles(request_url, json, response);
                     }
@@ -142,55 +137,6 @@ public class MethodResquest implements MethodHandler {
                 return headers;
             }
 
-//            @Override
-//            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-//                try {
-//                    Cache.Entry cacheEntry = HttpHeaderParser.parseCacheHeaders(response);
-//                    if (cacheEntry == null) {
-//                        cacheEntry = new Cache.Entry();
-//                    }
-//                    final long cacheHitButRefreshed = 1 * 60 * 1000; // in 1 minutes cache will be hit, but also refreshed on background
-//                    final long cacheExpired = 24 * 60 * 60 * 1000; // in 24 hours this cache entry expires completely
-//                    long now = System.currentTimeMillis();
-//                    final long softExpire = now + cacheHitButRefreshed;
-//                    final long ttl = now + cacheExpired;
-//                    cacheEntry.data = response.data;
-//                    cacheEntry.softTtl = softExpire;
-//                    cacheEntry.ttl = ttl;
-//                    String headerValue;
-//                    headerValue = response.headers.get("Date");
-//                    if (headerValue != null) {
-//                        cacheEntry.serverDate = HttpHeaderParser.parseDateAsEpoch(headerValue);
-//                    }
-//                    headerValue = response.headers.get("Last-Modified");
-//                    if (headerValue != null) {
-//                        cacheEntry.lastModified = HttpHeaderParser.parseDateAsEpoch(headerValue);
-//                    }
-//                    cacheEntry.responseHeaders = response.headers;
-//                    final String jsonString = new String(response.data,
-//                            HttpHeaderParser.parseCharset(response.headers));
-//                    return Response.success(new JSONObject(jsonString), cacheEntry);
-//                } catch (UnsupportedEncodingException e) {
-//                    return Response.error(new ParseError(e));
-//                } catch (JSONException e) {
-//                    return Response.error(new ParseError(e));
-//                }
-//            }
-//
-//            @Override
-//            protected void deliverResponse(JSONObject response) {
-//                super.deliverResponse(response);
-//            }
-//
-//            @Override
-//            public void deliverError(VolleyError error) {
-//                super.deliverError(error);
-//            }
-//
-//            @Override
-//            protected VolleyError parseNetworkError(VolleyError volleyError) {
-//                return super.parseNetworkError(volleyError);
-//            }
         };
 
         jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(

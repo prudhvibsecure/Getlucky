@@ -61,8 +61,8 @@
         android:background="@drawable/square"
         android:hint="Name"
         android:drawableLeft="@mipmap/ic_user"
-        android:drawablePadding="8dp"
-        android:padding="10dp"
+        android:drawablePadding="10dp"
+        android:padding="8dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"/>
 
@@ -75,10 +75,11 @@
         android:layout_margin="20dp">
 
         <TextView
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Referral Code"
             android:textSize="18sp"
+            android:layout_marginRight="10dp"
             android:textStyle="bold"/>
 
         <ImageView
@@ -86,8 +87,7 @@
             android:layout_width="20dp"
             android:layout_height="30dp"
             android:src ="@drawable/info"
-            android:layout_gravity="center"
-            android:tooltipText="jdfbfdbfhb"/>
+            android:layout_gravity="center" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/referral"
@@ -111,13 +111,13 @@
             android:id="@+id/ch_terms"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Terms &amp; Conditions"/>
+           />
         <TextView
             android:id="@+id/terms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:visibility="gone"
+            android:textSize="18sp"
+            android:text="Terms &amp; Conditions"
             android:textStyle="bold"/>
 
     </LinearLayout>

@@ -24,5 +24,5 @@ public class Constants {
     *
     * */
     public static final String PATH = "https://bsecuresoftechsolutions.com/get-lucky/";
-
+    public static final String g_location="https://maps.googleapis.com/maps/api/place/autocomplete/json?input=(INPUT)&types(TYPE)&sensor=(SENSOR)&key=(KEY)";
 }

@@ -10,9 +10,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -40,6 +42,8 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.zxing.WriterException;
+import com.tooltip.OnClickListener;
+import com.tooltip.Tooltip;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -85,7 +89,7 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
         et_name = findViewById(R.id.name);
         et_refer = findViewById(R.id.referral);
         ch_terms = findViewById(R.id.ch_terms);
-        ch_terms.setOnClickListener(this);
+        findViewById(R.id.terms).setOnClickListener(this);
         findViewById(R.id.help_icon).setOnClickListener(this);
         findViewById(R.id.bacl_btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,7 +170,7 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
         try {
             String session_data = AppPreferences.getInstance(this).getFromStore("userData");
             JSONArray ayArray = new JSONArray(session_data);
-            AppPreferences.getInstance(this).addToStore("customer_referral_code",ayArray.getJSONObject(0).optString("customer_referral_code"),true);
+           // AppPreferences.getInstance(this).addToStore("customer_referral_code",ayArray.getJSONObject(0).optString("customer_referral_code"),true);
             WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
             Display display = manager.getDefaultDisplay();
             Point point = new Point();
@@ -206,9 +210,15 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
                     getRegister();
                     break;
                     case R.id.help_icon:
-
+                        SpannableString text = new SpannableString("Referral code must be the code of the customer that has referred you to Get Lucky");
+                        Tooltip mTooltip = new Tooltip.Builder(view, R.style.Tooltip)
+                                .setDismissOnClick(true)
+                                .setGravity(Gravity.BOTTOM)
+                                .setText(text.toString())
+                                .setCancelable(true)
+                                .show();
                     break;
-                    case R.id.ch_terms:
+                    case R.id.terms:
                     Intent terms=new Intent(this, TermsPage.class);
                     startActivity(terms);
                     break;
