@@ -77,7 +77,7 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
             gender.setText(ayArray.getJSONObject(0).optString("gender"));
             location = findViewById(R.id.location);
             location.setThreshold(1);
-            location.setText(ayArray.getJSONObject(0).optString("area") + "," + ayArray.getJSONObject(0).optString("city") + "," + ayArray.getJSONObject(0).optString("state") + "," + ayArray.getJSONObject(0).optString("country") + "," + ayArray.getJSONObject(0).optString("pin_code"));
+            location.setText(ayArray.getJSONObject(0).optString("address") );
             location.addTextChangedListener(new TextWatcher() {
 
                 @Override
