@@ -184,7 +184,13 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
             if (dobs.length() == 0) {
                 Toast.makeText(this, "Please Select Date Of Birth", Toast.LENGTH_SHORT).show();
                 return;
-            }String genders = gender.getText().toString();
+            }
+            String address = location.getText().toString();
+            if (address.length() == 0) {
+                Toast.makeText(this, "Please Enter Address", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            String genders = gender.getText().toString();
             if (genders.length() == 0) {
                 Toast.makeText(this, "Please Select Gender", Toast.LENGTH_SHORT).show();
                 return;
@@ -193,15 +199,15 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
 
             object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
             object.put("name", u_name);
-            object.put("area", ayArray.getJSONObject(0).optString("area"));
-            object.put("city", ayArray.getJSONObject(0).optString("city"));
-            object.put("state", ayArray.getJSONObject(0).optString("state"));
-            object.put("country", ayArray.getJSONObject(0).optString("country"));
-            object.put("pin_code", ayArray.getJSONObject(0).optString("pin_code"));
+            object.put("address", address);
+//            object.put("city", ayArray.getJSONObject(0).optString("city"));
+//            object.put("state", ayArray.getJSONObject(0).optString("state"));
+//            object.put("country", ayArray.getJSONObject(0).optString("country"));
+//            object.put("pin_code", ayArray.getJSONObject(0).optString("pin_code"));
             object.put("date_of_birth", dobs);
             object.put("gender", genders);
             object.put("profile_image", user_img);
-            new MethodResquest(this, this, Constants.PATH + "update_profile", object.toString(), 100);
+            new MethodResquest(this, this, Constants.PATH + "customer/update_customer_profile", object.toString(), 100);
         } catch (Exception e) {
             e.printStackTrace();
         }

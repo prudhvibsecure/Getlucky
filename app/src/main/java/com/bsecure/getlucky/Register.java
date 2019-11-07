@@ -246,15 +246,15 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
 
             object.put("name", name);
             object.put("phone_number", phone);
-            object.put("area", area);
-            object.put("city", city);
-            object.put("state", city);
-            object.put("country", country);
-            object.put("pin_code", pin_code);
+            object.put("address", city);
+//            object.put("city", city);
+//            object.put("state", city);
+//            object.put("country", country);
+//            object.put("pin_code", pin_code);
             object.put("otp", otpone);
             object.put("regidand", AppPreferences.getInstance(this).getFromStore("token"));
 
-            new MethodResquest(this, this, Constants.PATH + "customer_registration", object.toString(), 100);
+            new MethodResquest(this, this, Constants.PATH + "customer/customer_registration", object.toString(), 100);
         }catch (Exception e)
         {
             e.printStackTrace();
