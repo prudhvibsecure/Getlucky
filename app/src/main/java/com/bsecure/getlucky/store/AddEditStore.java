@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -198,6 +199,9 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
         if (mobile.length() == 0) {
             Toast.makeText(this, "Please Enter Mobile Number", Toast.LENGTH_SHORT).show();
             return;
+        }
+        if (poaste_img==null){
+            poaste_img="";
         }
         String session_data = AppPreferences.getInstance(this).getFromStore("userData");
         Log.e("data", session_data);

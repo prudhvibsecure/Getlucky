@@ -15,6 +15,8 @@ import android.widget.Toast;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.fragments.HomeFragment;
 import com.bsecure.getlucky.interfaces.RequestHandler;
+import com.bsecure.getlucky.pinstore.AddPin;
+import com.bsecure.getlucky.pinstore.VerifyPin;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 import com.chaos.view.PinView;
@@ -162,7 +164,7 @@ public class OtpScreen extends AppCompatActivity implements RequestHandler {
                         JSONArray array = result.getJSONArray("customer_details");
 
                         if (array.length() == 0) {
-                            Intent in = new  Intent(OtpScreen.this, Register.class);
+                            Intent in = new Intent(OtpScreen.this, Register.class);
                             in.putExtra("phone", phone);
                             in.putExtra("otpone", otpone);
                             startActivity(in);
@@ -170,11 +172,20 @@ public class OtpScreen extends AppCompatActivity implements RequestHandler {
                             return;
 
                         }
-                        AppPreferences.getInstance(this).addToStore("userData",array.toString(),true);
-                        Intent in = new Intent(OtpScreen.this, GetLucky.class);
-                        in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(in);
-                        finish();
+                        AppPreferences.getInstance(this).addToStore("userData", array.toString(), true);
+                        String pin = AppPreferences.getInstance(this).getFromStore("pin_view");
+                        if (pin.length() != 0 || !TextUtils.isEmpty(pin)) {
+                            Intent in = new Intent(OtpScreen.this, VerifyPin.class);
+                            in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(in);
+                            finish();
+                        } else {
+                            Intent in = new Intent(OtpScreen.this, AddPin.class);
+                            in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(in);
+                            finish();
+                        }
+
                     } else {
                         Toast.makeText(this, result.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }

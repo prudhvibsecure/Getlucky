@@ -32,6 +32,7 @@ import androidx.core.app.ActivityCompat;
 import com.bsecure.getlucky.barcode.TermsPage;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.interfaces.RequestHandler;
+import com.bsecure.getlucky.pinstore.AddPin;
 import com.bsecure.getlucky.services.AddressService;
 import com.bsecure.getlucky.services.FetchAddressIntentService;
 import com.bsecure.getlucky.volleyhttp.Constants;
@@ -150,7 +151,8 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
                         JSONArray array = result.getJSONArray("customer_details");
                         AppPreferences.getInstance(this).addToStore("userData",array.toString(),true);
                         getCode();
-                        Intent in = new Intent(this, GetLucky.class);
+                        Intent in = new Intent(this, AddPin.class);
+                        in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(in);
                         finish();
                     } else {
@@ -247,7 +249,7 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
             object.put("name", name);
             object.put("phone_number", phone);
             object.put("address", city);
-            object.put("referral_code", city);
+            object.put("referral_code", AppPreferences.getInstance(this).getFromStore("refer"));
             object.put("otp", otpone);
             object.put("regidand", AppPreferences.getInstance(this).getFromStore("token"));
 

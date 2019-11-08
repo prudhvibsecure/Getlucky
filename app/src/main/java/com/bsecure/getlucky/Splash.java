@@ -5,10 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.fragments.HomeFragment;
 import com.bsecure.getlucky.interfaces.RequestHandler;
+import com.bsecure.getlucky.pinstore.AddPin;
+import com.bsecure.getlucky.pinstore.VerifyPin;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 
@@ -28,9 +31,14 @@ public class Splash extends AppCompatActivity implements RequestHandler {
 
             @Override
             public void run() {
-
-                startActivity(new Intent(Splash.this, GetLucky.class));
-                finish();
+                String pin = AppPreferences.getInstance(Splash.this).getFromStore("pin_view");
+                if (pin.length() != 0 || !TextUtils.isEmpty(pin)) {
+                    startActivity(new Intent(Splash.this, VerifyPin.class));
+                    finish();
+                }else {
+                    startActivity(new Intent(Splash.this, AddPin.class));
+                    finish();
+                }
 
             }
 

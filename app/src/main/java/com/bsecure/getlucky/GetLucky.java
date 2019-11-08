@@ -2,8 +2,10 @@ package com.bsecure.getlucky;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,13 +29,22 @@ import com.bsecure.getlucky.store.AddEditStore;
 import com.bsecure.getlucky.store.ViewStoresList;
 import com.bsecure.getlucky.utils.TraceUtils;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Stack;
+
+import afu.org.checkerframework.checker.nullness.qual.NonNull;
 
 public class GetLucky extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, ParentFragment.OnFragmentInteractionListener, View.OnClickListener {
 
@@ -134,6 +145,27 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
         } else {
             ((TextView) header.findViewById(R.id.mobile_no)).setText("Unknown");
         }
+
+        FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(getIntent())
+                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
+                    @Override
+                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
+                        // Get deep link from result (may be null if no link is found)
+                        Uri deepLink = null;
+                        if (pendingDynamicLinkData != null) {
+                            deepLink = pendingDynamicLinkData.getLink();
+                        }
+                        if (deepLink != null
+                                && deepLink.getBooleanQueryParameter("invitedby", false)) {
+                            String referrerUid = deepLink.getQueryParameter("invitedby");
+                            Log.e("invite",referrerUid);
+                            AppPreferences.getInstance(GetLucky.this).addToStore("refer", referrerUid,true);
+                        }else{
+                            AppPreferences.getInstance(GetLucky.this).addToStore("refer", "",true);
+                        }
+                    }
+                });
     }
 
     private void getShareRefer() {
@@ -145,8 +177,73 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
             referDialog.setCanceledOnTouchOutside(true);
             referDialog.show();
             ((TextView) referDialog.findViewById(R.id.share_code)).setText(ayArray.getJSONObject(0).optString("customer_referral_code"));
+            referDialog.findViewById(R.id.share_code).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getShareLink();
+                }
+            });
 
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getShareLink() {
+
+        try {
+            referDialog.dismiss();
+            DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                    .setLink(Uri.parse("https://bsecuresoftechsolutions.com/"))
+                    .setDomainUriPrefix("https://bsecure.page.link")
+                    // Open links with this app on Android
+                    .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
+                    // Open links with com.example.ios on iOS
+                    .setIosParameters(new DynamicLink.IosParameters.Builder("com.aaria.farmer")
+                            .setAppStoreId("1482252408")
+                            .setMinimumVersion("1.0")
+                            .build())
+                    .buildDynamicLink();
+            //click -- link -- google play store -- inistalled/ or not  ----
+            Uri dynamicLinkUri = dynamicLink.getUri();
+            String sharelinktext = "https://bsecure.page.link/?" +
+                    "link=https://bsecuresoftechsolutions.com/?invitedby=" + ayArray.getJSONObject(0).optString("customer_referral_code") +
+                    "&apn=" + getPackageName() +
+                    "&isi=" + "1482252408" +
+                    "&ibi=" + "ios package" +
+                    "&st=" + getString(R.string.app_name) +
+                    "&sd=" + "Referral Code"+ ayArray.getJSONObject(0).optString("customer_referral_code") +
+                    "&si=" + "";
+            // invitation?referrer="+ UserSession.getFarmerId()
+
+             FirebaseDynamicLinks.getInstance().createDynamicLink()
+                    //.setLongLink(dynamicLink.getUri())
+                    .setLongLink(Uri.parse(sharelinktext))  // manually
+                    .buildShortDynamicLink()
+                    .addOnCompleteListener(this, new OnCompleteListener<ShortDynamicLink>() {
+                        @Override
+                        public void onComplete(@NonNull Task<ShortDynamicLink> task) {
+                            if (task.isSuccessful()) {
+                                // Short link created
+                                Uri shortLink = task.getResult().getShortLink();
+                                Uri flowchartLink = task.getResult().getPreviewLink();
+                                Log.e("main ", "short link " + shortLink.toString());
+                                // share app dialog
+
+                                // String msgHtml = String.format("Hi,I'm using Kheti buddy - Farm Use my referrer link : ", );
+                                Intent intent = new Intent();
+                                intent.setAction(Intent.ACTION_SEND);
+                                intent.putExtra(Intent.EXTRA_TEXT, shortLink.toString());
+                                intent.setType("text/plain");
+                                startActivity(intent);
+                            } else {
+                                // Error
+                                // ...
+                                Log.e("main", " error " + task.getException());
+                            }
+                        }
+                    });
+        }catch (Exception e){
             e.printStackTrace();
         }
     }
