@@ -11,7 +11,9 @@
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" /> <string name="no_address_found">No address found</string>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <string name="no_address_found">No address found</string>
 
     <string name="invalid_lat_long_used">LatLang Faild</string>
 
@@ -22,5 +24,7 @@
     <string name="no_location_data_provided">no location provided</string>
 
     <string name="my_key">AIzaSyCvdgdoCZc4bkufNsTKmaKGRw3egMIn_cs</string>
+
+    <string name="terms"><u>Terms &amp; Conditions</u></string>
 
 </resources>

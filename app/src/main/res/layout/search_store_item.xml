@@ -8,8 +8,8 @@
     android:animationCache="true"
     android:id="@+id/ll_item"
     app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="@dimen/_2sdp"
-    app:cardElevation="@dimen/_5sdp">
+    app:cardCornerRadius="10dp"
+    app:cardElevation="10dp">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
                 android:layout_height="90dp"
                 android:padding="5dp"
                 android:scaleType="fitXY"
-                android:background="@mipmap/gray_logo" />
+                android:background="@mipmap/add_store" />
 
             <LinearLayout
                 android:layout_width="match_parent"

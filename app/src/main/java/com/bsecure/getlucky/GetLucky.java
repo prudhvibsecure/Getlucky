@@ -1,5 +1,6 @@
 package com.bsecure.getlucky;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -23,6 +24,7 @@ import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.fragments.HomeFragment;
 import com.bsecure.getlucky.fragments.ParentFragment;
 import com.bsecure.getlucky.store.AddEditStore;
+import com.bsecure.getlucky.store.ViewStoresList;
 import com.bsecure.getlucky.utils.TraceUtils;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
@@ -50,6 +52,10 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
     private String session_data = null;
 
     private NavigationView navigationView;
+
+    private Dialog referDialog;
+
+    private JSONArray ayArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,11 +115,17 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
         if (session_data != null && !TextUtils.isEmpty(session_data)) {
             try {
-                JSONArray ayArray = new JSONArray(session_data);
+                ayArray = new JSONArray(session_data);
                 ImageView profile = (ImageView) header.findViewById(R.id.tv_profileicon);
                 Glide.with(this).load(ayArray.getJSONObject(0).optString("profile_image")).into(profile);
                 ((TextView) header.findViewById(R.id.mobile_no)).setText(ayArray.getJSONObject(0).optString("name"));
                 ((TextView) header.findViewById(R.id.refer_code)).setVisibility(View.VISIBLE);
+                ((TextView) header.findViewById(R.id.refer_code)).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getShareRefer();
+                    }
+                });
                 ((TextView) header.findViewById(R.id.refer_code)).setText("Referral Code - " + ayArray.getJSONObject(0).optString("customer_referral_code"));
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -121,6 +133,21 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
         } else {
             ((TextView) header.findViewById(R.id.mobile_no)).setText("Unknown");
+        }
+    }
+
+    private void getShareRefer() {
+
+        try {
+            referDialog = new Dialog(this, R.style.MyAlertDialogStyle);
+            referDialog.setContentView(R.layout.share_dialog);
+            referDialog.setCancelable(true);
+            referDialog.setCanceledOnTouchOutside(true);
+            referDialog.show();
+            ((TextView) referDialog.findViewById(R.id.share_code)).setText(ayArray.getJSONObject(0).optString("customer_referral_code"));
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -191,6 +218,12 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
                 Intent store = new Intent(this, AddEditStore.class);
                 startActivity(store);
+                break;
+
+            case R.id.nav_view_store:
+
+                Intent nav_view_store = new Intent(this, ViewStoresList.class);
+                startActivity(nav_view_store);
                 break;
             case R.id.nav_bar_code:
 

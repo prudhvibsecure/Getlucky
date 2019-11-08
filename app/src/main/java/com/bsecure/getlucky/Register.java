@@ -149,7 +149,7 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
                     if (result.optString("statuscode").equalsIgnoreCase("200")) {
                         JSONArray array = result.getJSONArray("customer_details");
                         AppPreferences.getInstance(this).addToStore("userData",array.toString(),true);
-                       getCode();
+                        getCode();
                         Intent in = new Intent(this, GetLucky.class);
                         startActivity(in);
                         finish();
@@ -247,10 +247,7 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
             object.put("name", name);
             object.put("phone_number", phone);
             object.put("address", city);
-//            object.put("city", city);
-//            object.put("state", city);
-//            object.put("country", country);
-//            object.put("pin_code", pin_code);
+            object.put("referral_code", city);
             object.put("otp", otpone);
             object.put("regidand", AppPreferences.getInstance(this).getFromStore("token"));
 

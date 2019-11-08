@@ -110,14 +110,15 @@
         <CheckBox
             android:id="@+id/ch_terms"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-           />
+            android:padding="5dp"
+            android:layout_height="wrap_content" />
         <TextView
             android:id="@+id/terms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:text="Terms &amp; Conditions"
+            android:textSize="16sp"
+            android:padding="5dp"
+            android:text="@string/terms"
             android:textStyle="bold"/>
 
     </LinearLayout>

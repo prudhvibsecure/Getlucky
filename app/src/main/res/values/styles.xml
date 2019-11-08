@@ -13,7 +13,12 @@
         <item name="color">@color/colorPrimaryDark</item>
 
     </style>
+    <style name="MyAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
 
+        <item name="colorAccent">@android:color/transparent</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
     <style name="Tooltip2">
         <item name="android:text">qwqwrqwfqwfqwfqwfqwf</item>
         <item name="android:textColor">?android:textColorPrimaryInverse</item>

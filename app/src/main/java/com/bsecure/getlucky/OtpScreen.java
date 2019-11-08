@@ -172,6 +172,7 @@ public class OtpScreen extends AppCompatActivity implements RequestHandler {
                         }
                         AppPreferences.getInstance(this).addToStore("userData",array.toString(),true);
                         Intent in = new Intent(OtpScreen.this, GetLucky.class);
+                        in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(in);
                         finish();
                     } else {

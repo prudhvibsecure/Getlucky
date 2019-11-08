@@ -334,15 +334,12 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
             }
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-//        if (requestCode == 1001 && resultCode == RESULT_OK) {
-
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             mImageUri = result.getUri();
             poster.setImageURI(mImageUri);
             uploadImage(mImageUri);
         } else {
             Toast.makeText(this, "Something gone wrong!", Toast.LENGTH_SHORT).show();
-            this.finish();
         }
     }
 
