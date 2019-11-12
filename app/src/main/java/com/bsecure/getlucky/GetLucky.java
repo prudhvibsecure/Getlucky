@@ -111,7 +111,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                supportInvalidateOptionsMenu();
                 onKeyDown(4, null);
 
             }
@@ -177,7 +177,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
             referDialog.setCanceledOnTouchOutside(true);
             referDialog.show();
             ((TextView) referDialog.findViewById(R.id.share_code)).setText(ayArray.getJSONObject(0).optString("customer_referral_code"));
-            referDialog.findViewById(R.id.share_code).setOnClickListener(new View.OnClickListener() {
+            referDialog.findViewById(R.id.share_ok).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     getShareLink();
@@ -192,7 +192,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
     private void getShareLink() {
 
         try {
-            referDialog.dismiss();
+
             DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
                     .setLink(Uri.parse("https://bsecuresoftechsolutions.com/"))
                     .setDomainUriPrefix("https://bsecure.page.link")
@@ -212,7 +212,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
                     "&isi=" + "1482252408" +
                     "&ibi=" + "ios package" +
                     "&st=" + getString(R.string.app_name) +
-                    "&sd=" + "Referral Code"+ ayArray.getJSONObject(0).optString("customer_referral_code") +
+                    "&sd=" + "Referral Code : "+ ayArray.getJSONObject(0).optString("customer_referral_code") +
                     "&si=" + "";
             // invitation?referrer="+ UserSession.getFarmerId()
 
@@ -224,6 +224,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
                         @Override
                         public void onComplete(@NonNull Task<ShortDynamicLink> task) {
                             if (task.isSuccessful()) {
+                                referDialog.dismiss();
                                 // Short link created
                                 Uri shortLink = task.getResult().getShortLink();
                                 Uri flowchartLink = task.getResult().getPreviewLink();
@@ -263,7 +264,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_getlucky_drawer, menu);
+       // getMenuInflater().inflate(R.menu.activity_getlucky_drawer, menu);
         Menu nav_Menu = navigationView.getMenu();
         if (session_data != null && !TextUtils.isEmpty(session_data)) {
             nav_Menu.findItem(R.id.nav_profile).setVisible(true);
@@ -281,21 +282,6 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.phoneno) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -305,27 +291,32 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
             case R.id.nav_login:
                 Intent login = new Intent(this, Login.class);
                 startActivity(login);
+                overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
                 break;
             case R.id.nav_profile:
 
                 Intent prof = new Intent(this, ProfilePage.class);
                 startActivity(prof);
+                overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
                 break;
             case R.id.nav_store:
 
                 Intent store = new Intent(this, AddEditStore.class);
                 startActivity(store);
+                overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
                 break;
 
             case R.id.nav_view_store:
 
                 Intent nav_view_store = new Intent(this, ViewStoresList.class);
                 startActivity(nav_view_store);
+                overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
                 break;
             case R.id.nav_bar_code:
 
                 Intent code = new Intent(this, Mybarcode.class);
                 startActivity(code);
+                overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
                 break;
         }
 

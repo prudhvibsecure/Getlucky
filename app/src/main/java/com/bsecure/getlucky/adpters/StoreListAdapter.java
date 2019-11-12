@@ -84,7 +84,7 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
         try {
             final StoreListModel mycontactlist = matchesList.get(position);
             contactViewHolder.store_name.setText(mycontactlist.getStore_name());
-            contactViewHolder.tv_address.setText(mycontactlist.getArea()+","+mycontactlist.getCity());
+            contactViewHolder.tv_address.setText(mycontactlist.getArea()+","+mycontactlist.getCity()+","+mycontactlist.getState());
             Glide.with(context).load(Constants.PATH+"assets/upload/avatar/" + mycontactlist.getStore_image()).into(contactViewHolder.store_image);
             applyClickEvents(contactViewHolder, matchesList, position);
         } catch (Exception e) {
@@ -119,7 +119,7 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_store_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.store_item_row_view, parent, false);
         ContactViewHolder myHoder = new ContactViewHolder(view);
         return myHoder;
 
@@ -133,6 +133,8 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
         LinearLayout lucky_offer;
         ImageView store_image;
         CardView ll_item;
+        public View mViewContent;
+        public View mActionContainer;
 
         public ContactViewHolder(View v) {
             super(v);
@@ -140,9 +142,9 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
             store_name = (TextView) v.findViewById(R.id.store_name);
             tv_address = (TextView) v.findViewById(R.id.tv_address);
             special_offer = (LinearLayout) v.findViewById(R.id.special_offer);
-            lucky_offer = (LinearLayout) v.findViewById(R.id.lucky_offer);
             store_image = (ImageView) v.findViewById(R.id.store_image);
             ll_item =  v.findViewById(R.id.ll_item);
+            mActionContainer = itemView.findViewById(R.id.view_list_repo_action_container);
 
         }
     }
@@ -151,5 +153,4 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
 
         void onRowClicked(List<StoreListModel> matchesList, int pos);
     }
-
 }

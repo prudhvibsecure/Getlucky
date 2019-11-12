@@ -187,7 +187,7 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
         }
         String keyword = et_keywords.getText().toString().trim();
         if (keyword.length() == 0) {
-            Toast.makeText(this, "Please Enter Category", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please Enter Keywords", Toast.LENGTH_SHORT).show();
             return;
         }
         String location = et_location.getText().toString().trim();
@@ -200,8 +200,12 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(this, "Please Enter Mobile Number", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (poaste_img==null){
-            poaste_img="";
+        if (mobile.length() < 10) {
+            Toast.makeText(this, "Mobile Number Must Be 10 Digits", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (poaste_img == null) {
+            poaste_img = "";
         }
         String session_data = AppPreferences.getInstance(this).getFromStore("userData");
         Log.e("data", session_data);
@@ -270,7 +274,7 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
                     //     {"status":"0","status_description":"File Uploaded Successfully","attachname":"1552318451_Screenshot_20181203-194010_20190311_090349.png"}
 //                    if (mime_type == null) {
                     //if (reply_Id.isEmpty()) {
-                    poaste_img=object.optString("attachname");
+                    poaste_img = object.optString("attachname");
                     //sendImage();
                     break;
 
@@ -282,7 +286,6 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
             // TODO: handle exception
         }
-
 
 
     }

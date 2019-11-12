@@ -15,7 +15,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/tool_color"
             android:minHeight="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
@@ -29,6 +29,7 @@
                     android:layout_width="22dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:tint="@color/black"
                     android:src="@mipmap/ic_back" />
 
                 <ImageView

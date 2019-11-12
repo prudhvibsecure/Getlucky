@@ -32,5 +32,7 @@
 
     <color name="gray">#555555</color>
 
+    <color name="tool_color">#FFF4EF</color>
+
 
 </resources>

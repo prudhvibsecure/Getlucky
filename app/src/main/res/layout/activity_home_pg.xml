@@ -18,55 +18,62 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/square"
-            android:singleLine="true"
-            android:editable="false"
             android:clickable="true"
-            android:drawablePadding="5dp"
             android:drawableRight="@mipmap/tracker"
+            android:drawablePadding="5dp"
+            android:editable="false"
             android:hint="Location"
-            android:padding="10dp" />
+            android:padding="10dp"
+            android:singleLine="true" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_below="@+id/location"
             android:layout_marginTop="10dp"
-            android:layout_below="@+id/location">
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/keyword"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-           android:layout_weight="1"
-            android:imeOptions="actionDone"
-            android:layout_gravity="left|center"
-            android:background="@drawable/btnsquare2"
-            android:hint="Categories,Stores,Keywords"
-            android:padding="10dp" />
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/keyword"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center"
+                android:layout_weight="1"
+                android:background="@drawable/btnsquare2"
+                android:hint="Categories,Stores,Keywords"
+                android:imeOptions="actionDone"
+                android:padding="10dp"
+                android:singleLine="true" />
 
 
-        <Button
-            android:id="@+id/search"
-            android:layout_width="50dp"
-            android:layout_height="44dp"
-            android:background="@drawable/template_pop_but_sel_red"
-            android:padding="10dp"
-            android:layout_gravity="center"
-            android:text="Go"
-            android:textColor="@color/white" />
+            <Button
+                android:id="@+id/search"
+                android:layout_width="50dp"
+                android:layout_height="43dp"
+                android:layout_gravity="center"
+                android:background="@drawable/template_pop_but_sel_red"
+                android:padding="10dp"
+                android:text="Go"
+                android:textColor="@color/white" />
         </LinearLayout>
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_below="@+id/llv"
-        android:layout_height="match_parent">
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/mrecycler"
+        android:layout_below="@+id/llv">
 
-        android:padding="10dp" />
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swip_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mrecycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/spin_kit"
@@ -83,10 +90,10 @@
             android:id="@+id/no_data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="No Data Found"
             android:layout_centerInParent="true"
-            android:visibility="gone"
+            android:gravity="center"
+            android:text="No Data Found"
             android:textSize="@dimen/_14sdp"
-            android:gravity="center"/>
+            android:visibility="gone" />
     </RelativeLayout>
 </LinearLayout>

@@ -1,28 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
 
-
+    <group android:id="@+id/m1">
         <item
             android:id="@+id/nav_login"
-            android:title="Registration/Login"
-            android:icon="@mipmap/ic_user" />
-
+            android:icon="@mipmap/ic_user"
+            android:title="Registration/Login" />
+    </group>
+    <group android:id="@+id/m2">
         <item
             android:id="@+id/nav_profile"
-            android:title="Edit Profile"
-            android:icon="@mipmap/ic_user"/>
+            android:icon="@mipmap/ic_user"
+            android:title="Edit Profile" />
+    </group>
+    <group android:id="@+id/m3">
         <item
             android:id="@+id/nav_store"
-            android:title="Add Store"
-            android:icon="@mipmap/ic_shop"/>
+            android:icon="@mipmap/ic_shop"
+            android:title="Add Store" />
+    </group>
+    <group android:id="@+id/m4">
         <item
             android:id="@+id/nav_view_store"
-            android:title="View Store"
-            android:icon="@mipmap/ic_shop"/>
+            android:icon="@mipmap/ic_shop"
+            android:title="View Store" />
+    </group>
+    <group android:id="@+id/m5">
         <item
             android:id="@+id/nav_bar_code"
-            android:title="Scan Code"
-            android:icon="@mipmap/ic_barcode"/>
+            android:icon="@mipmap/ic_barcode"
+            android:title="Scan Code" />
+    </group>
 
 
 </menu>

@@ -95,6 +95,7 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
         findViewById(R.id.bacl_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                overridePendingTransition(R.anim.fade_out_anim,R.anim.fade_in_anim);
                 finish();
             }
         });
@@ -223,6 +224,7 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
                     case R.id.terms:
                     Intent terms=new Intent(this, TermsPage.class);
                     startActivity(terms);
+                    overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
                     break;
                 default:
                     break;
@@ -244,12 +246,18 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
                 Toast.makeText(this, "Please Select Terms & Conditions", Toast.LENGTH_SHORT).show();
                 return;
             }
+            et_refer.setText(AppPreferences.getInstance(this).getFromStore("refer"));
+            String refercode=et_refer.getText().toString();
+            if (refercode.length()==0||refercode==null){
+                refercode="";
+
+            }
             JSONObject object = new JSONObject();
 
             object.put("name", name);
             object.put("phone_number", phone);
             object.put("address", city);
-            object.put("referral_code", AppPreferences.getInstance(this).getFromStore("refer"));
+            object.put("referral_code", refercode);
             object.put("otp", otpone);
             object.put("regidand", AppPreferences.getInstance(this).getFromStore("token"));
 

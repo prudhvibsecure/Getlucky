@@ -1,7 +1,23 @@
 package com.bsecure.getlucky.models;
 
 public class StoreListModel {
-    String store_name,address,area,special_offer,offer,store_image,store_phone_number,city,state;
+    String store_name,address,area,special_offer,offer,store_image,store_phone_number,city,state,country,pin_code;
+
+    public String getPin_code() {
+        return pin_code;
+    }
+
+    public void setPin_code(String pin_code) {
+        this.pin_code = pin_code;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
 
     public String getStore_image() {
         return store_image;

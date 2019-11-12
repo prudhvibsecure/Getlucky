@@ -16,7 +16,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/tool_color"
             android:minHeight="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
@@ -30,6 +30,7 @@
                     android:layout_width="22dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:tint="@color/black"
                     android:src="@mipmap/ic_back" />
 
                 <ImageView
@@ -128,7 +129,7 @@
                 android:layout_below="@+id/st_category"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/square"
-                android:hint="Keywords"
+                android:hint="Keywords eg: Shoes,Sock"
                 android:maxLines="3"
                 android:padding="10dp" />
 
@@ -152,8 +153,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/location"
                 android:layout_marginTop="20dp"
+                android:maxLength="10"
                 android:background="@drawable/square"
-                android:hint="Phone Number"
+                android:hint="Mobile Number"
                 android:inputType="number"
                 android:padding="10dp"
                 android:singleLine="true" />

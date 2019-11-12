@@ -31,14 +31,6 @@ public class AddPin extends AppCompatActivity {
 
         pin_et = (PinView) findViewById(R.id.pinView);
         submit = findViewById(R.id.submit);
-        pin_et.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                InputMethodManager keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                keyboard.showSoftInput(pin_et, 0);
-            }
-        }, 50);
-
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,6 +45,7 @@ public class AddPin extends AppCompatActivity {
                 Intent in = new Intent(AddPin.this, GetLucky.class);
                 in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(in);
+                overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
                 finish();
 
             }

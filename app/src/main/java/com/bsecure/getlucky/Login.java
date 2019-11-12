@@ -75,6 +75,8 @@ public class Login extends AppCompatActivity implements RequestHandler {
         findViewById(R.id.bacl_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                overridePendingTransition(R.anim.fade_out_anim,R.anim.fade_in_anim);
                 finish();
             }
         });
@@ -129,6 +131,7 @@ public class Login extends AppCompatActivity implements RequestHandler {
                         Intent in = new Intent(Login.this, OtpScreen.class);
                         in.putExtra("phone", phone);
                         startActivity(in);
+                        overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
                         this.finish();
                     } else {
                         Toast.makeText(this, result.optString("statusdescription"), Toast.LENGTH_SHORT).show();

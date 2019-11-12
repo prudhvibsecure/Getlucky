@@ -21,8 +21,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bsecure.getlucky.GetLucky;
 import com.bsecure.getlucky.Login;
@@ -30,6 +32,7 @@ import com.bsecure.getlucky.R;
 import com.bsecure.getlucky.ViewStoreDetails;
 import com.bsecure.getlucky.adpters.StoreListAdapter;
 import com.bsecure.getlucky.common.AppPreferences;
+import com.bsecure.getlucky.helper.RecyclerOnScrollListener;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.models.StoreListModel;
 import com.bsecure.getlucky.services.AddressService;
@@ -54,17 +57,21 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
     private OnListFragmentInteractionListener mListener;
     private OnFragmentInteractionListener mFragListener;
     private View laView;
-    private static final String ADDRESS_REQUESTED_KEY = "address-request-pending";
-    private static final String LOCATION_ADDRESS_KEY = "location-address";
     private AddressResultReceiver mResultReceiver;
     String mAddressOutput;
     Location mLastLocation;
     private FusedLocationProviderClient mFusedLocationClient;
     private EditText serach;
     private RecyclerView mRecyclerView;
-    private List<StoreListModel> storeListModelList=new ArrayList<>();
+    private List<StoreListModel> storeListModelList;
     private StoreListAdapter adapter;
     private int count=0;
+    private SwipeRefreshLayout mSwipeRefreshLayout = null;
+    private String total_pages = "0";
+
+    private boolean isRefresh = false;
+    private RecyclerOnScrollListener recycScollListener = null;
+
     public HomeFragment() {
 
     }
@@ -154,6 +161,45 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
         laView = inflater.inflate(R.layout.activity_home_pg, container, false);
         serach = laView.findViewById(R.id.keyword);
         mRecyclerView=laView.findViewById(R.id.mrecycler);
+        laView.findViewById(R.id.search).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchStore(0);
+            }
+        });
+        mSwipeRefreshLayout = (SwipeRefreshLayout) laView.findViewById(R.id.swip_refresh);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorPrimaryDark,
+                R.color.colorPrimaryDark, R.color.colorPrimaryDark, R.color.colorPrimaryDark);
+        mSwipeRefreshLayout.setEnabled(false);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+                recycScollListener.resetValue();
+                searchStore(0);
+            }
+        });
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        recycScollListener = new RecyclerOnScrollListener(layoutManager) {
+
+            @Override
+            public void onLoadMoreData(int currentPage) {
+                if (total_pages.length() > 0)
+                    if (currentPage <= Integer.parseInt(total_pages) - 1) {
+                        searchStore(currentPage);
+                       // getData(2, currentPage);
+                       // getView().findViewById(R.id.catgr_pbar).setVisibility(View.VISIBLE);
+
+
+                    }
+            }
+        };
+
+        mRecyclerView.addOnScrollListener(recycScollListener);
+
         return laView;
 
     }
@@ -195,12 +241,15 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                         String keywords = object.optString("keywords");
                     }
 
-                    searchStore();
+                    searchStore(0);
                     break;
                 case 101:
 
                     JSONObject object1 = new JSONObject(response.toString());
                     if (object1.optString("statuscode").equalsIgnoreCase("200")) {
+                        storeListModelList=new ArrayList<>();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        mSwipeRefreshLayout.setEnabled(true);
                         laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
                         laView.findViewById(R.id.no_data).setVisibility(View.GONE);
                         JSONArray jsonarray2 = object1.getJSONArray("store_details");
@@ -211,10 +260,14 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                                 storeListModel.setStore_name(jsonobject.optString("store_name"));
                                 storeListModel.setAddress(jsonobject.optString("address"));
                                 storeListModel.setArea(jsonobject.optString("area"));
+                                storeListModel.setState(jsonobject.optString("state"));
                                 storeListModel.setCity(jsonobject.optString("city"));
+                                storeListModel.setCountry(jsonobject.optString("country"));
+                                storeListModel.setPin_code(jsonobject.optString("pin_code"));
                                 storeListModel.setOffer(jsonobject.optString("offer"));
                                 storeListModel.setSpecial_offer(jsonobject.optString("special_offer"));
                                 storeListModel.setStore_image(jsonobject.optString("store_image"));
+                                storeListModel.setStore_phone_number(jsonobject.optString("store_phone_number"));
                                 storeListModelList.add(storeListModel);
                             }
                             adapter = new StoreListAdapter(storeListModelList, getActivity(), this);
@@ -226,6 +279,8 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                             laView.findViewById(R.id.no_data).setVisibility(View.VISIBLE);
                         }
                     }else{
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        mSwipeRefreshLayout.setEnabled(true);
                         laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
                         laView.findViewById(R.id.no_data).setVisibility(View.VISIBLE);
                         ((TextView)laView.findViewById(R.id.no_data)).setText(object1.optString("statusdescription"));
@@ -240,7 +295,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
     }
 
-    private void searchStore() {
+    private void searchStore(int pageno) {
         try {
             JSONObject object = new JSONObject();
             object.put("area", area);
@@ -248,7 +303,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
             object.put("state", state);
             object.put("country", country);
             object.put("search_key", "");
-            object.put("pageno", count);
+            object.put("pageno", pageno);
             MethodResquest req=new MethodResquest(getActivity(), this, Constants.PATH + "search_store", object.toString(), 101);
             req.dismissProgress(getActivity());
         } catch (Exception e) {
@@ -258,7 +313,8 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
     @Override
     public void requestEndedWithError(String error, int errorcode) {
-
+        mSwipeRefreshLayout.setRefreshing(false);
+        mSwipeRefreshLayout.setEnabled(true);
     }
 
     @Override
@@ -268,15 +324,17 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
             Intent login=new Intent(getActivity(), ViewStoreDetails.class);
             login.putExtra("store_name",matchesList.get(pos).getStore_name());
             login.putExtra("store_image",matchesList.get(pos).getStore_image());
-            login.putExtra("store_add",matchesList.get(pos).getCity()+","+matchesList.get(pos).getState());
+            login.putExtra("store_add",matchesList.get(pos).getArea()+","+matchesList.get(pos).getCity()+","+matchesList.get(pos).getState()+","+matchesList.get(pos).getState()+","+matchesList.get(pos).getPin_code());
             login.putExtra("store_offer",matchesList.get(pos).getOffer());
             login.putExtra("store_spofer",matchesList.get(pos).getSpecial_offer());
             login.putExtra("store_ph",matchesList.get(pos).getStore_phone_number());
             //login.putExtra("store_ph",matchesList.get(pos).getp());
             startActivity(login);
+            getActivity().overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
         }else{
             Intent login=new Intent(getActivity(), Login.class);
             startActivity(login);
+            getActivity().overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
         }
 
     }

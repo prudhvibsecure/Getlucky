@@ -168,6 +168,7 @@ public class OtpScreen extends AppCompatActivity implements RequestHandler {
                             in.putExtra("phone", phone);
                             in.putExtra("otpone", otpone);
                             startActivity(in);
+                            overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
                             finish();
                             return;
 
@@ -178,11 +179,13 @@ public class OtpScreen extends AppCompatActivity implements RequestHandler {
                             Intent in = new Intent(OtpScreen.this, VerifyPin.class);
                             in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(in);
+                            overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
                             finish();
                         } else {
                             Intent in = new Intent(OtpScreen.this, AddPin.class);
                             in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(in);
+                            overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
                             finish();
                         }
 

@@ -46,7 +46,7 @@ import java.util.Locale;
 
 public class ProfilePage extends AppCompatActivity implements View.OnClickListener, RequestHandler, IFileUploadCallback {
 
-    private String session_data = null, user_img;
+    private String session_data = null, user_img="";
     private EditText name, dob, gender;
     private AutoCompleteTextView  location;
     private Uri mImageUri;
@@ -134,6 +134,7 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
                         .start(ProfilePage.this);
                 break;
             case R.id.bacl_btn:
+                overridePendingTransition(R.anim.fade_out_anim,R.anim.fade_in_anim);
                 finish();
                 break;
             case R.id.gender:
@@ -195,15 +196,12 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
                 Toast.makeText(this, "Please Select Gender", Toast.LENGTH_SHORT).show();
                 return;
             }
+
             JSONObject object = new JSONObject();
 
             object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
             object.put("name", u_name);
             object.put("address", address);
-//            object.put("city", ayArray.getJSONObject(0).optString("city"));
-//            object.put("state", ayArray.getJSONObject(0).optString("state"));
-//            object.put("country", ayArray.getJSONObject(0).optString("country"));
-//            object.put("pin_code", ayArray.getJSONObject(0).optString("pin_code"));
             object.put("date_of_birth", dobs);
             object.put("gender", genders);
             object.put("profile_image", user_img);

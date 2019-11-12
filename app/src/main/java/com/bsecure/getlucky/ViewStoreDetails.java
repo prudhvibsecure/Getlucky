@@ -30,7 +30,7 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
        getIntent().getStringExtra("store_offer");
         getIntent().getStringExtra("store_spofer");
         tv_store_name.setText(getIntent().getStringExtra("store_name"));
-        store_address.setText(getIntent().getStringExtra("store_ph")+","+getIntent().getStringExtra("store_add"));
+        store_address.setText(getIntent().getStringExtra("store_add"));
         Glide.with(this).load(Constants.PATH+"assets/upload/avatar/" +getIntent().getStringExtra("store_image")).into(store_img);
     }
 
@@ -39,6 +39,7 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
 
         switch (view.getId()){
             case R.id.bacl_btn:
+                overridePendingTransition(R.anim.fade_out_anim,R.anim.fade_in_anim);
                 finish();
                 break;
         }

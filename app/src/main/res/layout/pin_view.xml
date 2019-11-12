@@ -17,71 +17,30 @@
         android:src="@mipmap/ic_launcher"
         android:layout_centerHorizontal="true"/>
 
+
     <TextView
         android:id="@+id/verifytext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_below="@+id/logo"
-        android:text="Add your pin"
+        android:layout_margin="30dp"
+        android:text="ADD PIN"
+        android:textSize="25sp"
+        android:gravity="center"
         android:textStyle="bold"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="30dp"
         android:textColor="@color/colorPrimaryDark"/>
 
     <LinearLayout
         android:id="@+id/otp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/verifytext"
-        android:layout_margin="30dp"
+        android:layout_below="@+id/verifytext"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_centerInParent="true"
         android:orientation="horizontal"
         android:gravity="center">
 
-        <!--<androidx.appcompat.widget.AppCompatEditText-->
-        <!--android:id="@+id/otp1"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="50dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:background="@drawable/btnsquare"-->
-        <!--android:layout_margin="5dp"-->
-        <!--android:elevation="6dp"-->
-        <!--android:maxLength="1"-->
-        <!--android:gravity="center"/>-->
-
-        <!--<androidx.appcompat.widget.AppCompatEditText-->
-        <!--android:id="@+id/otp2"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="50dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:layout_margin="5dp"-->
-        <!--android:background="@drawable/btnsquare"-->
-        <!--android:elevation="6dp"-->
-        <!--android:maxLength="1"-->
-        <!--android:gravity="center"/>-->
-
-        <!--<androidx.appcompat.widget.AppCompatEditText-->
-        <!--android:id="@+id/otp3"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="50dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:layout_margin="5dp"-->
-        <!--android:background="@drawable/btnsquare"-->
-        <!--android:elevation="6dp"-->
-        <!--android:maxLength="1"-->
-        <!--android:gravity="center"/>-->
-
-        <!--<androidx.appcompat.widget.AppCompatEditText-->
-        <!--android:id="@+id/otp4"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="50dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:layout_margin="5dp"-->
-        <!--android:background="@drawable/btnsquare"-->
-        <!--android:elevation="6dp"-->
-        <!--android:maxLength="1"-->
-        <!--android:gravity="center"-->
-        <!--/>-->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -95,21 +54,23 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:cursorVisible="true"
-                android:gravity="center_horizontal"
+                android:gravity="center"
+                android:layout_centerInParent="true"
                 android:hint="*"
                 android:inputType="numberPassword"
-                android:padding="8dp"
+                android:padding="5dp"
                 android:textColor="@color/black"
                 android:textSize="16sp"
+                android:focusable="true"
                 app:cursorColor="@color/black"
                 app:cursorWidth="2dp"
                 app:itemCount="4"
                 app:itemHeight="50dp"
-                app:itemRadius="4dp"
-                app:itemSpacing="0dp"
-                app:itemWidth="80dp"
+                app:itemRadius="10dp"
+                app:itemSpacing="5dp"
+                app:itemWidth="70dp"
                 app:lineColor="@color/black"
-                app:lineWidth="2dp"
+                app:lineWidth="1dp"
                 app:viewType="rectangle" />
         </RelativeLayout>
 

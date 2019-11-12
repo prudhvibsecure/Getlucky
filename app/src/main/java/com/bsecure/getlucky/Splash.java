@@ -34,9 +34,11 @@ public class Splash extends AppCompatActivity implements RequestHandler {
                 String pin = AppPreferences.getInstance(Splash.this).getFromStore("pin_view");
                 if (pin.length() != 0 || !TextUtils.isEmpty(pin)) {
                     startActivity(new Intent(Splash.this, VerifyPin.class));
+                    overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
                     finish();
                 }else {
                     startActivity(new Intent(Splash.this, AddPin.class));
+                    overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
                     finish();
                 }
 
