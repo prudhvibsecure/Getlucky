@@ -35,7 +35,7 @@ public class KeywordsListAdapter extends RecyclerView.Adapter<KeywordsListAdapte
     private SparseBooleanArray animationItemsIndex;
     private static int currentSelectedIndex = -1;
     private HashMap<Integer, Boolean> isChecked = new HashMap<>();
-
+    boolean isSelectedAll=false;
     public KeywordsListAdapter(List<KeyWords> contactList, Context context, KeywordsListListener listener) {
         this.context = context;
         this.listener = listener;
@@ -78,6 +78,12 @@ public class KeywordsListAdapter extends RecyclerView.Adapter<KeywordsListAdapte
 
         try {
             final KeyWords mycontactlist = contactListFiltered.get(position);
+            if (!isSelectedAll){
+                contactViewHolder.checkBox.setChecked(false);
+            }
+            else {
+                contactViewHolder.checkBox.setChecked(true);
+            }
             contactViewHolder.store_name.setText(mycontactlist.getKeyword());
             applyClickEvents(contactViewHolder, contactListFiltered, position,contactViewHolder.checkBox);
         } catch (Exception e) {
@@ -85,7 +91,14 @@ public class KeywordsListAdapter extends RecyclerView.Adapter<KeywordsListAdapte
         }
 
     }
-
+    public void selectAll(){
+        isSelectedAll=true;
+        notifyDataSetChanged();
+    }
+    public void unselectall(){
+        isSelectedAll=false;
+        notifyDataSetChanged();
+    }
     @Override
     public int getItemViewType(int position) {
         return position;

@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,11 +40,12 @@ public class AddCategoryKeysSearch extends AppCompatActivity implements Category
     private ArrayList<String> keywords=new ArrayList<>();
     private ArrayList<String> keywords_ids=new ArrayList<>();
     String my_key="",ids="";
+    private CheckBox checkBox;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_store_keys_view);
-
+        checkBox= findViewById(R.id.check_all);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -95,6 +97,19 @@ public class AddCategoryKeysSearch extends AppCompatActivity implements Category
             e.printStackTrace();
         }
 
+        checkBox .setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(checkBox.isChecked()){
+                    adapter.selectAll();
+                }
+                else {
+                    adapter.unselectall();
+                }
+
+
+            }
+        });
     }
 
     @Override

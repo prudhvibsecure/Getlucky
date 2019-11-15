@@ -38,11 +38,12 @@ public class AddStoreKeysSearch extends AppCompatActivity implements KeywordsLis
     private RecyclerView mRecyclerView;
     private ArrayList<String> keywords=new ArrayList<>();
     String my_key="";
+    private CheckBox checkBox;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_store_keys_view);
-
+        checkBox= findViewById(R.id.check_all);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -89,6 +90,19 @@ public class AddStoreKeysSearch extends AppCompatActivity implements KeywordsLis
         }catch (Exception e){
             e.printStackTrace();
         }
+        checkBox .setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(checkBox.isChecked()){
+                    adapter.selectAll();
+                }
+                else {
+                    adapter.unselectall();
+                }
+
+
+            }
+        });
 
     }
 

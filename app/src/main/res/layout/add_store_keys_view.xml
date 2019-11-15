@@ -15,13 +15,19 @@
         android:minHeight="?attr/actionBarSize"
         app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
-
+<CheckBox
+    android:id="@+id/check_all"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Select All"
+    android:padding="5dp"
+    android:layout_below="@+id/toolbar"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mrecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar"
+        android:layout_below="@+id/check_all"
         android:layout_above="@id/done"
         android:padding="5dp" />
     <TextView
