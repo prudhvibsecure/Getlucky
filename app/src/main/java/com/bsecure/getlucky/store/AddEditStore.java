@@ -257,10 +257,6 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(this, "Please Enter Category", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (cat_lstwords.length()==0){
-            Toast.makeText(this, "Please Enter Category", Toast.LENGTH_SHORT).show();
-            return;
-        }
         String keyword = et_keywords.getText().toString().trim();
         if (keyword.length() == 0) {
             Toast.makeText(this, "Please Enter Keywords", Toast.LENGTH_SHORT).show();
