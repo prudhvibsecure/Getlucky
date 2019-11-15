@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,11 +38,15 @@ import com.bsecure.getlucky.helper.RecyclerOnScrollListener;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.models.StoreListModel;
 import com.bsecure.getlucky.services.AddressService;
+import com.bsecure.getlucky.services.GetAddressIntentService;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -70,6 +76,18 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
     private String total_pages = "0";
 
     private boolean isRefresh = false;
+
+    private FusedLocationProviderClient fusedLocationClient;
+
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 2;
+
+    private LocationAddressResultReceiver addressResultReceiver;
+
+    private TextView currentAddTv;
+
+    private Location currentLocation;
+
+    private LocationCallback locationCallback;
     private RecyclerOnScrollListener recycScollListener = null;
 
     public HomeFragment() {
@@ -199,6 +217,21 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
         mRecyclerView.addOnScrollListener(recycScollListener);
 
+
+        addressResultReceiver = new LocationAddressResultReceiver(new Handler());
+
+        currentAddTv = laView.findViewById(R.id.current_address);
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                currentLocation = locationResult.getLocations().get(0);
+                getAddress();
+            };
+        };
+        startLocationUpdates();
         return laView;
 
     }
@@ -418,7 +451,91 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
            locationFind();
         }
+        switch (requestCode) {
+            case LOCATION_PERMISSION_REQUEST_CODE: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startLocationUpdates();
+                } else {
+                    Toast.makeText(getActivity(), "Location permission not granted, " +
+                                    "restart the app if you want the feature",
+                            Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+        }
+
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+    }
+
+    @SuppressWarnings("MissingPermission")
+    private void startLocationUpdates() {
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getLucky,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            LocationRequest locationRequest = new LocationRequest();
+            locationRequest.setInterval(2000);
+            locationRequest.setFastestInterval(1000);
+            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+            fusedLocationClient.requestLocationUpdates(locationRequest,
+                    locationCallback,
+                    null);
+        }
+    }
+
+    @SuppressWarnings("MissingPermission")
+    private void getAddress() {
+
+        if (!Geocoder.isPresent()) {
+            Toast.makeText(getActivity(),
+                    "Can't find current address, ",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent intent = new Intent(getActivity(), GetAddressIntentService.class);
+        intent.putExtra("add_receiver", addressResultReceiver);
+        intent.putExtra("add_location", currentLocation);
+        getActivity().startService(intent);
+    }
+
+
+    private class LocationAddressResultReceiver extends ResultReceiver {
+        LocationAddressResultReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+
+            if (resultCode == 0) {
+                //Last Location can be null for various reasons
+                //for example the api is called first time
+                //so retry till location is set
+                //since intent service runs on background thread, it doesn't block main thread
+                Log.d("Address", "Location null retrying");
+                getAddress();
+            }
+
+            if (resultCode == 1) {
+                Toast.makeText(getActivity(),
+                        "Address not found, " ,
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            String currentAdd = resultData.getString("address_result");
+
+            showResults(currentAdd);
+        }
+    }
+
+    private void showResults(String currentAdd){
+        currentAddTv.setText(currentAdd);
     }
 }
