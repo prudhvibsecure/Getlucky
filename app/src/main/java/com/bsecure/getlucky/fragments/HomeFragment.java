@@ -220,9 +220,9 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
         addressResultReceiver = new LocationAddressResultReceiver(new Handler());
 
-        currentAddTv = laView.findViewById(R.id.current_address);
+      //  currentAddTv = laView.findViewById(R.id.current_address);
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
         locationCallback = new LocationCallback() {
             @Override
