@@ -58,7 +58,15 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
         matchesList.clear();
         notifyItemRangeRemoved(0, size);
     }
+    public void addItems(List<StoreListModel> List) {
+        matchesList.addAll(List);
+        notifyDataSetChanged();
+    }
+    public void addLoading() {
 
+        matchesList.add(new StoreListModel());
+        notifyItemInserted(matchesList.size() - 1);
+    }
     @Override
     public int getItemCount() {
 
@@ -129,10 +137,9 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
 
         protected TextView store_name;
         protected TextView tv_address;
-        LinearLayout special_offer;
-        LinearLayout lucky_offer;
+        LinearLayout ll_item;
+
         ImageView store_image;
-        CardView ll_item;
         public View mViewContent;
         public View mActionContainer;
 
@@ -141,7 +148,6 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
 
             store_name = (TextView) v.findViewById(R.id.store_name);
             tv_address = (TextView) v.findViewById(R.id.tv_address);
-            special_offer = (LinearLayout) v.findViewById(R.id.special_offer);
             store_image = (ImageView) v.findViewById(R.id.store_image);
             ll_item =  v.findViewById(R.id.ll_item);
             mActionContainer = itemView.findViewById(R.id.view_list_repo_action_container);

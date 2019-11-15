@@ -19,6 +19,7 @@
 
     <color name="titlecolor">#005C9B</color>
     <color name="titlecolor1">#C91B2C</color>
+    <color name="titlecolor2">#A93226</color>
 
     <color name="lightGray">#aaaaaa</color>
 
@@ -33,6 +34,8 @@
     <color name="gray">#555555</color>
 
     <color name="tool_color">#FFF4EF</color>
+    <color name="light_gray1">#F8F9F9</color>
+    <color name="light_gray2">#F4F6F6</color>
 
 
 </resources>

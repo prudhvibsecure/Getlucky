@@ -58,7 +58,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_centerInParent="true"
-        android:text="Add Store (+)"
+        android:text="Add Store Image (+)"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="20sp" />
 
@@ -107,45 +107,91 @@
                 android:singleLine="true" />
 
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/st_category"
+            <LinearLayout
+                android:id="@+id/st_category_l"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:layout_below="@+id/st_name"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/square"
+                android:orientation="horizontal">
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/st_category"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+               android:layout_weight="1"
+                android:background="@drawable/btnsquare2"
                 android:clickable="true"
-                android:drawableRight="@mipmap/ic_down"
-                android:editable="false"
-                android:focusable="false"
                 android:hint="Category"
                 android:padding="10dp"
                 android:singleLine="true" />
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/st_keywords"
+                <ImageView
+                    android:id="@+id/i_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="5dp"
+                    android:tint="@color/red"
+                    android:background="@drawable/btnsquare3"
+                    android:src="@android:drawable/ic_input_add"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/st_keywords_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/st_category"
+                android:layout_centerInParent="true"
+                android:layout_below="@+id/st_category_l"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/square"
+                android:orientation="horizontal">
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/st_keywords"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+               android:layout_weight="1"
+                android:background="@drawable/btnsquare2"
                 android:hint="Keywords eg: Shoes,Sock"
                 android:maxLines="3"
+                android:singleLine="true"
                 android:padding="10dp" />
 
+                <ImageView
+                    android:id="@+id/i_keys"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="5dp"
+                    android:tint="@color/red"
+                    android:background="@drawable/btnsquare3"
+                    android:src="@android:drawable/ic_input_add"/>
+            </LinearLayout>
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/st_keywords"
+                android:layout_below="@+id/st_keywords_1"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/square"
                 android:clickable="true"
+                android:drawableRight="@mipmap/tracker"
                 android:editable="false"
                 android:focusable="false"
                 android:hint="Location"
                 android:padding="10dp"
                 android:singleLine="true" />
+            <AutoCompleteTextView
+                android:id="@+id/location1"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:visibility="gone"
+                android:layout_below="@+id/st_keywords_1"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/square"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:hint="Location"
+                android:padding="10dp" />
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/mobile_no"

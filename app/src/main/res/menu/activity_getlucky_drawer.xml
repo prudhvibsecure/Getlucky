@@ -24,7 +24,7 @@
     <group android:id="@+id/m4">
         <item
             android:id="@+id/nav_view_store"
-            android:icon="@mipmap/ic_shop"
+            android:icon="@mipmap/ic_view_store"
             android:title="View Store" />
     </group>
     <group android:id="@+id/m5">

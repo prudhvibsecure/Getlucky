@@ -209,7 +209,7 @@ public class Utils {
         cis.close();
     }
 */
-public static  void openListDialogView(final TextView tv_location, String tittle,
+public static void openListDialogView(final TextView tv_location, String tittle,
                                final ArrayList<String> list_data,Context context) {
 
     AlertDialog.Builder builderSingle = new AlertDialog.Builder(context );
@@ -222,6 +222,7 @@ public static  void openListDialogView(final TextView tv_location, String tittle
         public void onClick(DialogInterface dialog, int which) {
             String strName = arrayAdapter.getItem(which);
             tv_location.setText(strName);
+
         }
     });
     builderSingle.show();

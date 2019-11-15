@@ -1,6 +1,7 @@
 package com.bsecure.getlucky.store;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,10 +11,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,6 +38,7 @@ import com.bsecure.getlucky.utils.Utils;
 import com.bsecure.getlucky.volleyhttp.AttachmentUpload;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
+import com.bsecure.getlucky.volleyhttp.MethodResquest_GET;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -46,11 +51,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.mobisys.android.autocompleteview.AutoCompleteView;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 
@@ -74,8 +81,11 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
     private String pin_code, area, city, country, phone, poaste_img, state;
     private EditText et_storenm, et_location, et_keywords, et_mobile, et_cat;
     int AUTOCOMPLETE_REQUEST_CODE = 1;
-    private ImageView poster;
+    private ImageView poster, i_keys,i_category;
+    private AutoCompleteTextView autoCompleteView;
     private Uri mImageUri;
+    private ArrayList<String> list = null;
+    private String cat_lstwords;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,6 +93,7 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.add_store);
         findViewById(R.id.bacl_btn).setOnClickListener(this);
         findViewById(R.id.submit).setOnClickListener(this);
+        autoCompleteView = findViewById(R.id.location1);
         et_location = findViewById(R.id.location);
         et_location.setOnClickListener(this);
         findViewById(R.id.banner).setOnClickListener(this);
@@ -90,6 +101,11 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
         et_storenm = findViewById(R.id.st_name);
         et_mobile = findViewById(R.id.mobile_no);
         et_cat = findViewById(R.id.st_category);
+        i_keys = findViewById(R.id.i_keys);
+        i_keys.setOnClickListener(this);
+
+        i_category = findViewById(R.id.i_category);
+        i_category.setOnClickListener(this);
         et_cat.setOnClickListener(this);
         et_keywords = findViewById(R.id.st_keywords);
         if (!Places.isInitialized()) {
@@ -129,8 +145,53 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
                         // updateUI();
                     }
                 });
+
+        autoCompleteView.setThreshold(1);
+        autoCompleteView.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                getLocationData(s.toString());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // TODO Auto-generated method stub
+            }
+        });
+        Places.initialize(getApplicationContext(), "AIzaSyCvdgdoCZc4bkufNsTKmaKGRw3egMIn_cs");
+
+        // Create a new Places client instance.
+
+        PlacesClient placesClient = Places.createClient(this);
+
+
     }
 
+    private void getLocationData(String toString) {
+        String url = Constants.g_location_two;
+        MethodResquest_GET resquest_get = new MethodResquest_GET(this, this, url, 101);
+        resquest_get.dismissProgress(this);
+    }
+    private void getStoreData(String text) {
+        try {
+
+            JSONObject object = new JSONObject();
+            object.put("category_ids", text);
+            MethodResquest ms = new MethodResquest(this, this, Constants.PATH + "get_keywords", object.toString(), 102);
+            ms.dismissProgress(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -145,29 +206,40 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Autocomplete.IntentBuilder(
                         AutocompleteActivityMode.FULLSCREEN, fields)
                         .setTypeFilter(TypeFilter.ADDRESS)
+                        .setCountry("IN")
                         .build(this);
                 startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
                 break;
             case R.id.st_category:
-                try {
-                    String category = AppPreferences.getInstance(this).getFromStore("category");
-                    JSONArray catarry = new JSONArray(category);
-                    ArrayList<String> list_data = new ArrayList<>();
-                    if (catarry.length() > 0) {
-                        for (int f = 0; f < catarry.length(); f++) {
-                            JSONObject oob = catarry.getJSONObject(f);
-                            list_data.add(oob.optString("category_name"));
-                        }
-                        Utils.openListDialogView((TextView) view, "Select Category", list_data, this);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+//                try {
+////                    String category = AppPreferences.getInstance(this).getFromStore("category");
+////                    JSONArray catarry = new JSONArray(category);
+////                    ArrayList<String> list_data = new ArrayList<>();
+////                    if (catarry.length() > 0) {
+////                        for (int f = 0; f < catarry.length(); f++) {
+////                            JSONObject oob = catarry.getJSONObject(f);
+////                            list_data.add(oob.optString("category_name"));
+////                        }
+////                       // openListDialogView((TextView) view, "Select Category", list_data, this);
+////                    }
+////                } catch (Exception e) {
+////                    e.printStackTrace();
+////                }
                 break;
             case R.id.banner:
                 CropImage.activity()
                         .setAspectRatio(1, 1)
                         .start(AddEditStore.this);
+                break;
+            case R.id.i_keys:
+
+                Intent search_keys = new Intent(this, AddStoreKeysSearch.class);
+                startActivityForResult(search_keys, 200);
+                break;
+                case R.id.i_category:
+
+                Intent cat_keys = new Intent(this, AddCategoryKeysSearch.class);
+                startActivityForResult(cat_keys, 201);
                 break;
         }
 
@@ -177,11 +249,15 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
 
         String st_name = et_storenm.getText().toString().trim();
         if (st_name.length() == 0) {
-            Toast.makeText(this, "Please Enter Store Name", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
             return;
         }
         String st_cat = et_cat.getText().toString().trim();
         if (st_cat.length() == 0) {
+            Toast.makeText(this, "Please Enter Category", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (cat_lstwords.length()==0){
             Toast.makeText(this, "Please Enter Category", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -309,7 +385,7 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
             pin_code = resultData.getString("postalcode");
             country = resultData.getString("country");
             state = resultData.getString("state");
-            et_location.setText(area + "," + city + "," + pin_code + "," + state + "," + state);
+            et_location.setText(area + "," + city + "," + pin_code + "," + state + "," + country);
             //((TextView) findViewById(R.id.user_location_add)).setText(mAddressOutput);
             // displayAddressOutput();
 
@@ -345,8 +421,20 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
             mImageUri = result.getUri();
             poster.setImageURI(mImageUri);
             uploadImage(mImageUri);
-        } else {
-            Toast.makeText(this, "Something gone wrong!", Toast.LENGTH_SHORT).show();
+        }
+        if (requestCode == 200) {
+            if (resultCode == RESULT_OK) {
+                String ket_text = data.getStringExtra("keys_data");
+                et_keywords.setText(ket_text);
+
+            }
+        }if (requestCode == 201) {
+            if (resultCode == RESULT_OK) {
+                cat_lstwords = data.getStringExtra("keys_data");
+                String ids = data.getStringExtra("keys_ids");
+                et_cat.setText(cat_lstwords);
+                getStoreData(ids);
+            }
         }
     }
 
@@ -384,6 +472,33 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
                         this.finish();
                     }
                     break;
+                case 101:
+                    JSONObject jsonOb = new JSONObject(response.toString());
+                    JSONArray array = jsonOb.getJSONArray("predictions");
+                    if (array != null && array.length() > 0) {
+                        list = new ArrayList<String>();
+                        for (int i = 0; i < array.length(); i++) {
+                            JSONObject jObject = array.getJSONObject(i);
+                            String description = jObject.getString("description");
+                            String place_id = jObject.getString("place_id");
+                            String reference = jObject.getString("reference");
+                            list.add(description);
+
+                        }
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                                android.R.layout.select_dialog_item, list);
+                        autoCompleteView.setThreshold(1);
+                        autoCompleteView.setAdapter(adapter);
+                    }
+                    break;
+                case 102:
+
+                    JSONObject object = new JSONObject(response.toString());
+                    if (object.optString("statuscode").equalsIgnoreCase("200")) {
+                        JSONArray array1=object.getJSONArray("keywords_ios");
+                        AppPreferences.getInstance(this).addToStore("keywords",array1.toString(),true);
+                    }
+                    break;
             }
 
         } catch (Exception e) {
@@ -396,5 +511,24 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
     public void requestEndedWithError(String error, int errorcode) {
 
     }
+//    public  void openListDialogView(final TextView tv_location, String tittle,
+//                                    final ArrayList<String> list_data, Context context) {
+//
+//        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
+//        builderSingle.setTitle(tittle);
+//        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, list_data);
+//        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//
+//        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                String strName = arrayAdapter.getItem(which);
+//                tv_location.setText(strName);
+//                getStoreData(et_cat.getText().toString());
+//
+//            }
+//        });
+//        builderSingle.show();
+//    }
 
 }

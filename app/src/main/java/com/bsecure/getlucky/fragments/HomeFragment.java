@@ -132,7 +132,6 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
     private void getStoreData() {
         try {
-            String serch_word = serach.getText().toString();
             String category = AppPreferences.getInstance(getActivity()).getFromStore("category");
             JSONArray ayArray = new JSONArray(category);
             if (ayArray.length() > 0) {
@@ -238,7 +237,8 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
                     JSONObject object = new JSONObject(response.toString());
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
-                        String keywords = object.optString("keywords");
+                        JSONArray array=object.getJSONArray("keywords_ios");
+                        AppPreferences.getInstance(getActivity()).addToStore("keywords",array.toString(),true);
                     }
 
                     searchStore(0);
