@@ -32,6 +32,7 @@ import com.bsecure.getlucky.volleyhttp.AttachmentUpload;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 import com.bsecure.getlucky.volleyhttp.MethodResquest_GET;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
@@ -41,7 +42,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.TypeFilter;
-import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
@@ -58,7 +58,7 @@ import java.util.List;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class AddEditStore extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RequestHandler, IFileUploadCallback {
+public class AddStore extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RequestHandler, IFileUploadCallback {
     private GoogleApiClient mGoogleApiClient;
     private AddressResultReceiver mResultReceiver;
     String mAddressOutput;
@@ -67,11 +67,12 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
     private String pin_code, area, city, country, phone, poaste_img, state;
     private EditText et_storenm, et_location, et_keywords, et_mobile, et_cat;
     int AUTOCOMPLETE_REQUEST_CODE = 1;
-    private ImageView poster, i_keys,i_category;
+    private ImageView poster, i_keys, i_category;
     private AutoCompleteTextView autoCompleteView;
     private Uri mImageUri;
     private ArrayList<String> list = null;
-    private String cat_lstwords;
+    private String cat_lstwords,ids="";
+    private  String status="1";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -120,7 +121,7 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
                         }
 
                         if (!Geocoder.isPresent()) {
-                            Toast.makeText(AddEditStore.this,
+                            Toast.makeText(AddStore.this,
                                     R.string.no_geocoder_available,
                                     Toast.LENGTH_LONG).show();
                             return;
@@ -154,11 +155,6 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
         });
         Places.initialize(getApplicationContext(), "AIzaSyCvdgdoCZc4bkufNsTKmaKGRw3egMIn_cs");
 
-        // Create a new Places client instance.
-
-        PlacesClient placesClient = Places.createClient(this);
-
-
     }
 
     private void getLocationData(String toString) {
@@ -166,6 +162,7 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
         MethodResquest_GET resquest_get = new MethodResquest_GET(this, this, url, 101);
         resquest_get.dismissProgress(this);
     }
+
     private void getStoreData(String text) {
         try {
 
@@ -178,6 +175,7 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
         }
 
     }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -215,16 +213,21 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
             case R.id.banner:
                 CropImage.activity()
                         .setAspectRatio(1, 1)
-                        .start(AddEditStore.this);
+                        .start(AddStore.this);
                 break;
             case R.id.i_keys:
 
-                Intent search_keys = new Intent(this, AddStoreKeysSearch.class);
-                startActivityForResult(search_keys, 200);
+                if (et_cat.getText().toString().length() == 0) {
+                    Toast.makeText(this, "Please Choose Category", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent search_keys = new Intent(this, AddStoreKeysSearch.class);
+                    search_keys.putExtra("key_selected_keys", et_keywords.getText().toString());
+                    startActivityForResult(search_keys, 200);
+                }
                 break;
-                case R.id.i_category:
-
+            case R.id.i_category:
                 Intent cat_keys = new Intent(this, AddCategoryKeysSearch.class);
+                cat_keys.putExtra("cat_selected_keys", ids);
                 startActivityForResult(cat_keys, 201);
                 break;
         }
@@ -240,22 +243,22 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
         }
         String st_cat = et_cat.getText().toString().trim();
         if (st_cat.length() == 0) {
-            Toast.makeText(this, "Please Enter Category", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
             return;
         }
         String keyword = et_keywords.getText().toString().trim();
         if (keyword.length() == 0) {
-            Toast.makeText(this, "Please Enter Keywords", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
             return;
         }
         String location = et_location.getText().toString().trim();
         if (location.length() == 0) {
-            Toast.makeText(this, "Please Select Location", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
             return;
         }
         String mobile = et_mobile.getText().toString().trim();
         if (mobile.length() == 0) {
-            Toast.makeText(this, "Please Enter Mobile Number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
             return;
         }
         if (mobile.length() < 10) {
@@ -263,7 +266,8 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
             return;
         }
         if (poaste_img == null) {
-            poaste_img = "";
+            Toast.makeText(this, "Please Select Store Image", Toast.LENGTH_SHORT).show();
+            return;
         }
         String session_data = AppPreferences.getInstance(this).getFromStore("userData");
         Log.e("data", session_data);
@@ -275,6 +279,8 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
             JSONObject object = new JSONObject();
             object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
             object.put("store_name", st_name);
+            if (area == null)
+                area = "unknown road";
             object.put("area", area);
             object.put("city", city);
             object.put("state", state);
@@ -282,6 +288,8 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
             object.put("pin_code", pin_code);
             object.put("store_phone_number", mobile);
             object.put("categories", st_cat);
+            object.put("categories_id", ids);
+            object.put("custom_keywords", keyword);
             object.put("keywords", keyword);
             object.put("store_image", poaste_img);
             new MethodResquest(this, this, Constants.PATH + "add_store", object.toString(), 100);
@@ -367,6 +375,10 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
             pin_code = resultData.getString("postalcode");
             country = resultData.getString("country");
             state = resultData.getString("state");
+
+            if (area == null) {
+                area = "unknown area";
+            }
             et_location.setText(area + "," + city + "," + pin_code + "," + state + "," + country);
             //((TextView) findViewById(R.id.user_location_add)).setText(mAddressOutput);
             // displayAddressOutput();
@@ -407,13 +419,19 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
         if (requestCode == 200) {
             if (resultCode == RESULT_OK) {
                 String ket_text = data.getStringExtra("keys_data");
-                et_keywords.setText(ket_text);
+                String kes = et_keywords.getText().toString();
+                if (kes.length() == 0) {
+                    et_keywords.setText(ket_text);
+                } else {
+                    et_keywords.setText(kes + "," + ket_text);
+                }
 
             }
-        }if (requestCode == 201) {
+        }
+        if (requestCode == 201) {
             if (resultCode == RESULT_OK) {
                 cat_lstwords = data.getStringExtra("keys_data");
-                String ids = data.getStringExtra("keys_ids");
+                ids = data.getStringExtra("keys_ids");
                 et_cat.setText(cat_lstwords);
                 getStoreData(ids);
             }
@@ -477,8 +495,8 @@ public class AddEditStore extends AppCompatActivity implements View.OnClickListe
 
                     JSONObject object = new JSONObject(response.toString());
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
-                        JSONArray array1=object.getJSONArray("keywords_ios");
-                        AppPreferences.getInstance(this).addToStore("keywords",array1.toString(),true);
+                        JSONArray array1 = object.getJSONArray("keywords_ios");
+                        AppPreferences.getInstance(this).addToStore("keywords", array1.toString(), true);
                     }
                     break;
             }

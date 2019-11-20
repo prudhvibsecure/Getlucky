@@ -25,7 +25,7 @@ import com.bsecure.getlucky.barcode.Mybarcode;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.fragments.HomeFragment;
 import com.bsecure.getlucky.fragments.ParentFragment;
-import com.bsecure.getlucky.store.AddEditStore;
+import com.bsecure.getlucky.store.AddStore;
 import com.bsecure.getlucky.store.ViewStoresList;
 import com.bsecure.getlucky.utils.TraceUtils;
 import com.bumptech.glide.Glide;
@@ -269,7 +269,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
         if (session_data != null && !TextUtils.isEmpty(session_data)) {
             nav_Menu.findItem(R.id.nav_profile).setVisible(true);
             nav_Menu.findItem(R.id.nav_login).setVisible(false);
-            nav_Menu.findItem(R.id.nav_store).setVisible(true);
+            nav_Menu.findItem(R.id.nav_store).setVisible(false);
             nav_Menu.findItem(R.id.nav_view_store).setVisible(true);
             nav_Menu.findItem(R.id.nav_bar_code).setVisible(true);
         } else {
@@ -301,7 +301,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
                 break;
             case R.id.nav_store:
 
-                Intent store = new Intent(this, AddEditStore.class);
+                Intent store = new Intent(this, AddStore.class);
                 startActivity(store);
                 overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
                 break;

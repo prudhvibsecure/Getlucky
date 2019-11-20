@@ -111,7 +111,17 @@
         </activity>
 
         <activity
-            android:name=".store.AddEditStore"
+            android:name=".store.AddStore"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".store.EditStore"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -178,6 +188,8 @@
             </intent-filter>
         </service>
         <service
+            android:name=".services.GetAddressIntentService"
+            android:exported="false" /> <service
             android:name=".services.FetchAddressIntentService"
             android:exported="false" />
         <service

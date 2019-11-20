@@ -57,13 +57,16 @@
         android:gravity="center"
         android:layout_marginTop="10dp"/>
 
-
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:layout_below="@+id/editprofile">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editprofile"
         card_view:cardBackgroundColor="@color/white"
         card_view:cardCornerRadius="8dp"
         card_view:cardElevation="8dp"
@@ -152,5 +155,5 @@
     </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
-
+    </androidx.core.widget.NestedScrollView>
 </RelativeLayout>

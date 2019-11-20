@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bsecure.getlucky.GetLucky;
+import com.bsecure.getlucky.Login;
 import com.bsecure.getlucky.OtpScreen;
 import com.bsecure.getlucky.R;
 import com.bsecure.getlucky.Splash;
@@ -27,7 +28,7 @@ public class VerifyPin extends AppCompatActivity {
     private PinView pin_et;
 
     private Button submit;
-    private TextView verifytext;
+    private TextView verifytext,for_get;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,6 +38,15 @@ public class VerifyPin extends AppCompatActivity {
         pin_et = (PinView) findViewById(R.id.pinView);
         submit = findViewById(R.id.submit);
         verifytext = findViewById(R.id.verifytext);
+        for_get = findViewById(R.id.for_get);
+        for_get.setVisibility(View.VISIBLE);
+        for_get.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent login=new Intent(getApplicationContext(), Login.class);
+                startActivity(login);
+            }
+        });
         submit.setVisibility(View.GONE);
         verifytext.setText("VERIFY PIN");
         pin_et.postDelayed(new Runnable() {
@@ -73,7 +83,7 @@ public class VerifyPin extends AppCompatActivity {
 
         String pin = AppPreferences.getInstance(VerifyPin.this).getFromStore("pin_view");
         if (TextUtils.isEmpty(otpone)) {
-            Toast.makeText(VerifyPin.this, "Enter your 4 Digits Pin", Toast.LENGTH_SHORT).show();
+            Toast.makeText(VerifyPin.this, "Enter Your 4 Digit Pin", Toast.LENGTH_SHORT).show();
             return;
         }
         if (pin.equalsIgnoreCase(otpone)) {
@@ -83,7 +93,7 @@ public class VerifyPin extends AppCompatActivity {
             finish();
         } else {
             if (otpone.length() >= 4) {
-                Toast.makeText(VerifyPin.this, "Wrong Pin", Toast.LENGTH_SHORT).show();
+                Toast.makeText(VerifyPin.this, "Invalid Pin", Toast.LENGTH_SHORT).show();
             }
         }
     }

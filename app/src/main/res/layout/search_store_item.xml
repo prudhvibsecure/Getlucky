@@ -52,6 +52,7 @@
                 android:layout_height="wrap_content"
                 android:text="Address"
                 android:paddingTop="5dp"
+                android:singleLine="true"
                 android:paddingBottom="5dp"
                 android:textSize="@dimen/_12sdp" />
 

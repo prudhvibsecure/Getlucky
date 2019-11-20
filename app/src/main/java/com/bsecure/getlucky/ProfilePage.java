@@ -22,17 +22,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.interfaces.IFileUploadCallback;
 import com.bsecure.getlucky.interfaces.RequestHandler;
-import com.bsecure.getlucky.store.AddEditStore;
 import com.bsecure.getlucky.utils.Utils;
 import com.bsecure.getlucky.volleyhttp.AttachmentUpload;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 import com.bsecure.getlucky.volleyhttp.MethodResquest_GET;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.common.api.Status;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import org.json.JSONArray;

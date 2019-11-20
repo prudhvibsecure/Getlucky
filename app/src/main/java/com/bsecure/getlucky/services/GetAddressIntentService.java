@@ -39,7 +39,7 @@ public class GetAddressIntentService extends IntentService {
         //send no location error to results receiver
         if (location == null) {
             msg = "No location, can't go further without location";
-            sendResultsToReceiver(0, msg);
+            sendResultsToReceiver(0, "", "", "", "","", msg);
             return;
         }
         //call GeoCoder getFromLocation to get address
@@ -58,44 +58,56 @@ public class GetAddressIntentService extends IntentService {
 
         if (addresses == null || addresses.size()  == 0) {
             msg = "No address found for the location";
-            sendResultsToReceiver(1, msg);
+            sendResultsToReceiver(1, "", "", "", "", "",msg);
         } else {
             Address address = addresses.get(0);
             StringBuffer addressDetails = new StringBuffer();
 
-            addressDetails.append(address.getFeatureName());
-            addressDetails.append("\n");
+//            addressDetails.append(address.getFeatureName());
+//            addressDetails.append(",");
+//
+//            addressDetails.append(address.getThoroughfare());
+//            addressDetails.append(",");
+//
+            if (address.getSubLocality()==null){
+                addressDetails.append("no name");
+                addressDetails.append(",");
+            }else {
+                addressDetails.append(address.getSubLocality());//area
+                addressDetails.append(",");
+            }
+            if (address.getLocality()==null){
+                addressDetails.append("");
+            }else {
+                addressDetails.append(address.getLocality());//city
+                addressDetails.append(",");
+            }
 
-            addressDetails.append(address.getThoroughfare());
-            addressDetails.append("\n");
+//            addressDetails.append(address.getSubAdminArea());//
+//            addressDetails.append(",");
 
-            addressDetails.append("Locality: ");
-            addressDetails.append(address.getLocality());
-            addressDetails.append("\n");
-
-            addressDetails.append("County: ");
-            addressDetails.append(address.getSubAdminArea());
-            addressDetails.append("\n");
-
-            addressDetails.append("State: ");
             addressDetails.append(address.getAdminArea());
-            addressDetails.append("\n");
+            addressDetails.append(",");
 
-            addressDetails.append("Country: ");
-            addressDetails.append(address.getCountryName());
-            addressDetails.append("\n");
-
-            addressDetails.append("Postal Code: ");
             addressDetails.append(address.getPostalCode());
-            addressDetails.append("\n");
+            addressDetails.append(",");
+            addressDetails.append(address.getCountryName());
 
-            sendResultsToReceiver(2,addressDetails.toString());
+
+
+
+            sendResultsToReceiver(2,address.getSubLocality(),address.getPostalCode(),address.getLocality(),address.getCountryName(),address.getAdminArea(),addressDetails.toString());
         }
     }
     //to send results to receiver in the source activity
-    private void sendResultsToReceiver(int resultCode, String message) {
+    private void sendResultsToReceiver(int resultCode, String area, String postalcode, String city, String country, String state,String message) {
         Bundle bundle = new Bundle();
-        bundle.putString("address_result", message);
+        bundle.putString("address_data", message);
+        bundle.putString("area", area);
+        bundle.putString("postalcode", postalcode);
+        bundle.putString("city", city);
+        bundle.putString("country", country);
+        bundle.putString("state", state);
         addressResultReceiver.send(resultCode, bundle);
     }
 }

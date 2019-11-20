@@ -31,11 +31,13 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
     private final LayoutInflater layoutInflater;
     private List<KeyWords> contactList = null;
     private List<KeyWords> contactListFiltered;
+    private List<KeyWords> my_select_list=new ArrayList<>();
     private SparseBooleanArray selectedItems;
     private SparseBooleanArray animationItemsIndex;
     private static int currentSelectedIndex = -1;
     private HashMap<Integer, Boolean> isChecked = new HashMap<>();
     boolean isSelectedAll=false;
+    private String cat_ids="";
 
     public CategoryListAdapter(List<KeyWords> contactList, Context context, KeywordsListListener listener) {
         this.context = context;
@@ -85,6 +87,15 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
             else {
                 contactViewHolder.checkBox.setChecked(true);
             }
+            String cat_id=mycontactlist.getId();
+            if (my_select_list.size()>0){
+
+                for (int k=0;k<my_select_list.size();k++) {
+                    if (my_select_list.get(k).getId().equalsIgnoreCase(cat_id)) {
+                        contactViewHolder.checkBox.setChecked(true);
+                    }
+                }
+            }
             contactViewHolder.store_name.setText(mycontactlist.getKeyword());
             applyClickEvents(contactViewHolder, contactListFiltered, position,contactViewHolder.checkBox);
         } catch (Exception e) {
@@ -124,6 +135,11 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         isSelectedAll=false;
         notifyDataSetChanged();
     }
+    public void setCat(ArrayList<KeyWords> category_id) {
+        my_select_list=category_id;
+        notifyDataSetChanged();
+    }
+
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -132,6 +148,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         return myHoder;
 
     }
+
 
     public class ContactViewHolder extends RecyclerView.ViewHolder {
 

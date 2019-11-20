@@ -3,6 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableRight="@mipmap/tracker"
+        android:drawablePadding="5dp"
+        android:padding="10dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:background="@color/tool_color"
+        android:textSize="12sp"
+        android:text="Address Fetching..."
+        android:singleLine="true" />
 
     <RelativeLayout
         android:id="@+id/llv"
@@ -13,24 +25,11 @@
         android:background="#fff"
         android:padding="10dp">
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/location"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/square"
-            android:clickable="true"
-            android:drawableRight="@mipmap/tracker"
-            android:drawablePadding="5dp"
-            android:editable="false"
-            android:hint="Location"
-            android:padding="10dp"
-            android:singleLine="true" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/location"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatEditText

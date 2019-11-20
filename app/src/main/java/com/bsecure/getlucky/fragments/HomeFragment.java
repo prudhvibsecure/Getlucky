@@ -37,6 +37,7 @@ import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.helper.RecyclerOnScrollListener;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.models.StoreListModel;
+import com.bsecure.getlucky.network.CheckNetwork;
 import com.bsecure.getlucky.services.AddressService;
 import com.bsecure.getlucky.services.GetAddressIntentService;
 import com.bsecure.getlucky.volleyhttp.Constants;
@@ -59,7 +60,7 @@ import java.util.List;
 public class HomeFragment extends ParentFragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RequestHandler,StoreListAdapter.StoreAdapterListener {
 
     private GetLucky getLucky;
-    private String pin_code, area, city, country, phone, category_ids = "", state;
+    private String pin_code, area="", city="", country="", phone, category_ids = "", state="";
     private OnListFragmentInteractionListener mListener;
     private OnFragmentInteractionListener mFragListener;
     private View laView;
@@ -69,7 +70,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
     private FusedLocationProviderClient mFusedLocationClient;
     private EditText serach;
     private RecyclerView mRecyclerView;
-    private List<StoreListModel> storeListModelList;
+    private List<StoreListModel> storeListModelList=new ArrayList<>();
     private StoreListAdapter adapter;
     private int count=0;
     private SwipeRefreshLayout mSwipeRefreshLayout = null;
@@ -105,16 +106,16 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
 
 
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED) {
-            locationFind();
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                        101);
-            }
-        }
+//        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) ==
+//                PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) ==
+//                PackageManager.PERMISSION_GRANTED) {
+//            locationFind();
+//        } else {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+//                        101);
+//            }
+//        }
 
     }
 
@@ -272,6 +273,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
                         JSONArray array=object.getJSONArray("keywords_ios");
                         AppPreferences.getInstance(getActivity()).addToStore("keywords",array.toString(),true);
+                        AppPreferences.getInstance(getActivity()).addToStore("keywords_new",array.toString(),true);
                     }
 
                     searchStore(0);
@@ -280,7 +282,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
                     JSONObject object1 = new JSONObject(response.toString());
                     if (object1.optString("statuscode").equalsIgnoreCase("200")) {
-                        storeListModelList=new ArrayList<>();
+                       // storeListModelList=new ArrayList<>();
                         mSwipeRefreshLayout.setRefreshing(false);
                         mSwipeRefreshLayout.setEnabled(true);
                         laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
@@ -307,6 +309,10 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
                             mRecyclerView.setLayoutManager(linearLayoutManager);
                             mRecyclerView.setAdapter(adapter);
+                            if (storeListModelList.size()>5){
+                                adapter.addItems(storeListModelList);
+                                adapter.addLoading();
+                            }
                         }else{
                             laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
                             laView.findViewById(R.id.no_data).setVisibility(View.VISIBLE);
@@ -331,6 +337,8 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
     private void searchStore(int pageno) {
         try {
             JSONObject object = new JSONObject();
+            if (area==null)
+                area="";
             object.put("area", area);
             object.put("city", city);
             object.put("state", state);
@@ -348,6 +356,9 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
     public void requestEndedWithError(String error, int errorcode) {
         mSwipeRefreshLayout.setRefreshing(false);
         mSwipeRefreshLayout.setEnabled(true);
+        laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
+        laView.findViewById(R.id.no_data).setVisibility(View.VISIBLE);
+        ((TextView)laView.findViewById(R.id.no_data)).setText(error);
     }
 
     @Override
@@ -436,7 +447,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
             mAddressOutput = area + "," + city + "," + state + "," + country;
             ((EditText) laView.findViewById(R.id.location)).setText(mAddressOutput);
             // displayAddressOutput();
-            getStoreData();
+           // getStoreData();
             // Show a toast message if an address was found.
             if (resultCode == Constants.SUCCESS_RESULT) {
                 //  showToast(getString(R.string.address_found));
@@ -447,10 +458,10 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 101
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-           locationFind();
-        }
+//        if (requestCode == 101
+//                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//           locationFind();
+//        }
         switch (requestCode) {
             case LOCATION_PERMISSION_REQUEST_CODE: {
                 if (grantResults.length > 0
@@ -469,6 +480,13 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
     }
 
+    @Override
+    public void onResume() {
+
+        startLocationUpdates();
+        super.onResume();
+    }
+
     @SuppressWarnings("MissingPermission")
     private void startLocationUpdates() {
         if (ContextCompat.checkSelfPermission(getActivity(),
@@ -479,8 +497,8 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                     LOCATION_PERMISSION_REQUEST_CODE);
         } else {
             LocationRequest locationRequest = new LocationRequest();
-            locationRequest.setInterval(2000);
-            locationRequest.setFastestInterval(1000);
+            locationRequest.setInterval(20000);
+            locationRequest.setFastestInterval(10000);
             locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
             fusedLocationClient.requestLocationUpdates(locationRequest,
@@ -492,17 +510,26 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
     @SuppressWarnings("MissingPermission")
     private void getAddress() {
 
-        if (!Geocoder.isPresent()) {
-            Toast.makeText(getActivity(),
-                    "Can't find current address, ",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
+        //if (CheckNetwork.isNetworkAvailable(getActivity())) {
+            if (!Geocoder.isPresent()) {
+                Toast.makeText(getActivity(),
+                        "Can't find current address, ",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-        Intent intent = new Intent(getActivity(), GetAddressIntentService.class);
-        intent.putExtra("add_receiver", addressResultReceiver);
-        intent.putExtra("add_location", currentLocation);
-        getActivity().startService(intent);
+            try {
+                Intent intent = new Intent(getActivity(), GetAddressIntentService.class);
+                intent.putExtra("add_receiver", addressResultReceiver);
+                intent.putExtra("add_location", currentLocation);
+                getLucky.startService(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+       /* }else{
+            laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
+            laView.findViewById(R.id.no_data).setVisibility(View.VISIBLE);
+        }*/
     }
 
 
@@ -515,27 +542,29 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
         protected void onReceiveResult(int resultCode, Bundle resultData) {
 
             if (resultCode == 0) {
-                //Last Location can be null for various reasons
-                //for example the api is called first time
-                //so retry till location is set
-                //since intent service runs on background thread, it doesn't block main thread
                 Log.d("Address", "Location null retrying");
                 getAddress();
             }
 
             if (resultCode == 1) {
                 Toast.makeText(getActivity(),
-                        "Address not found, " ,
+                        "Address not found",
                         Toast.LENGTH_SHORT).show();
             }
 
-            String currentAdd = resultData.getString("address_result");
-
+            String currentAdd = resultData.getString("address_data");
+            area = resultData.getString("area");
+            city = resultData.getString("city");
+            pin_code = resultData.getString("postalcode");
+            country = resultData.getString("country");
+            state = resultData.getString("state");
             showResults(currentAdd);
         }
     }
 
     private void showResults(String currentAdd){
-        currentAddTv.setText(currentAdd);
+
+        ((TextView) laView.findViewById(R.id.location)).setText(currentAdd);
+        getStoreData();
     }
 }

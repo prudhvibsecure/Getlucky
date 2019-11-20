@@ -76,11 +76,17 @@
 
        </androidx.constraintlayout.widget.ConstraintLayout>
    </RelativeLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:layout_below="@+id/banner">
     <androidx.cardview.widget.CardView
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/banner"
+
         android:layout_marginTop="-40dp"
         android:layout_marginLeft="@dimen/_10sdp"
         android:layout_marginRight="@dimen/_10sdp"
@@ -122,6 +128,7 @@
                android:layout_weight="1"
                 android:background="@drawable/btnsquare2"
                 android:clickable="true"
+                android:editable="false"
                 android:hint="Category"
                 android:padding="10dp"
                 android:singleLine="true" />
@@ -219,8 +226,22 @@
                 android:textColorHint="#fff"
                 android:textStyle="bold" />
 
+            <Button
+                android:id="@+id/submit_edit"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:layout_below="@+id/submit"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/gradient"
+                android:hint="Update"
+                android:visibility="gone"
+                android:padding="10dp"
+                android:textColorHint="#fff"
+                android:textStyle="bold" />
+
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
-
+    </androidx.core.widget.NestedScrollView>
 </RelativeLayout>

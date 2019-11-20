@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -57,6 +58,8 @@ public class MethodResquest implements MethodHandler {
 
     private static Dialog dialog = null;
 
+    private static Dialog dialog_error = null;
+
     private JSONObject json = null;
 
     private String networkType = "mobile";
@@ -103,16 +106,20 @@ public class MethodResquest implements MethodHandler {
                    // showProgress(message, context);
                     typeError = 1;
                     dismissProgress(context);
+
+                    showAlertView(message);
                 } else if (error instanceof ServerError) {
                     typeError = 2;
                     message = "The server could not be found. Please try again after some time!!";
                    // showProgress(message, context);
                     dismissProgress(context);
+                    showAlertView(message);
                 } else if (error instanceof AuthFailureError) {
                     typeError = 3;
-                    message = "Cannot connect to Internet...Please check your connection!";
+                    message = "Your Token Expired Try After Some Time";
                     dismissProgress(context);
                    // showProgress(message, context);
+                    showAlertView(message);
                 } else if (error instanceof ParseError) {
                     typeError = 4;
                     message = "No Data Found";
@@ -122,11 +129,13 @@ public class MethodResquest implements MethodHandler {
                     typeError = 5;
                     message = "Cannot connect to Internet...Please check your connection!";
                     dismissProgress(context);
+                    showAlertView(message);
                    // showProgress(message, context);
                 } else if (error instanceof TimeoutError) {
                     typeError = 6;
-                    message = "TimeOut! Please check your internet connection.";
+                    message = "TimeOut! Please Try Again Later.";
                     dismissProgress(context);
+                    showAlertView(message);
                     //showProgress(message, context);
                 }
                 requestHandler.requestEndedWithError(message, typeError);
@@ -198,6 +207,40 @@ public class MethodResquest implements MethodHandler {
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(jsonObjectRequest);
+    }
+
+    private void showAlertView(String message) {
+
+        try {
+
+            dialog_error = new Dialog(context,R.style.Theme_MaterialComponents_BottomSheetDialog);
+
+            dialog_error.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+            if (dialog_error.getWindow() != null) {
+
+                dialog_error.getWindow().setBackgroundDrawable(
+                        new ColorDrawable(Color.TRANSPARENT));
+
+            }
+
+            dialog_error.setCancelable(false);
+
+            View view = View.inflate(context, R.layout.error_dialog, null);
+
+            dialog_error.setContentView(view);
+            ((TextView) dialog_error.findViewById(R.id.text_message)).setText(message);
+            dialog_error.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog_error.dismiss();
+                }
+            });
+            dialog_error.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void showProgress(String title, final Context context) {

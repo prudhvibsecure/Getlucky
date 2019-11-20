@@ -1,7 +1,55 @@
 package com.bsecure.getlucky.models;
 
 public class StoreListModel {
-    String store_name,address,area,special_offer,offer,store_image,store_phone_number,city,state,country,pin_code;
+    String status,categories_array,keywords_array,store_id,store_name,address,area,special_offer,offer,store_image,store_phone_number,city,state,country,pin_code,categories,keywords;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getCategories_array() {
+        return categories_array;
+    }
+
+    public void setCategories_array(String categories_array) {
+        this.categories_array = categories_array;
+    }
+
+    public String getKeywords_array() {
+        return keywords_array;
+    }
+
+    public void setKeywords_array(String keywords_array) {
+        this.keywords_array = keywords_array;
+    }
+
+    public String getCategories() {
+        return categories;
+    }
+
+    public void setCategories(String categories) {
+        this.categories = categories;
+    }
+
+    public String getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(String keywords) {
+        this.keywords = keywords;
+    }
+
+    public String getStore_id() {
+        return store_id;
+    }
+
+    public void setStore_id(String store_id) {
+        this.store_id = store_id;
+    }
 
     public String getPin_code() {
         return pin_code;

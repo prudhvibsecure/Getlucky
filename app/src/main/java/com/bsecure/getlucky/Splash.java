@@ -37,7 +37,7 @@ public class Splash extends AppCompatActivity implements RequestHandler {
                     overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
                     finish();
                 }else {
-                    startActivity(new Intent(Splash.this, AddPin.class));
+                    startActivity(new Intent(Splash.this, GetLucky.class));
                     overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
                     finish();
                 }

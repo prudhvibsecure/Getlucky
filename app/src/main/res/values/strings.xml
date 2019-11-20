@@ -27,4 +27,6 @@
 
     <string name="terms"><u>Terms &amp; Conditions</u></string>
 
+    <string name="delete_store">Are You Sure You Want To Delete Store ?</string>
+
 </resources>

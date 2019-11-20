@@ -26,6 +26,7 @@ import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.models.KeyWords;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -33,7 +34,8 @@ import java.util.List;
 
 public class AddStoreKeysSearch extends AppCompatActivity implements KeywordsListAdapter.KeywordsListListener{
     private SearchView searchView;
-    private ArrayList<KeyWords> keys_list;
+    private ArrayList<KeyWords> keys_list=new ArrayList<>();
+    private ArrayList<KeyWords> keys_list_edit=new ArrayList<>();
     private KeywordsListAdapter adapter;
     private RecyclerView mRecyclerView;
     private ArrayList<String> keywords=new ArrayList<>();
@@ -71,7 +73,7 @@ public class AddStoreKeysSearch extends AppCompatActivity implements KeywordsLis
             }
         });
         try{
-            keys_list=new ArrayList<>();
+
             String category = AppPreferences.getInstance(this).getFromStore("keywords");
             JSONArray catarry = new JSONArray(category);
             if (catarry.length() > 0) {
@@ -90,6 +92,24 @@ public class AddStoreKeysSearch extends AppCompatActivity implements KeywordsLis
         }catch (Exception e){
             e.printStackTrace();
         }
+        String keys_data=getIntent().getStringExtra("key_selected_keys");
+        if (keys_data.length()!=0){
+            try {
+            JSONArray catarry = new JSONArray(keys_data);
+            if (catarry.length() > 0) {
+                for (int k = 0; k < catarry.length(); k++) {
+                    KeyWords words=new KeyWords();
+                    JSONObject oob = catarry.getJSONObject(k);
+                    words.setKeyword(oob.optString("keyword"));
+                    keys_list_edit.add(words);
+                }
+                adapter.setKeys(keys_list_edit);
+            }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
         checkBox .setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

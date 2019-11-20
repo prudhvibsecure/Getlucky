@@ -36,6 +36,8 @@ public class KeywordsListAdapter extends RecyclerView.Adapter<KeywordsListAdapte
     private static int currentSelectedIndex = -1;
     private HashMap<Integer, Boolean> isChecked = new HashMap<>();
     boolean isSelectedAll=false;
+    private static String keyword="";
+    private List<KeyWords> my_select_list=new ArrayList<>();
     public KeywordsListAdapter(List<KeyWords> contactList, Context context, KeywordsListListener listener) {
         this.context = context;
         this.listener = listener;
@@ -84,6 +86,15 @@ public class KeywordsListAdapter extends RecyclerView.Adapter<KeywordsListAdapte
             else {
                 contactViewHolder.checkBox.setChecked(true);
             }
+            String cat_id=mycontactlist.getKeyword();
+            if (my_select_list.size()>0){
+
+                for (int k=0;k<my_select_list.size();k++) {
+                    if (my_select_list.get(k).getKeyword().equalsIgnoreCase(cat_id)) {
+                        contactViewHolder.checkBox.setChecked(true);
+                    }
+                }
+            }
             contactViewHolder.store_name.setText(mycontactlist.getKeyword());
             applyClickEvents(contactViewHolder, contactListFiltered, position,contactViewHolder.checkBox);
         } catch (Exception e) {
@@ -97,6 +108,10 @@ public class KeywordsListAdapter extends RecyclerView.Adapter<KeywordsListAdapte
     }
     public void unselectall(){
         isSelectedAll=false;
+        notifyDataSetChanged();
+    }
+    public void setKeys(ArrayList<KeyWords> keywords_ids) {
+        my_select_list=keywords_ids;
         notifyDataSetChanged();
     }
     @Override

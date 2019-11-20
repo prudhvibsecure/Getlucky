@@ -27,6 +27,7 @@ import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.models.KeyWords;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -34,17 +35,19 @@ import java.util.List;
 
 public class AddCategoryKeysSearch extends AppCompatActivity implements CategoryListAdapter.KeywordsListListener{
     private SearchView searchView;
-    private ArrayList<KeyWords> keys_list;
+    private ArrayList<KeyWords> keys_list=new ArrayList<>();;
+    private ArrayList<KeyWords> keys_list_edit=new ArrayList<>();
     private CategoryListAdapter adapter;
     private RecyclerView mRecyclerView;
     private ArrayList<String> keywords=new ArrayList<>();
     private ArrayList<String> keywords_ids=new ArrayList<>();
-    String my_key="",ids="";
+    String my_key="",ids="",m_select_list="";
     private CheckBox checkBox;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_store_keys_view);
+
         checkBox= findViewById(R.id.check_all);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -70,13 +73,14 @@ public class AddCategoryKeysSearch extends AppCompatActivity implements Category
                     Intent intent = new Intent();
                     intent.putExtra("keys_data", my_key.trim());
                     intent.putExtra("keys_ids", ids.trim());
+                   // intent.putExtra("keys_json", new JSONArray(ids));
                     setResult(RESULT_OK,intent);
                     finish();
                 }
             }
         });
         try{
-            keys_list=new ArrayList<>();
+
             String category = AppPreferences.getInstance(this).getFromStore("category");
             JSONArray catarry = new JSONArray(category);
             if (catarry.length() > 0) {
@@ -93,10 +97,30 @@ public class AddCategoryKeysSearch extends AppCompatActivity implements Category
                 mRecyclerView.setItemAnimator(new DefaultItemAnimator());
                 mRecyclerView.setAdapter(adapter);
             }
+
+
         }catch (Exception e){
             e.printStackTrace();
         }
-
+        String cat_data=getIntent().getStringExtra("cat_selected_keys");
+        if (cat_data.length()!=0){
+            try {
+            JSONArray catarry = new JSONArray(cat_data);
+            if (catarry.length() > 0) {
+                for (int k = 0; k < catarry.length(); k++) {
+                    KeyWords keyWords=new KeyWords();
+                    JSONObject oob = catarry.getJSONObject(k);
+                    keyWords.setId(oob.optString("category_id"));
+                    keys_list_edit.add(keyWords);
+                  //  m_select_list=m_select_list+","+oob.optString("category_id");
+                }
+                //m_select_list=m_select_list.replaceFirst(",","");
+                adapter.setCat(keys_list_edit);
+            }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
         checkBox .setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
