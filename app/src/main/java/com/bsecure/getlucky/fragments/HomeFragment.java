@@ -1,6 +1,7 @@
 package com.bsecure.getlucky.fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -34,6 +35,7 @@ import com.bsecure.getlucky.R;
 import com.bsecure.getlucky.ViewStoreDetails;
 import com.bsecure.getlucky.adpters.StoreListAdapter;
 import com.bsecure.getlucky.common.AppPreferences;
+import com.bsecure.getlucky.helper.EndlessScrollListener;
 import com.bsecure.getlucky.helper.RecyclerOnScrollListener;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.models.StoreListModel;
@@ -57,6 +59,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.bsecure.getlucky.helper.EndlessScrollListener.PAGE_START;
+
 public class HomeFragment extends ParentFragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RequestHandler,StoreListAdapter.StoreAdapterListener {
 
     private GetLucky getLucky;
@@ -70,9 +74,8 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
     private FusedLocationProviderClient mFusedLocationClient;
     private EditText serach;
     private RecyclerView mRecyclerView;
-    private List<StoreListModel> storeListModelList=new ArrayList<>();
+    private List<StoreListModel> storeListModelList;
     private StoreListAdapter adapter;
-    private int count=0;
     private SwipeRefreshLayout mSwipeRefreshLayout = null;
     private String total_pages = "0";
 
@@ -91,6 +94,12 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
     private LocationCallback locationCallback;
     private RecyclerOnScrollListener recycScollListener = null;
 
+    private int count_page = PAGE_START;
+    private boolean isLastPage = false;
+    private int totalPage = 10;
+    private boolean isLoading = false;
+    int itemCount = 0;
+
     public HomeFragment() {
 
     }
@@ -104,50 +113,8 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
-//        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) ==
-//                PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) ==
-//                PackageManager.PERMISSION_GRANTED) {
-//            locationFind();
-//        } else {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-//                        101);
-//            }
-//        }
-
     }
 
-    private void locationFind() {
-        mResultReceiver = new AddressResultReceiver(new Handler());
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
-        mFusedLocationClient.getLastLocation()
-                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        mLastLocation = location;
-
-                        // In some rare cases the location returned can be null
-                        if (mLastLocation == null) {
-                            return;
-                        }
-
-                        if (!Geocoder.isPresent()) {
-                            Toast.makeText(getActivity(),
-                                    R.string.no_geocoder_available,
-                                    Toast.LENGTH_LONG).show();
-                            return;
-                        }
-
-                        // Start service and update UI to reflect new location
-                        startIntentService();
-                        // updateUI();
-                    }
-                });
-
-
-    }
 
     private void getStoreData() {
         try {
@@ -182,7 +149,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
         laView.findViewById(R.id.search).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                searchStore(0);
+                searchStore(count_page);
             }
         });
         mSwipeRefreshLayout = (SwipeRefreshLayout) laView.findViewById(R.id.swip_refresh);
@@ -194,7 +161,8 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
             @Override
             public void onRefresh() {
                 recycScollListener.resetValue();
-                searchStore(0);
+                count_page=0;
+                searchStore(count_page);
             }
         });
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -205,14 +173,9 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
             @Override
             public void onLoadMoreData(int currentPage) {
-                if (total_pages.length() > 0)
-                    if (currentPage <= Integer.parseInt(total_pages) - 1) {
-                        searchStore(currentPage);
-                       // getData(2, currentPage);
-                       // getView().findViewById(R.id.catgr_pbar).setVisibility(View.VISIBLE);
+                count_page=currentPage;
+                searchStore(currentPage);
 
-
-                    }
             }
         };
 
@@ -230,7 +193,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
             public void onLocationResult(LocationResult locationResult) {
                 currentLocation = locationResult.getLocations().get(0);
                 getAddress();
-            };
+            }
         };
         startLocationUpdates();
         return laView;
@@ -274,15 +237,16 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                         JSONArray array=object.getJSONArray("keywords_ios");
                         AppPreferences.getInstance(getActivity()).addToStore("keywords",array.toString(),true);
                         AppPreferences.getInstance(getActivity()).addToStore("keywords_new",array.toString(),true);
+                        AppPreferences.getInstance(getActivity()).addToStore("first_time","Yes",true);
                     }
 
-                    searchStore(0);
+                    searchStore(count_page);
                     break;
                 case 101:
 
                     JSONObject object1 = new JSONObject(response.toString());
                     if (object1.optString("statuscode").equalsIgnoreCase("200")) {
-                       // storeListModelList=new ArrayList<>();
+                        storeListModelList=new ArrayList<>();
                         mSwipeRefreshLayout.setRefreshing(false);
                         mSwipeRefreshLayout.setEnabled(true);
                         laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
@@ -309,7 +273,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
                             mRecyclerView.setLayoutManager(linearLayoutManager);
                             mRecyclerView.setAdapter(adapter);
-                            if (storeListModelList.size()>5){
+                            if (count_page>0){
                                 adapter.addItems(storeListModelList);
                                 adapter.addLoading();
                             }
@@ -403,13 +367,6 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
         mFragListener.onFragmentInteraction(R.string.app_name, true);
 
-    }
-
-    protected void startIntentService() {
-        Intent intent = new Intent(getActivity(), AddressService.class);
-        intent.putExtra(Constants.RECEIVER, mResultReceiver);
-        intent.putExtra(Constants.LOCATION_DATA_EXTRA, mLastLocation);
-        getActivity().startService(intent);
     }
 
     @Override
@@ -507,6 +464,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
         }
     }
 
+
     @SuppressWarnings("MissingPermission")
     private void getAddress() {
 
@@ -522,7 +480,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                 Intent intent = new Intent(getActivity(), GetAddressIntentService.class);
                 intent.putExtra("add_receiver", addressResultReceiver);
                 intent.putExtra("add_location", currentLocation);
-                getLucky.startService(intent);
+                getContext().startService(intent);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -565,6 +523,9 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
     private void showResults(String currentAdd){
 
         ((TextView) laView.findViewById(R.id.location)).setText(currentAdd);
-        getStoreData();
+        String vl=AppPreferences.getInstance(getActivity()).getFromStore("first_time");
+        if (vl.equalsIgnoreCase("0")) {
+            getStoreData();
+        }
     }
 }

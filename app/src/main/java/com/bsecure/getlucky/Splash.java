@@ -24,7 +24,7 @@ public class Splash extends AppCompatActivity implements RequestHandler {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        AppPreferences.getInstance(this).addToStore("first_time","0",true);
         getListCats();
 
         new Handler().postDelayed(new Runnable() {
