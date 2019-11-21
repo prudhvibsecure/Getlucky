@@ -173,11 +173,23 @@
                     android:background="@drawable/btnsquare3"
                     android:src="@android:drawable/ic_input_add"/>
             </LinearLayout>
+            <com.bsecure.getlucky.bubble.TagEditText
+                android:id="@+id/cust_key"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/st_keywords_1"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/square"
+                android:textColor="@color/black"
+                android:focusableInTouchMode="true"
+                android:windowSoftInputMode="stateAlwaysVisible"
+                android:hint="Keywords"
+                android:padding="10dp" />
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/st_keywords_1"
+                android:layout_below="@+id/cust_key"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/square"
                 android:clickable="true"
@@ -192,7 +204,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:visibility="gone"
-                android:layout_below="@+id/st_keywords_1"
+                android:layout_below="@+id/location"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/square"
                 android:singleLine="true"
@@ -204,7 +216,7 @@
                 android:id="@+id/mobile_no"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/location"
+                android:layout_below="@+id/location1"
                 android:layout_marginTop="20dp"
                 android:maxLength="10"
                 android:background="@drawable/square"

@@ -1,7 +1,10 @@
 package com.bsecure.getlucky.store;
 
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -39,12 +42,15 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
     private StoreListAdapter adapter;
     private RecyclerView mRecyclerView;
     Dialog mDialog,InactiveDiloag;
-    private String text_stats;
+    private String text_stats,message;
+    private IntentFilter filter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_store_list);
 
+        filter=new IntentFilter("com.store_refrsh");
+        filter.setPriority(1);
         findViewById(R.id.id_add_store).setOnClickListener(this);
 
         mRecyclerView=findViewById(R.id.view_store_rec);
@@ -135,7 +141,24 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
     }
 
 
+    @Override
+    protected void onResume() {
+        registerReceiver(mBroadcastReceiver,filter);
+        super.onResume();
+    }
 
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(mBroadcastReceiver);
+        super.onDestroy();
+    }
+
+    BroadcastReceiver mBroadcastReceiver=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            viewStorsList();
+        }
+    };
     private void viewStorsList() {
             try {
                 String session_data = AppPreferences.getInstance(this).getFromStore("userData");
@@ -283,9 +306,14 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
     }
     private void getInactiveDiloag(final String store_id,final String status) {
 
+        if (status.equalsIgnoreCase("0")){
+            message="Are you Sure You Want To Inactivate Store?";
+        }else{
+            message="Are you Sure You Want To Activate Store?";
+        }
         InactiveDiloag=new Dialog(this,R.style.Theme_MaterialComponents_BottomSheetDialog);
         InactiveDiloag.setContentView(R.layout.custom_alert_show);
-        ((TextView)InactiveDiloag.findViewById(R.id.text_message)).setText("Are You Sure You Want To Inactive Store?");
+        ((TextView)InactiveDiloag.findViewById(R.id.text_message)).setText(message);
         InactiveDiloag.show();
         InactiveDiloag.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override

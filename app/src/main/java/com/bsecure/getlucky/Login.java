@@ -19,7 +19,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.interfaces.RequestHandler;
+import com.bsecure.getlucky.pinstore.AddPin;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 
@@ -130,6 +132,7 @@ public class Login extends AppCompatActivity implements RequestHandler {
                     if (result.optString("statuscode").equalsIgnoreCase("200")) {
                         Intent in = new Intent(Login.this, OtpScreen.class);
                         in.putExtra("phone", phone);
+                        AppPreferences.getInstance(Login.this).addToStore("pin_view","",true);
                         startActivity(in);
                         overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
                         this.finish();

@@ -75,6 +75,8 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_store);
         findViewById(R.id.bacl_btn).setOnClickListener(this);
+        findViewById(R.id.submit).setVisibility(View.GONE);
+        findViewById(R.id.submit_edit).setVisibility(View.VISIBLE);
         findViewById(R.id.submit_edit).setOnClickListener(this);
         autoCompleteView = findViewById(R.id.location1);
         et_location = findViewById(R.id.location);
@@ -177,7 +179,7 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
             case R.id.bacl_btn:
                 finish();
                 break;
-            case R.id.submit:
+            case R.id.submit_edit:
                 addStoreReq();
                 break;
             case R.id.location:
@@ -409,6 +411,7 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
                     JSONObject myObj = new JSONObject(response.toString());
                     if (myObj.optString("statuscode").equalsIgnoreCase("200")) {
                         Toast.makeText(this, myObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                        sendBroadcast(new Intent("com.store_refrsh"));
                         this.finish();
                     }
                     break;

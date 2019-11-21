@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.bsecure.getlucky.R;
+import com.bsecure.getlucky.bubble.TagEditText;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.interfaces.IFileUploadCallback;
 import com.bsecure.getlucky.interfaces.RequestHandler;
@@ -73,6 +74,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
     private ArrayList<String> list = null;
     private String cat_lstwords,ids="";
     private  String status="1";
+    private TagEditText cust_key;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,6 +90,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
         et_storenm = findViewById(R.id.st_name);
         et_mobile = findViewById(R.id.mobile_no);
         et_cat = findViewById(R.id.st_category);
+        cust_key = findViewById(R.id.cust_key);
         i_keys = findViewById(R.id.i_keys);
         i_keys.setOnClickListener(this);
 
@@ -251,6 +254,11 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
             Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
             return;
         }
+        String keyword_cust = cust_key.getText().toString().trim();
+        if (keyword_cust.length() == 0) {
+            Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String location = et_location.getText().toString().trim();
         if (location.length() == 0) {
             Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
@@ -289,7 +297,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
             object.put("store_phone_number", mobile);
             object.put("categories", st_cat);
             object.put("categories_id", ids);
-            object.put("custom_keywords", keyword);
+            object.put("custom_keywords", keyword_cust);
             object.put("keywords", keyword);
             object.put("store_image", poaste_img);
             new MethodResquest(this, this, Constants.PATH + "add_store", object.toString(), 100);
@@ -469,6 +477,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                     JSONObject myObj = new JSONObject(response.toString());
                     if (myObj.optString("statuscode").equalsIgnoreCase("200")) {
                         Toast.makeText(this, myObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                        sendBroadcast(new Intent("com.store_refrsh"));
                         this.finish();
                     }
                     break;
