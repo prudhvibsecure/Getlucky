@@ -68,6 +68,8 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
     private JSONArray ayArray;
 
+    private View header;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,29 +124,9 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        View header = navigationView.getHeaderView(0);
+         header = navigationView.getHeaderView(0);
 
-        if (session_data != null && !TextUtils.isEmpty(session_data)) {
-            try {
-                ayArray = new JSONArray(session_data);
-                ImageView profile = (ImageView) header.findViewById(R.id.tv_profileicon);
-                Glide.with(this).load(ayArray.getJSONObject(0).optString("profile_image")).into(profile);
-                ((TextView) header.findViewById(R.id.mobile_no)).setText(ayArray.getJSONObject(0).optString("name"));
-                ((TextView) header.findViewById(R.id.refer_code)).setVisibility(View.VISIBLE);
-                ((TextView) header.findViewById(R.id.refer_code)).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        getShareRefer();
-                    }
-                });
-                ((TextView) header.findViewById(R.id.refer_code)).setText("Referral Code - " + ayArray.getJSONObject(0).optString("customer_referral_code"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        } else {
-            ((TextView) header.findViewById(R.id.mobile_no)).setText("Unknown");
-        }
+       getprofileData();
 
         FirebaseDynamicLinks.getInstance()
                 .getDynamicLink(getIntent())
@@ -168,6 +150,30 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
                 });
     }
 
+    private void getprofileData() {
+        if (session_data != null && !TextUtils.isEmpty(session_data)) {
+            try {
+                ayArray = new JSONArray(session_data);
+                ImageView profile = (ImageView) header.findViewById(R.id.tv_profileicon);
+                Glide.with(this).load(ayArray.getJSONObject(0).optString("profile_image")).into(profile);
+                ((TextView) header.findViewById(R.id.mobile_no)).setText(ayArray.getJSONObject(0).optString("name"));
+                ((TextView) header.findViewById(R.id.refer_code)).setVisibility(View.VISIBLE);
+                ((TextView) header.findViewById(R.id.refer_code)).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getShareRefer();
+                    }
+                });
+                ((TextView) header.findViewById(R.id.refer_code)).setText("Referral Code - " + ayArray.getJSONObject(0).optString("customer_referral_code"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            ((TextView) header.findViewById(R.id.mobile_no)).setText("Unknown");
+        }
+    }
+
     private void getShareRefer() {
 
         try {
@@ -187,6 +193,16 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        try{
+            getprofileData();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        super.onResume();
     }
 
     private void getShareLink() {

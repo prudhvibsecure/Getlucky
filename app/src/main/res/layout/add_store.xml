@@ -183,7 +183,7 @@
                 android:layout_below="@+id/st_keywords_1"
                 android:layout_marginTop="20dp"
                 android:maxLines="5"
-                android:hint="Keywords eg: Shoes,Sock"
+                android:hint="Custom Keywords eg: Shoes,Sock"
                 android:background="@drawable/square"
                 android:cursorVisible="true"
                 android:focusableInTouchMode="true"
