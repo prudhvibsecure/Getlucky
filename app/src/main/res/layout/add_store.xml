@@ -36,6 +36,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:layout_marginLeft="-25dp"
                     android:layout_gravity="center"
                     android:src="@mipmap/logo" />
 
@@ -125,7 +126,7 @@
                 android:id="@+id/st_category"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-               android:layout_weight="1"
+                android:layout_weight="1"
                 android:background="@drawable/btnsquare2"
                 android:clickable="true"
                 android:editable="false"
@@ -136,7 +137,7 @@
                 <ImageView
                     android:id="@+id/i_category"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:padding="5dp"
                     android:tint="@color/red"
@@ -158,7 +159,9 @@
                 android:layout_height="wrap_content"
                android:layout_weight="1"
                 android:background="@drawable/btnsquare2"
-                android:hint="Keywords eg: Shoes,Sock"
+                android:hint="Keywords"
+                android:clickable="true"
+                android:editable="false"
                 android:maxLines="3"
                 android:singleLine="true"
                 android:padding="10dp" />
@@ -166,25 +169,31 @@
                 <ImageView
                     android:id="@+id/i_keys"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:padding="5dp"
                     android:tint="@color/red"
                     android:background="@drawable/btnsquare3"
                     android:src="@android:drawable/ic_input_add"/>
             </LinearLayout>
-            <com.bsecure.getlucky.bubble.TagEditText
+            <com.bsecure.getlucky.bubble.ContactsCompletionView
                 android:id="@+id/cust_key"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/st_keywords_1"
                 android:layout_marginTop="20dp"
+                android:maxLines="5"
+                android:hint="Keywords eg: Shoes,Sock"
                 android:background="@drawable/square"
-                android:textColor="@color/black"
+                android:cursorVisible="true"
                 android:focusableInTouchMode="true"
-                android:windowSoftInputMode="stateAlwaysVisible"
-                android:hint="Keywords"
-                android:padding="10dp" />
+                android:imeOptions="actionDone"
+                android:inputType="textCapWords|textImeMultiLine|textLongMessage"
+                android:linksClickable="true"
+                android:longClickable="true"
+                android:padding="10dp"
+                android:textColor="@color/black"
+                android:windowSoftInputMode="stateAlwaysVisible" />
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/location"
                 android:layout_width="match_parent"

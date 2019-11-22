@@ -24,10 +24,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.bsecure.getlucky.R;
-import com.bsecure.getlucky.bubble.TagEditText;
+import com.bsecure.getlucky.bubble.ContactsCompletionView;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.interfaces.IFileUploadCallback;
 import com.bsecure.getlucky.interfaces.RequestHandler;
+import com.bsecure.getlucky.models.ChipsItem;
 import com.bsecure.getlucky.services.AddressService;
 import com.bsecure.getlucky.volleyhttp.AttachmentUpload;
 import com.bsecure.getlucky.volleyhttp.Constants;
@@ -72,9 +73,10 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
     private AutoCompleteTextView autoCompleteView;
     private Uri mImageUri;
     private ArrayList<String> list = null;
-    private String cat_lstwords,ids="";
-    private  String status="1";
-    private TagEditText cust_key;
+    private String cat_lstwords, ids = "";
+    private String status = "1";
+    private ContactsCompletionView cust_key;
+    private ArrayList<String> custom_keys_list = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -156,6 +158,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                 // TODO Auto-generated method stub
             }
         });
+        cust_key.setThreshold(1);
         Places.initialize(getApplicationContext(), "AIzaSyCvdgdoCZc4bkufNsTKmaKGRw3egMIn_cs");
 
     }
@@ -230,7 +233,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                 break;
             case R.id.i_category:
                 Intent cat_keys = new Intent(this, AddCategoryKeysSearch.class);
-                cat_keys.putExtra("cat_selected_keys", ids);
+                cat_keys.putExtra("cat_selected_keys", et_cat.getText().toString());
                 startActivityForResult(cat_keys, 201);
                 break;
         }
@@ -254,11 +257,17 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
             Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
             return;
         }
-        String keyword_cust = cust_key.getText().toString().trim();
-        if (keyword_cust.length() == 0) {
-            Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
-            return;
+        cust_key.handleDone();
+        String keyword_cust = cust_key.getObjects().toString();
+        if (keyword_cust.startsWith("[") & keyword_cust.endsWith("]")) {
+            keyword_cust = keyword_cust.replace("[", "");
+            keyword_cust = keyword_cust.replace("]", "");
+            keyword_cust.replaceAll(", ",",");
         }
+//        if (keyword_cust.length() == 0) {
+//            Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
         String location = et_location.getText().toString().trim();
         if (location.length() == 0) {
             Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
@@ -300,7 +309,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
             object.put("custom_keywords", keyword_cust);
             object.put("keywords", keyword);
             object.put("store_image", poaste_img);
-            new MethodResquest(this, this, Constants.PATH + "add_store", object.toString(), 100);
+              new MethodResquest(this, this, Constants.PATH + "add_store", object.toString(), 100);
         } catch (Exception e) {
             e.printStackTrace();
         }

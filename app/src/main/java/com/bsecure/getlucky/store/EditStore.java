@@ -24,9 +24,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.bsecure.getlucky.R;
+import com.bsecure.getlucky.bubble.ContactsCompletionView;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.interfaces.IFileUploadCallback;
 import com.bsecure.getlucky.interfaces.RequestHandler;
+import com.bsecure.getlucky.models.ChipsItem;
 import com.bsecure.getlucky.models.KeyWords;
 import com.bsecure.getlucky.services.AddressService;
 import com.bsecure.getlucky.volleyhttp.AttachmentUpload;
@@ -69,7 +71,7 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
     private Uri mImageUri;
     private ArrayList<String> list = null;
     private String cat_lstwords,ids="",my_cat_array="",my_key_array="",m_select_list="", store_id;
-
+    private ContactsCompletionView cust_key;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +90,7 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
         et_cat = findViewById(R.id.st_category);
         i_keys = findViewById(R.id.i_keys);
         i_keys.setOnClickListener(this);
-
+        cust_key = findViewById(R.id.cust_key);
         i_category = findViewById(R.id.i_category);
         i_category.setOnClickListener(this);
         et_cat.setOnClickListener(this);
@@ -124,6 +126,8 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
             et_mobile.setText(storeDataEdit.getStringExtra("store_phone_number"));
             et_cat.setText(storeDataEdit.getStringExtra("categories"));
             et_keywords.setText(storeDataEdit.getStringExtra("keywords"));
+            cust_key.handleDone();
+            cust_key.setText(storeDataEdit.getStringExtra("custom_keywords"));
             poaste_img= storeDataEdit.getStringExtra("store_image");
             if (poaste_img.length()>0){
                 poaste_img="";
@@ -232,6 +236,13 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
             Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
             return;
         }
+        cust_key.handleDone();
+        String keyword_cust = cust_key.getObjects().toString();
+        if (keyword_cust.startsWith("[") & keyword_cust.endsWith("]")) {
+            keyword_cust = keyword_cust.replace("[", "");
+            keyword_cust = keyword_cust.replace("]", "");
+            keyword_cust.replaceAll(", ",",");
+        }
         String location = et_location.getText().toString().trim();
         if (location.length() == 0) {
             Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
@@ -271,7 +282,7 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
             object.put("store_phone_number", mobile);
             object.put("categories", st_cat);
             object.put("categories_id", ids);
-            object.put("custom_keywords", keyword);
+            object.put("custom_keywords", keyword_cust);
             object.put("keywords", keyword);
             object.put("store_image", poaste_img);
             new MethodResquest(this, this, Constants.PATH + "edit_store", object.toString(), 100);

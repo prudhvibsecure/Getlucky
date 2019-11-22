@@ -1,13 +1,11 @@
 package com.bsecure.getlucky.fragments;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Geocoder;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
@@ -35,12 +33,9 @@ import com.bsecure.getlucky.R;
 import com.bsecure.getlucky.ViewStoreDetails;
 import com.bsecure.getlucky.adpters.StoreListAdapter;
 import com.bsecure.getlucky.common.AppPreferences;
-import com.bsecure.getlucky.helper.EndlessScrollListener;
 import com.bsecure.getlucky.helper.RecyclerOnScrollListener;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.models.StoreListModel;
-import com.bsecure.getlucky.network.CheckNetwork;
-import com.bsecure.getlucky.services.AddressService;
 import com.bsecure.getlucky.services.GetAddressIntentService;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
@@ -51,7 +46,6 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -59,7 +53,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.bsecure.getlucky.helper.EndlessScrollListener.PAGE_START;
 
 public class HomeFragment extends ParentFragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RequestHandler,StoreListAdapter.StoreAdapterListener {
 
@@ -94,7 +87,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
     private LocationCallback locationCallback;
     private RecyclerOnScrollListener recycScollListener = null;
 
-    private int count_page = PAGE_START;
+    private int count_page = 0;
     private boolean isLastPage = false;
     private int totalPage = 10;
     private boolean isLoading = false;

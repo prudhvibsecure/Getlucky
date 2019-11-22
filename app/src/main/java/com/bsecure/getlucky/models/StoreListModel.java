@@ -1,7 +1,15 @@
 package com.bsecure.getlucky.models;
 
 public class StoreListModel {
-    String status,categories_array,keywords_array,store_id,store_name,address,area,special_offer,offer,store_image,store_phone_number,city,state,country,pin_code,categories,keywords;
+    String custom_keywords,status,categories_array,keywords_array,store_id,store_name,address,area,special_offer,offer,store_image,store_phone_number,city,state,country,pin_code,categories,keywords;
+
+    public String getCustom_keywords() {
+        return custom_keywords;
+    }
+
+    public void setCustom_keywords(String custom_keywords) {
+        this.custom_keywords = custom_keywords;
+    }
 
     public String getStatus() {
         return status;

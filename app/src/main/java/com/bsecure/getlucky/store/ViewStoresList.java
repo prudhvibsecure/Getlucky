@@ -109,6 +109,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                                 edit_store.putExtra("keywords",storeListModelList.get(pos).getKeywords());
                                 edit_store.putExtra("categories_array",storeListModelList.get(pos).getCategories_array());
                                 edit_store.putExtra("keywords_array",storeListModelList.get(pos).getKeywords_array());
+                                edit_store.putExtra("custom_keywords",storeListModelList.get(pos).getCustom_keywords());
                                 startActivity(edit_store);
                                 overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
                             }
@@ -233,6 +234,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                                 storeListModel.setCategories_array(jsonobject.optString("categories_array"));
                                 storeListModel.setKeywords_array(jsonobject.optString("keywords_array"));
                                 storeListModel.setStatus(jsonobject.optString("status"));
+                                storeListModel.setCustom_keywords(jsonobject.optString("custom_keywords"));
                                 storeListModelList.add(storeListModel);
                             }
                             adapter = new StoreListAdapter(storeListModelList, this, this);
