@@ -107,7 +107,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
             removeAllFragments();
 
         }
-        session_data = AppPreferences.getInstance(this).getFromStore("userData");
+
         swiftFragments(HomeFragment.newInstance(), "home");
 
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
@@ -151,6 +151,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
     }
 
     private void getprofileData() {
+        session_data = AppPreferences.getInstance(this).getFromStore("userData");
         if (session_data != null && !TextUtils.isEmpty(session_data)) {
             try {
                 ayArray = new JSONArray(session_data);
