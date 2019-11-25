@@ -124,7 +124,7 @@ public class MethodResquest implements MethodHandler {
                     typeError = 4;
                     message = "No Data Found";
                     dismissProgress(context);
-                    //showProgress(message, context);
+                    showAlertView(message);
                 } else if (error instanceof NoConnectionError) {
                     typeError = 5;
                     message = "Cannot connect to Internet...Please check your connection!";
@@ -136,7 +136,6 @@ public class MethodResquest implements MethodHandler {
                     message = "TimeOut! Please Try Again Later.";
                     dismissProgress(context);
                     showAlertView(message);
-                    //showProgress(message, context);
                 }
                 requestHandler.requestEndedWithError(message, typeError);
             }

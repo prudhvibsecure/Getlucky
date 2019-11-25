@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AddStoreKeysSearch extends AppCompatActivity implements KeywordsListAdapter.KeywordsListListener{
@@ -102,10 +104,30 @@ public class AddStoreKeysSearch extends AppCompatActivity implements KeywordsLis
                     JSONObject oob = catarry.getJSONObject(k);
                     words.setKeyword(oob.optString("keyword"));
                     keys_list_edit.add(words);
+                    keywords.add(keys_list_edit.get(k).getKeyword());
                 }
                 adapter.setKeys(keys_list_edit);
             }
             } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        String keys_data_tx=getIntent().getStringExtra("key_selected_keys_tx");
+        if (!TextUtils.isEmpty(keys_data_tx)){
+            try {
+
+                List<String> catarry = Arrays.asList(keys_data_tx.split(","));
+                if (catarry.size() > 0) {
+                    for (int k = 0; k<catarry.size(); k++) {
+                        KeyWords words=new KeyWords();
+                        String key= catarry.get(k).trim();
+                        words.setKeyword(key);
+                        keys_list_edit.add(words);
+                        keywords.add(key);
+                    }
+                    adapter.setKeys(keys_list_edit);
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

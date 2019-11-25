@@ -227,13 +227,16 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                     Toast.makeText(this, "Please Choose Category", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent search_keys = new Intent(this, AddStoreKeysSearch.class);
-                    search_keys.putExtra("key_selected_keys", et_keywords.getText().toString());
+                    search_keys.putExtra("key_selected_keys","");
+                    search_keys.putExtra("key_selected_keys_tx", et_keywords.getText().toString());
                     startActivityForResult(search_keys, 200);
                 }
                 break;
             case R.id.i_category:
                 Intent cat_keys = new Intent(this, AddCategoryKeysSearch.class);
-                cat_keys.putExtra("cat_selected_keys", et_cat.getText().toString());
+                cat_keys.putExtra("cat_selected_keys", "");
+                cat_keys.putExtra("cat_selected_keys_tx", ids);
+                cat_keys.putExtra("cat_selected_keys_tx1", et_cat.getText().toString());
                 startActivityForResult(cat_keys, 201);
                 break;
         }
@@ -440,7 +443,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                 if (kes.length() == 0) {
                     et_keywords.setText(ket_text);
                 } else {
-                    et_keywords.setText(kes + "," + ket_text);
+                    et_keywords.setText(/*kes + "," + */ket_text);
                 }
 
             }

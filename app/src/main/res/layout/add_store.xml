@@ -65,7 +65,6 @@
 
        <androidx.constraintlayout.widget.ConstraintLayout
            android:layout_width="match_parent"
-
            android:layout_height="wrap_content">
 
            <ImageView
@@ -186,6 +185,7 @@
                 android:hint="Custom Keywords eg: Shoes,Sock"
                 android:background="@drawable/square"
                 android:cursorVisible="true"
+                android:gravity="top|left"
                 android:focusableInTouchMode="true"
                 android:imeOptions="actionDone"
                 android:inputType="textCapWords|textImeMultiLine|textLongMessage"

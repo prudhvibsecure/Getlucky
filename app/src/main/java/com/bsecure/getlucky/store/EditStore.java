@@ -163,7 +163,6 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
 
     }
 
-
     private void getStoreData(String text) {
         try {
 
@@ -207,12 +206,15 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
                 } else {
                     Intent search_keys = new Intent(this, AddStoreKeysSearch.class);
                     search_keys.putExtra("key_selected_keys", my_key_array);
+                    search_keys.putExtra("key_selected_keys_tx", "");
                     startActivityForResult(search_keys, 200);
                 }
                 break;
             case R.id.i_category:
                 Intent cat_keys = new Intent(this, AddCategoryKeysSearch.class);
                 cat_keys.putExtra("cat_selected_keys", my_cat_array);
+                cat_keys.putExtra("cat_selected_keys_tx", "");
+                cat_keys.putExtra("cat_selected_keys_tx1", "");
                 startActivityForResult(cat_keys, 201);
                 break;
         }
@@ -376,7 +378,7 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
                 if (kes.length() == 0) {
                     et_keywords.setText(ket_text);
                 } else {
-                    et_keywords.setText(kes + "," + ket_text);
+                    et_keywords.setText(/*kes + "," + */ket_text);
                 }
 
             }

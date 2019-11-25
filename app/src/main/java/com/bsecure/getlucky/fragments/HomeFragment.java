@@ -11,10 +11,12 @@ import android.os.Handler;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +48,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.tooltip.Tooltip;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -57,22 +60,15 @@ import java.util.List;
 public class HomeFragment extends ParentFragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RequestHandler,StoreListAdapter.StoreAdapterListener {
 
     private GetLucky getLucky;
-    private String pin_code, area="", city="", country="", phone, category_ids = "", state="";
+    private String pin_code, area="", city="", country="", phone, category_ids = "", state="",loacal_area;
     private OnListFragmentInteractionListener mListener;
     private OnFragmentInteractionListener mFragListener;
     private View laView;
-    private AddressResultReceiver mResultReceiver;
-    String mAddressOutput;
-    Location mLastLocation;
     private FusedLocationProviderClient mFusedLocationClient;
     private EditText serach;
     private RecyclerView mRecyclerView;
-    private List<StoreListModel> storeListModelList;
     private StoreListAdapter adapter;
     private SwipeRefreshLayout mSwipeRefreshLayout = null;
-    private String total_pages = "0";
-
-    private boolean isRefresh = false;
 
     private FusedLocationProviderClient fusedLocationClient;
 
@@ -80,19 +76,14 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
     private LocationAddressResultReceiver addressResultReceiver;
 
-    private TextView currentAddTv;
-
     private Location currentLocation;
 
     private LocationCallback locationCallback;
     private RecyclerOnScrollListener recycScollListener = null;
 
     private int count_page = 0;
-    private boolean isLastPage = false;
-    private int totalPage = 10;
-    private boolean isLoading = false;
-    int itemCount = 0;
-
+    List<StoreListModel> storeListModelList =new ArrayList<>();
+    LinearLayout loading_btm;
     public HomeFragment() {
 
     }
@@ -138,14 +129,17 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
         laView = inflater.inflate(R.layout.activity_home_pg, container, false);
         serach = laView.findViewById(R.id.keyword);
+        loading_btm = laView.findViewById(R.id.loading_btm);
         mRecyclerView=laView.findViewById(R.id.mrecycler);
         laView.findViewById(R.id.search).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                storeListModelList=new ArrayList<>();
+                count_page=0;
                 searchStore(count_page);
             }
         });
-        mSwipeRefreshLayout = (SwipeRefreshLayout) laView.findViewById(R.id.swip_refresh);
+        mSwipeRefreshLayout =  laView.findViewById(R.id.swip_refresh);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorPrimaryDark,
                 R.color.colorPrimaryDark, R.color.colorPrimaryDark, R.color.colorPrimaryDark);
         mSwipeRefreshLayout.setEnabled(false);
@@ -155,7 +149,9 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
             public void onRefresh() {
                 recycScollListener.resetValue();
                 count_page=0;
+                storeListModelList =new ArrayList<>();
                 searchStore(count_page);
+                adapter.notifyDataSetChanged();
             }
         });
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -167,6 +163,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
             @Override
             public void onLoadMoreData(int currentPage) {
                 count_page=currentPage;
+                loading_btm.setVisibility(View.VISIBLE);
                 searchStore(currentPage);
 
             }
@@ -174,10 +171,8 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
         mRecyclerView.addOnScrollListener(recycScollListener);
 
-
         addressResultReceiver = new LocationAddressResultReceiver(new Handler());
 
-      //  currentAddTv = laView.findViewById(R.id.current_address);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
@@ -196,8 +191,6 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-
-        // mListener = (OnListFragmentInteractionListener) context;
 
         mFragListener = (GetLucky) context;
 
@@ -239,7 +232,6 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
                     JSONObject object1 = new JSONObject(response.toString());
                     if (object1.optString("statuscode").equalsIgnoreCase("200")) {
-                        storeListModelList=new ArrayList<>();
                         mSwipeRefreshLayout.setRefreshing(false);
                         mSwipeRefreshLayout.setEnabled(true);
                         laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
@@ -262,24 +254,30 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                                 storeListModel.setStore_phone_number(jsonobject.optString("store_phone_number"));
                                 storeListModelList.add(storeListModel);
                             }
+                            loading_btm.setVisibility(View.GONE);
                             adapter = new StoreListAdapter(storeListModelList, getActivity(), this);
-                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-                            mRecyclerView.setLayoutManager(linearLayoutManager);
                             mRecyclerView.setAdapter(adapter);
-                            if (count_page>0){
-                                adapter.addItems(storeListModelList);
-                                adapter.addLoading();
-                            }
                         }else{
-                            laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
-                            laView.findViewById(R.id.no_data).setVisibility(View.VISIBLE);
+                            if (count_page == 0) {
+                                mSwipeRefreshLayout.setRefreshing(false);
+                                mSwipeRefreshLayout.setEnabled(true);
+                                laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
+                                laView.findViewById(R.id.no_data).setVisibility(View.VISIBLE);
+                            }else{
+                                loading_btm.setVisibility(View.GONE);
+                            }
+
                         }
                     }else{
-                        mSwipeRefreshLayout.setRefreshing(false);
-                        mSwipeRefreshLayout.setEnabled(true);
-                        laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
-                        laView.findViewById(R.id.no_data).setVisibility(View.VISIBLE);
-                        ((TextView)laView.findViewById(R.id.no_data)).setText(object1.optString("statusdescription"));
+                        if (count_page == 0) {
+                            mSwipeRefreshLayout.setRefreshing(false);
+                            mSwipeRefreshLayout.setEnabled(true);
+                            laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
+                            laView.findViewById(R.id.no_data).setVisibility(View.VISIBLE);
+                            ((TextView) laView.findViewById(R.id.no_data)).setText(object1.optString("statusdescription"));
+                        }else{
+                            loading_btm.setVisibility(View.GONE);
+                        }
                     }
                     break;
 
@@ -377,35 +375,6 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
     }
 
-    class AddressResultReceiver extends ResultReceiver {
-        public AddressResultReceiver(Handler handler) {
-            super(handler);
-        }
-
-        @Override
-        protected void onReceiveResult(int resultCode, Bundle resultData) {
-
-            if (resultData == null) {
-                return;
-            }
-
-            area = resultData.getString("area");
-            city = resultData.getString("city");
-            pin_code = resultData.getString("postalcode");
-            country = resultData.getString("country");
-            state = resultData.getString("state");
-            mAddressOutput = area + "," + city + "," + state + "," + country;
-            ((EditText) laView.findViewById(R.id.location)).setText(mAddressOutput);
-            // displayAddressOutput();
-           // getStoreData();
-            // Show a toast message if an address was found.
-            if (resultCode == Constants.SUCCESS_RESULT) {
-                //  showToast(getString(R.string.address_found));
-
-            }
-
-        }
-    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 //        if (requestCode == 101
@@ -449,7 +418,8 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
             LocationRequest locationRequest = new LocationRequest();
             locationRequest.setInterval(20000);
             locationRequest.setFastestInterval(10000);
-            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+           // locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+           locationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);// up to 10 km in city radius
 
             fusedLocationClient.requestLocationUpdates(locationRequest,
                     locationCallback,
@@ -505,6 +475,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
 
             String currentAdd = resultData.getString("address_data");
             area = resultData.getString("area");
+            loacal_area = resultData.getString("area");
             city = resultData.getString("city");
             pin_code = resultData.getString("postalcode");
             country = resultData.getString("country");
@@ -518,7 +489,23 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
         ((TextView) laView.findViewById(R.id.location)).setText(currentAdd);
         String vl=AppPreferences.getInstance(getActivity()).getFromStore("first_time");
         if (vl.equalsIgnoreCase("0")) {
+            AppPreferences.getInstance(getActivity()).addToStore("larea",loacal_area,true);
             getStoreData();
+        }
+        if (!TextUtils.isEmpty(area)) {
+            String k_area = AppPreferences.getInstance(getActivity()).getFromStore("larea");
+            if (k_area.startsWith(area)) {
+                return;
+            } else {
+                count_page = 0;
+                AppPreferences.getInstance(getActivity()).addToStore("first_time", "0", true);
+                new Tooltip.Builder(laView.findViewById(R.id.location), R.style.Tooltip)
+                        .setDismissOnClick(true)
+                        .setGravity(Gravity.RIGHT)
+                        .setText(currentAdd)
+                        .setCancelable(true)
+                        .show();
+            }
         }
     }
 }

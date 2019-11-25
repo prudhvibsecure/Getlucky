@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Special Offer"
+        android:textSize="@dimen/_16sdp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:gravity="center"
+        android:padding="10dp"/>
+
+        <EditText
+            android:id="@+id/sp_offer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:maxLines="5"
+            android:layout_margin="5dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/black"
+            android:hint="Special Offer eg: 30% off"
+            android:gravity="left|top"
+            android:background="@drawable/btnsquare3"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:paddingBottom="10dp"
+            android:gravity="center">
+
+
+            <TextView
+                android:id="@+id/bt_preview"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Preview"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:background="@drawable/gradient"
+                android:padding="10dp"/>
+
+            <TextView
+                android:id="@+id/bt_add"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Add Offer"
+                android:gravity="center"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/white"
+                android:background="@drawable/gradient"
+                android:padding="10dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

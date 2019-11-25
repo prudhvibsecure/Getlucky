@@ -9,6 +9,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,37 +25,43 @@ import com.bsecure.getlucky.Login;
 import com.bsecure.getlucky.R;
 import com.bsecure.getlucky.ViewStoreDetails;
 import com.bsecure.getlucky.adpters.StoreListAdapter;
+import com.bsecure.getlucky.adpters.StoreListOwnerAdapter;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.helper.RecyclerViewSwipeHelper;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.models.StoreListModel;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class ViewStoresList extends AppCompatActivity implements View.OnClickListener , RequestHandler,StoreListAdapter.StoreAdapterListener {
+public class ViewStoresList extends AppCompatActivity implements View.OnClickListener, RequestHandler, StoreListOwnerAdapter.StoreAdapterListener {
     private SwipeRefreshLayout mSwipeRefreshLayout = null;
     private List<StoreListModel> storeListModelList;
-    private StoreListAdapter adapter;
+    private StoreListOwnerAdapter adapter;
     private RecyclerView mRecyclerView;
-    Dialog mDialog,InactiveDiloag;
-    private String text_stats,message;
+    Dialog mDialog, InactiveDiloag;
+    private String text_stats, message;
     private IntentFilter filter;
+    Dialog dialog,previewDiloag;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_store_list);
 
-        filter=new IntentFilter("com.store_refrsh");
+        filter = new IntentFilter("com.store_refrsh");
         filter.setPriority(1);
         findViewById(R.id.id_add_store).setOnClickListener(this);
 
-        mRecyclerView=findViewById(R.id.view_store_rec);
+        mRecyclerView = findViewById(R.id.view_store_rec);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swip_refresh);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorPrimaryDark,
                 R.color.colorPrimaryDark, R.color.colorPrimaryDark, R.color.colorPrimaryDark);
@@ -72,7 +80,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
 
         RecyclerViewSwipeHelper swipeHelper = new RecyclerViewSwipeHelper(this, mRecyclerView) {
             @Override
-            public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons,int mPos) {
+            public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons, int mPos) {
                 underlayButtons.add(new RecyclerViewSwipeHelper.UnderlayButton(
                         "Delete",
                         0,
@@ -81,7 +89,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                             @Override
                             public void onClick(int pos) {
                                 // TODO: onDelete
-                               getDeleteDiloag(storeListModelList.get(pos).getStore_id());
+                                getDeleteDiloag(storeListModelList.get(pos).getStore_id());
                             }
                         }
                 ));
@@ -95,31 +103,31 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                             public void onClick(int pos) {
                                 // TODO: OnTransfer
 
-                                Intent edit_store=new Intent(ViewStoresList.this, EditStore.class);
-                                edit_store.putExtra("store_id",storeListModelList.get(pos).getStore_id());
-                                edit_store.putExtra("store_name",storeListModelList.get(pos).getStore_name());
-                                edit_store.putExtra("store_image",storeListModelList.get(pos).getStore_image());
-                                edit_store.putExtra("area",storeListModelList.get(pos).getArea());
-                                edit_store.putExtra("city",storeListModelList.get(pos).getCity());
-                                edit_store.putExtra("state",storeListModelList.get(pos).getState());
-                                edit_store.putExtra("country",storeListModelList.get(pos).getCountry());
-                                edit_store.putExtra("pin_code",storeListModelList.get(pos).getPin_code());
-                                edit_store.putExtra("store_phone_number",storeListModelList.get(pos).getStore_phone_number());
-                                edit_store.putExtra("categories",storeListModelList.get(pos).getCategories());
-                                edit_store.putExtra("keywords",storeListModelList.get(pos).getKeywords());
-                                edit_store.putExtra("categories_array",storeListModelList.get(pos).getCategories_array());
-                                edit_store.putExtra("keywords_array",storeListModelList.get(pos).getKeywords_array());
-                                edit_store.putExtra("custom_keywords",storeListModelList.get(pos).getCustom_keywords());
+                                Intent edit_store = new Intent(ViewStoresList.this, EditStore.class);
+                                edit_store.putExtra("store_id", storeListModelList.get(pos).getStore_id());
+                                edit_store.putExtra("store_name", storeListModelList.get(pos).getStore_name());
+                                edit_store.putExtra("store_image", storeListModelList.get(pos).getStore_image());
+                                edit_store.putExtra("area", storeListModelList.get(pos).getArea());
+                                edit_store.putExtra("city", storeListModelList.get(pos).getCity());
+                                edit_store.putExtra("state", storeListModelList.get(pos).getState());
+                                edit_store.putExtra("country", storeListModelList.get(pos).getCountry());
+                                edit_store.putExtra("pin_code", storeListModelList.get(pos).getPin_code());
+                                edit_store.putExtra("store_phone_number", storeListModelList.get(pos).getStore_phone_number());
+                                edit_store.putExtra("categories", storeListModelList.get(pos).getCategories());
+                                edit_store.putExtra("keywords", storeListModelList.get(pos).getKeywords());
+                                edit_store.putExtra("categories_array", storeListModelList.get(pos).getCategories_array());
+                                edit_store.putExtra("keywords_array", storeListModelList.get(pos).getKeywords_array());
+                                edit_store.putExtra("custom_keywords", storeListModelList.get(pos).getCustom_keywords());
                                 startActivity(edit_store);
-                                overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
+                                overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                             }
                         }
                 ));
-                String sts=storeListModelList.get(mPos).getStatus();
-                if (sts.equalsIgnoreCase("0")){
-                    text_stats="In-Active";
-                }else{
-                    text_stats="Active";
+                String sts = storeListModelList.get(mPos).getStatus();
+                if (sts.equalsIgnoreCase("0")) {
+                    text_stats = "In-Active";
+                } else {
+                    text_stats = "Active";
                 }
                 underlayButtons.add(new RecyclerViewSwipeHelper.UnderlayButton(
                         text_stats,
@@ -129,7 +137,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                             @Override
                             public void onClick(int pos) {
                                 // TODO: OnUnshare
-                                getInactiveDiloag(storeListModelList.get(pos).getStore_id(),storeListModelList.get(pos).getStatus());
+                                getInactiveDiloag(storeListModelList.get(pos).getStore_id(), storeListModelList.get(pos).getStatus());
                             }
                         }
                 ));
@@ -144,7 +152,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
 
     @Override
     protected void onResume() {
-        registerReceiver(mBroadcastReceiver,filter);
+        registerReceiver(mBroadcastReceiver, filter);
         super.onResume();
     }
 
@@ -154,23 +162,24 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
         super.onDestroy();
     }
 
-    BroadcastReceiver mBroadcastReceiver=new BroadcastReceiver() {
+    BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             viewStorsList();
         }
     };
+
     private void viewStorsList() {
-            try {
-                String session_data = AppPreferences.getInstance(this).getFromStore("userData");
-                JSONArray ayArray = new JSONArray(session_data);
-                JSONObject object = new JSONObject();
-                object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
-                MethodResquest req=new MethodResquest(this, this, Constants.PATH + "view_stores", object.toString(), 101);
-                req.dismissProgress(this);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            String session_data = AppPreferences.getInstance(this).getFromStore("userData");
+            JSONArray ayArray = new JSONArray(session_data);
+            JSONObject object = new JSONObject();
+            object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
+            MethodResquest req = new MethodResquest(this, this, Constants.PATH + "view_stores", object.toString(), 101);
+            req.dismissProgress(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -179,15 +188,16 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
         switch (view.getId()) {
 
             case R.id.bacl_btn:
-                overridePendingTransition(R.anim.fade_out_anim,R.anim.fade_in_anim);
+                overridePendingTransition(R.anim.fade_out_anim, R.anim.fade_in_anim);
                 finish();
                 break;
             case R.id.id_add_store:
 
-                Intent store=new Intent(this, AddStore.class);
+                Intent store = new Intent(this, AddStore.class);
                 startActivity(store);
-                overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
+                overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
+
 
         }
 
@@ -207,7 +217,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
 
                     JSONObject object1 = new JSONObject(response.toString());
                     if (object1.optString("statuscode").equalsIgnoreCase("200")) {
-                        storeListModelList=new ArrayList<>();
+                        storeListModelList = new ArrayList<>();
                         mSwipeRefreshLayout.setRefreshing(false);
                         mSwipeRefreshLayout.setEnabled(true);
                         findViewById(R.id.spin_kit).setVisibility(View.GONE);
@@ -237,39 +247,50 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                                 storeListModel.setCustom_keywords(jsonobject.optString("custom_keywords"));
                                 storeListModelList.add(storeListModel);
                             }
-                            adapter = new StoreListAdapter(storeListModelList, this, this);
+                            adapter = new StoreListOwnerAdapter(storeListModelList, this, this);
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
                             mRecyclerView.setLayoutManager(linearLayoutManager);
                             mRecyclerView.setAdapter(adapter);
-                        }else{
+                        } else {
                             findViewById(R.id.spin_kit).setVisibility(View.GONE);
                             findViewById(R.id.id_add_store).setVisibility(View.GONE);
                             findViewById(R.id.no_data).setVisibility(View.VISIBLE);
-                            Intent store=new Intent(this, AddStore.class);
+                            Intent store = new Intent(this, AddStore.class);
                             startActivity(store);
-                            overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
+                            overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                             finish();
                         }
-                    }else{
+                    } else {
                         mSwipeRefreshLayout.setRefreshing(false);
                         mSwipeRefreshLayout.setEnabled(true);
                         findViewById(R.id.spin_kit).setVisibility(View.GONE);
-                       findViewById(R.id.no_data).setVisibility(View.VISIBLE);
+                        findViewById(R.id.no_data).setVisibility(View.VISIBLE);
                         findViewById(R.id.id_add_store).setVisibility(View.GONE);
-                        ((TextView)findViewById(R.id.no_data)).setText(object1.optString("statusdescription"));
-                        Intent store=new Intent(this, AddStore.class);
+                        ((TextView) findViewById(R.id.no_data)).setText(object1.optString("statusdescription"));
+                        Intent store = new Intent(this, AddStore.class);
                         startActivity(store);
-                        overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
+                        overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                         finish();
                     }
                     break;
                 case 102:
-                    JSONObject deletObj=new JSONObject(response.toString());
-                    if (deletObj.optString("statuscode").equalsIgnoreCase("200")){
+                    JSONObject deletObj = new JSONObject(response.toString());
+                    if (deletObj.optString("statuscode").equalsIgnoreCase("200")) {
                         viewStorsList();
                         Toast.makeText(this, deletObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
-                    }else{
+                    } else {
                         Toast.makeText(this, deletObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+
+                case 103:
+                    JSONObject object = new JSONObject(response.toString());
+                    if (object.optString("statuscode").equalsIgnoreCase("200")) {
+                        dialog.dismiss();
+                        viewStorsList();
+                        Toast.makeText(this, object.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, object.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
                     break;
 
@@ -288,34 +309,116 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onRowClicked(List<StoreListModel> matchesList, int pos) {
-        String data= AppPreferences.getInstance(this).getFromStore("userData");
-        if (data!=null &&!TextUtils.isEmpty(data)){
-            Intent login=new Intent(this, ViewStoreDetails.class);
-            login.putExtra("store_name",matchesList.get(pos).getStore_name());
-            login.putExtra("store_image",matchesList.get(pos).getStore_image());
-            login.putExtra("store_add",matchesList.get(pos).getArea()+","+matchesList.get(pos).getCity()+","+matchesList.get(pos).getState()+","+matchesList.get(pos).getState()+","+matchesList.get(pos).getPin_code());
-            login.putExtra("store_offer",matchesList.get(pos).getOffer());
-            login.putExtra("store_spofer",matchesList.get(pos).getSpecial_offer());
-            login.putExtra("store_ph",matchesList.get(pos).getStore_phone_number());
+        String data = AppPreferences.getInstance(this).getFromStore("userData");
+        if (data != null && !TextUtils.isEmpty(data)) {
+            Intent login = new Intent(this, ViewStoreDetails.class);
+            login.putExtra("store_name", matchesList.get(pos).getStore_name());
+            login.putExtra("store_image", matchesList.get(pos).getStore_image());
+            login.putExtra("store_add", matchesList.get(pos).getArea() + "," + matchesList.get(pos).getCity() + "," + matchesList.get(pos).getState() + "," + matchesList.get(pos).getState() + "," + matchesList.get(pos).getPin_code());
+            login.putExtra("store_ph", matchesList.get(pos).getStore_phone_number());
+            login.putExtra("store_id", matchesList.get(pos).getStore_id());
             //login.putExtra("store_ph",matchesList.get(pos).getp());
             startActivity(login);
-           overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
-        }else{
-            Intent login=new Intent(this, Login.class);
+            overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
+        } else {
+            Intent login = new Intent(this, Login.class);
             startActivity(login);
-            overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
+            overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
         }
     }
-    private void getInactiveDiloag(final String store_id,final String status) {
 
-        if (status.equalsIgnoreCase("0")){
-            message="Are you Sure You Want To Inactivate Store?";
-        }else{
-            message="Are you Sure You Want To Activate Store?";
+    @Override
+    public void onRowClickedSpecialOffer(final List<StoreListModel> matchesList, final int pos) {
+
+        dialog = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
+        dialog.setContentView(R.layout.add_sp_offer);
+        dialog.show();
+        dialog.findViewById(R.id.bt_add).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String offer = ((EditText) dialog.findViewById(R.id.sp_offer)).getText().toString();
+                if (offer.length() == 0) {
+                    Toast.makeText(ViewStoresList.this, "Enter Your Special Offer", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                addSpecailOffer(matchesList, pos, offer);
+            }
+        });
+        dialog.findViewById(R.id.bt_preview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String offer = ((EditText) dialog.findViewById(R.id.sp_offer)).getText().toString();
+                if (offer.length() == 0) {
+                    Toast.makeText(ViewStoresList.this, "Enter Your Special Offer", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                previewOffer(matchesList, pos, offer);
+            }
+        });
+
+    }
+
+    private void previewOffer(List<StoreListModel> matchesList, int pos, String offer) {
+
+        previewDiloag = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
+        previewDiloag.setContentView(R.layout.preview_sp_offer);
+        previewDiloag.show();
+        TextView tv_name=previewDiloag.findViewById(R.id.st_name);
+        TextView tv_addtess=previewDiloag.findViewById(R.id.tv_address);
+        TextView offer_tx=previewDiloag.findViewById(R.id.tv_offer);
+
+        tv_name.setText(matchesList.get(pos).getStore_name());
+        offer_tx.setText(offer);
+        tv_addtess.setText(matchesList.get(pos).getArea() + "," + matchesList.get(pos).getCity() + "," + matchesList.get(pos).getState());
+        ImageView iv_image=previewDiloag.findViewById(R.id.store_image);
+
+        if (!TextUtils.isEmpty(matchesList.get(pos).getStore_image()) && matchesList.get(pos).getStore_image() != null) {
+            Glide.with(this).load(Constants.PATH + "assets/upload/avatar/" + matchesList.get(pos).getStore_image()).into(iv_image);
         }
-        InactiveDiloag=new Dialog(this,R.style.Theme_MaterialComponents_BottomSheetDialog);
+        previewDiloag.findViewById(R.id.kk_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               previewDiloag.dismiss();
+            }
+        });
+    }
+
+    private void addSpecailOffer(List<StoreListModel> matchesList, int pos, String text) {
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+            String currentDateandTime = sdf.format(new Date());
+            String session_data = AppPreferences.getInstance(this).getFromStore("userData");
+            JSONArray ayArray = new JSONArray(session_data);
+            JSONObject object = new JSONObject();
+            object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
+            object.put("store_id", matchesList.get(pos).getStore_id());
+
+            object.put("offer_description", text);
+            object.put("offer_date", currentDateandTime);
+            object.put("status", matchesList.get(pos).getStatus());
+            new MethodResquest(this, this, Constants.PATH + "add_special_offers", object.toString(), 103);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onRowClickedOffer(List<StoreListModel> matchesList, int pos) {
+
+    }
+
+    private void getInactiveDiloag(final String store_id, final String status) {
+
+        if (status.equalsIgnoreCase("0")) {
+            message = "Are you Sure You Want To Inactivate Store?";
+        } else {
+            message = "Are you Sure You Want To Activate Store?";
+        }
+        InactiveDiloag = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
         InactiveDiloag.setContentView(R.layout.custom_alert_show);
-        ((TextView)InactiveDiloag.findViewById(R.id.text_message)).setText(message);
+        ((TextView) InactiveDiloag.findViewById(R.id.text_message)).setText(message);
         InactiveDiloag.show();
         InactiveDiloag.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -327,14 +430,15 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onClick(View view) {
 
-                getinactiveStore(store_id,status);
+                getinactiveStore(store_id, status);
                 InactiveDiloag.dismiss();
             }
         });
     }
+
     private void getDeleteDiloag(final String store_id) {
 
-        mDialog=new Dialog(this,R.style.Theme_MaterialComponents_BottomSheetDialog);
+        mDialog = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
         mDialog.setContentView(R.layout.custom_alert_show);
         mDialog.show();
         mDialog.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
@@ -358,24 +462,25 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
         try {
             JSONObject object = new JSONObject();
             object.put("store_id", store_id);
-           new MethodResquest(this, this, Constants.PATH + "delete_store", object.toString(), 102);
+            new MethodResquest(this, this, Constants.PATH + "delete_store", object.toString(), 102);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    private void getinactiveStore(String store_id,String k_status) {
+
+    private void getinactiveStore(String store_id, String k_status) {
 
         String myStatus;
         try {
-            if (k_status.equalsIgnoreCase("0")){
-                myStatus="1";
-            }else{
-                myStatus="0";
+            if (k_status.equalsIgnoreCase("0")) {
+                myStatus = "1";
+            } else {
+                myStatus = "0";
             }
             JSONObject object = new JSONObject();
             object.put("store_id", store_id);
             object.put("status", myStatus);
-           new MethodResquest(this, this, Constants.PATH + "set_store_status", object.toString(), 102);
+            new MethodResquest(this, this, Constants.PATH + "set_store_status", object.toString(), 102);
         } catch (Exception e) {
             e.printStackTrace();
         }

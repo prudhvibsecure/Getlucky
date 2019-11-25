@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bsecure.getlucky.R;
@@ -23,7 +22,7 @@ import org.json.JSONArray;
 import java.util.HashMap;
 import java.util.List;
 
-public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.ContactViewHolder> {
+public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAdapter.ContactViewHolder> {
 
     JSONArray array = new JSONArray();
     private Context context = null;
@@ -36,7 +35,7 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
     private static int currentSelectedIndex = -1;
     private HashMap<Integer, Boolean> isChecked = new HashMap<>();
 
-    public StoreListAdapter(List<StoreListModel> list, Context context, StoreAdapterListener listener) {
+    public StoreListOwnerAdapter(List<StoreListModel> list, Context context, StoreAdapterListener listener) {
         this.context = context;
         this.listener = listener;
         this.matchesList = list;
@@ -127,13 +126,33 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
                 }
             }
         });
+        contactViewHolder.tv_offer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    listener.onRowClickedSpecialOffer(matchesList, position);
+                } catch (Exception e) {
+
+                }
+            }
+        });
+        contactViewHolder.tv_offer_n.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    listener.onRowClickedOffer(matchesList, position);
+                } catch (Exception e) {
+
+                }
+            }
+        });
 
     }
 
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.store_item_row_view, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_store_item_nn, parent, false);
         ContactViewHolder myHoder = new ContactViewHolder(view);
         return myHoder;
 
@@ -141,7 +160,7 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
 
     public class ContactViewHolder extends RecyclerView.ViewHolder {
 
-        protected TextView store_name;
+        public TextView store_name, tv_offer, tv_offer_n;
         protected TextView tv_address;
         LinearLayout ll_item;
 
@@ -154,6 +173,8 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
 
             store_name = (TextView) v.findViewById(R.id.store_name);
             tv_address = (TextView) v.findViewById(R.id.tv_address);
+            tv_offer = (TextView) v.findViewById(R.id.tv_offer);
+            tv_offer_n = (TextView) v.findViewById(R.id.tv_offer_n);
             store_image = (ImageView) v.findViewById(R.id.store_image);
             ll_item = v.findViewById(R.id.ll_item);
             mActionContainer = itemView.findViewById(R.id.view_list_repo_action_container);
@@ -164,5 +185,9 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
     public interface StoreAdapterListener {
 
         void onRowClicked(List<StoreListModel> matchesList, int pos);
+
+        void onRowClickedSpecialOffer(List<StoreListModel> matchesList, int pos);
+
+        void onRowClickedOffer(List<StoreListModel> matchesList, int pos);
     }
 }

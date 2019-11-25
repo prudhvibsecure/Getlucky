@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +32,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class AddCategoryKeysSearch extends AppCompatActivity implements CategoryListAdapter.KeywordsListListener{
     private SearchView searchView;
@@ -64,6 +69,8 @@ public class AddCategoryKeysSearch extends AppCompatActivity implements Category
                 if (keywords.isEmpty()){
                     finish();
                 }else {
+                    keywords = new ArrayList<String>(new LinkedHashSet<String>(keywords));
+                    keywords_ids = new ArrayList<String>(new LinkedHashSet<String>(keywords_ids));
                     for ( int i=0;i<keywords.size();i++){
                          my_key=my_key+","+keywords.get(i);
                         ids=ids+","+keywords_ids.get(i);
@@ -111,13 +118,40 @@ public class AddCategoryKeysSearch extends AppCompatActivity implements Category
                     KeyWords keyWords=new KeyWords();
                     JSONObject oob = catarry.getJSONObject(k);
                     keyWords.setId(oob.optString("category_id"));
+                    keyWords.setKeyword(oob.optString("category_name"));
                     keys_list_edit.add(keyWords);
+                    keywords.add(keys_list_edit.get(k).getKeyword());
+                    keywords_ids.add(keys_list_edit.get(k).getId());
                   //  m_select_list=m_select_list+","+oob.optString("category_id");
                 }
                 //m_select_list=m_select_list.replaceFirst(",","");
                 adapter.setCat(keys_list_edit);
             }
             } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        String cat_data_tx=getIntent().getStringExtra("cat_selected_keys_tx");
+        String cat_data_tx1=getIntent().getStringExtra("cat_selected_keys_tx1");
+        if (!TextUtils.isEmpty(cat_data_tx)){
+            try {
+                List<String> catarry = Arrays.asList(cat_data_tx.split(","));
+                List<String> catarry1 = Arrays.asList(cat_data_tx1.split(","));
+            if (catarry.size() > 0) {
+                for (int k = 0; k<catarry.size(); k++) {
+                    KeyWords keyWords=new KeyWords();
+                    String oob = catarry.get(k).trim();
+                    String name = catarry1.get(k).trim();
+                    keyWords.setId(oob);
+                    keys_list_edit.add(keyWords);
+                    keywords_ids.add(oob);
+                    keywords.add(name);
+
+                }
+                adapter.setCat(keys_list_edit);
+            }
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
