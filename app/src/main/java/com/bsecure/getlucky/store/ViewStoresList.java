@@ -50,7 +50,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
     Dialog mDialog, InactiveDiloag;
     private String text_stats, message;
     private IntentFilter filter;
-    Dialog dialog,previewDiloag;
+    Dialog dialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -359,22 +359,23 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
 
     }
 
-    private void previewOffer(List<StoreListModel> matchesList, int pos, String offer) {
+    private void previewOffer(List<StoreListModel> soresList, int pos, String offer) {
 
-        previewDiloag = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
+        final Dialog previewDiloag = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
         previewDiloag.setContentView(R.layout.preview_sp_offer);
-        previewDiloag.show();
-        TextView tv_name=previewDiloag.findViewById(R.id.st_name);
-        TextView tv_addtess=previewDiloag.findViewById(R.id.tv_address);
-        TextView offer_tx=previewDiloag.findViewById(R.id.tv_offer);
 
-        tv_name.setText(matchesList.get(pos).getStore_name());
-        offer_tx.setText(offer);
-        tv_addtess.setText(matchesList.get(pos).getArea() + "," + matchesList.get(pos).getCity() + "," + matchesList.get(pos).getState());
-        ImageView iv_image=previewDiloag.findViewById(R.id.store_image);
+        String store_name= soresList.get(pos).getStore_name();
+        String area= soresList.get(pos).getArea();
+        String city= soresList.get(pos).getCity();
+        String state= soresList.get(pos).getState();
+        ((TextView)previewDiloag.findViewById(R.id.store_name_1)).setText(store_name);
+        ((TextView)previewDiloag.findViewById(R.id.tv_address_1)).setText(area + "," + city+ "," +state);
+        ((TextView)previewDiloag.findViewById(R.id.tv_offer_1)).setText(offer);
+        String image=soresList.get(pos).getStore_image();
+        ImageView iv_image=(ImageView) previewDiloag.findViewById(R.id.store_image_1);
 
-        if (!TextUtils.isEmpty(matchesList.get(pos).getStore_image()) && matchesList.get(pos).getStore_image() != null) {
-            Glide.with(this).load(Constants.PATH + "assets/upload/avatar/" + matchesList.get(pos).getStore_image()).into(iv_image);
+        if (!TextUtils.isEmpty(image) && image != null) {
+            Glide.with(this).load(Constants.PATH + "assets/upload/avatar/" + soresList.get(pos).getStore_image()).into(iv_image);
         }
         previewDiloag.findViewById(R.id.kk_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -382,6 +383,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                previewDiloag.dismiss();
             }
         });
+        previewDiloag.show();
     }
 
     private void addSpecailOffer(List<StoreListModel> matchesList, int pos, String text) {
