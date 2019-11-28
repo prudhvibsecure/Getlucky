@@ -314,9 +314,11 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
             Intent login = new Intent(this, ViewStoreDetails.class);
             login.putExtra("store_name", matchesList.get(pos).getStore_name());
             login.putExtra("store_image", matchesList.get(pos).getStore_image());
-            login.putExtra("store_add", matchesList.get(pos).getArea() + "," + matchesList.get(pos).getCity() + "," + matchesList.get(pos).getState() + "," + matchesList.get(pos).getState() + "," + matchesList.get(pos).getPin_code());
+            login.putExtra("store_add", matchesList.get(pos).getArea() + "," + matchesList.get(pos).getCity() + "," + matchesList.get(pos).getState() + "," + matchesList.get(pos).getPin_code());
+            login.putExtra("store_add1", matchesList.get(pos).getArea() + "," + matchesList.get(pos).getCity() + "," + matchesList.get(pos).getState());
             login.putExtra("store_ph", matchesList.get(pos).getStore_phone_number());
             login.putExtra("store_id", matchesList.get(pos).getStore_id());
+            login.putExtra("type", "1");
             //login.putExtra("store_ph",matchesList.get(pos).getp());
             startActivity(login);
             overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
@@ -339,7 +341,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
 
                 String offer = ((EditText) dialog.findViewById(R.id.sp_offer)).getText().toString();
                 if (offer.length() == 0) {
-                    Toast.makeText(ViewStoresList.this, "Enter Your Special Offer", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ViewStoresList.this, "Please Fill Required Field", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 addSpecailOffer(matchesList, pos, offer);
@@ -350,7 +352,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
             public void onClick(View view) {
                 String offer = ((EditText) dialog.findViewById(R.id.sp_offer)).getText().toString();
                 if (offer.length() == 0) {
-                    Toast.makeText(ViewStoresList.this, "Enter Your Special Offer", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ViewStoresList.this, "Please Fill Required Field", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 previewOffer(matchesList, pos, offer);
@@ -396,7 +398,6 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
             JSONObject object = new JSONObject();
             object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
             object.put("store_id", matchesList.get(pos).getStore_id());
-
             object.put("offer_description", text);
             object.put("offer_date", currentDateandTime);
             object.put("status", matchesList.get(pos).getStatus());

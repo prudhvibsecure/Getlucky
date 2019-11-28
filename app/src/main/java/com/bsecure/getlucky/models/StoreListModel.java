@@ -1,7 +1,19 @@
 package com.bsecure.getlucky.models;
 
 public class StoreListModel {
-    String custom_keywords,status,categories_array,keywords_array,store_id,store_name,address,area,special_offer,offer,store_image,store_phone_number,city,state,country,pin_code,categories,keywords;
+    String offer_date,custom_keywords,
+            status,categories_array,
+            keywords_array,store_id,store_name,
+            address,area,special_offer,offer,store_image,
+            store_phone_number,city,state,country,pin_code,categories,keywords;
+
+    public String getOffer_date() {
+        return offer_date;
+    }
+
+    public void setOffer_date(String offer_date) {
+        this.offer_date = offer_date;
+    }
 
     public String getCustom_keywords() {
         return custom_keywords;

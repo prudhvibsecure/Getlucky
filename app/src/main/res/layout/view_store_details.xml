@@ -62,7 +62,7 @@
         android:layout_marginRight="25dp"
         android:padding="10dp"
         app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="20dp"
+        app:cardCornerRadius="35dp"
         app:cardElevation="8dp">
 
         <LinearLayout
@@ -77,7 +77,8 @@
                 android:layout_height="wrap_content"
                 android:maxLines="2"
                 android:padding="5dp"
-                android:textColor="@color/black"
+                android:gravity="center"
+                android:textColor="@color/red"
                 android:textSize="@dimen/_10sdp"
                 android:textStyle="normal" />
 
@@ -86,8 +87,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
+                android:gravity="center"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_10sdp"
+                android:textSize="@dimen/_9sdp"
                 android:textStyle="normal" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -96,7 +98,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="25dp"
         android:weightSum="2">
 
         <TextView
@@ -107,6 +109,7 @@
             android:background="@drawable/button_bg_submit_blue"
             android:padding="8dp"
             android:text="Special Offers"
+            android:gravity="center"
             android:textColor="@color/white"
             android:textSize="@dimen/_10sdp" />
 
@@ -115,11 +118,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:background="@drawable/button_bg_submit_orange"
+            android:background="@drawable/button_bg_cancel_gray"
             android:gravity="center"
             android:padding="8dp"
             android:text="Offers"
-            android:textColor="@color/white"
+            android:textColor="@color/red"
             android:textSize="@dimen/_10sdp" />
     </LinearLayout>
 

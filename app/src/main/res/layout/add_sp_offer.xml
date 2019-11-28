@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
     <TextView
+        android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add Special Offer"
@@ -30,7 +31,8 @@
             android:textColor="@color/black"
             android:hint="Special Offer eg: 30% off"
             android:gravity="left|top"
-            android:background="@drawable/btnsquare3"/>
+            android:textColorHint="@color/text_hint_color"
+            android:background="@drawable/button_bg_cancel_gray"/>
 
 
         <LinearLayout
@@ -44,7 +46,7 @@
 
             <TextView
                 android:id="@+id/bt_preview"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Preview"
                 android:textColor="@color/white"
@@ -54,7 +56,7 @@
 
             <TextView
                 android:id="@+id/bt_add"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Add Offer"
                 android:gravity="center"

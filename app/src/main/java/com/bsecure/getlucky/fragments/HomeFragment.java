@@ -241,15 +241,18 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                             for (int i = 0; i < jsonarray2.length(); i++) {
                                 JSONObject jsonobject = jsonarray2.getJSONObject(i);
                                 StoreListModel storeListModel = new StoreListModel();
+                                storeListModel.setStore_id(jsonobject.optString("store_id"));
                                 storeListModel.setStore_name(jsonobject.optString("store_name"));
-                                storeListModel.setAddress(jsonobject.optString("address"));
                                 storeListModel.setArea(jsonobject.optString("area"));
                                 storeListModel.setState(jsonobject.optString("state"));
                                 storeListModel.setCity(jsonobject.optString("city"));
                                 storeListModel.setCountry(jsonobject.optString("country"));
                                 storeListModel.setPin_code(jsonobject.optString("pin_code"));
-                                storeListModel.setOffer(jsonobject.optString("offer"));
-                                storeListModel.setSpecial_offer(jsonobject.optString("special_offer"));
+                                storeListModel.setOffer(jsonobject.optString("offer_description"));
+                                storeListModel.setOffer_date(jsonobject.optString("offer_date"));
+                                storeListModel.setCategories(jsonobject.optString("categories"));
+                                storeListModel.setKeywords(jsonobject.optString("keywords"));
+//                                storeListModel.setSpecial_offer(jsonobject.optString("special_offer"));
                                 storeListModel.setStore_image(jsonobject.optString("store_image"));
                                 storeListModel.setStore_phone_number(jsonobject.optString("store_phone_number"));
                                 storeListModelList.add(storeListModel);
@@ -294,11 +297,15 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
             JSONObject object = new JSONObject();
             if (area==null)
                 area="";
+            String key=serach.getText().toString();
+            if (key.length()==0){
+                key="";
+            }
             object.put("area", area);
             object.put("city", city);
             object.put("state", state);
             object.put("country", country);
-            object.put("search_key", "");
+            object.put("search_key", key);
             object.put("pageno", pageno);
             MethodResquest req=new MethodResquest(getActivity(), this, Constants.PATH + "search_store", object.toString(), 101);
             req.dismissProgress(getActivity());
@@ -323,10 +330,11 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
             Intent login=new Intent(getActivity(), ViewStoreDetails.class);
             login.putExtra("store_name",matchesList.get(pos).getStore_name());
             login.putExtra("store_image",matchesList.get(pos).getStore_image());
-            login.putExtra("store_add",matchesList.get(pos).getArea()+","+matchesList.get(pos).getCity()+","+matchesList.get(pos).getState()+","+matchesList.get(pos).getState()+","+matchesList.get(pos).getPin_code());
+            login.putExtra("store_add",matchesList.get(pos).getArea()+","+matchesList.get(pos).getCity()+","+matchesList.get(pos).getState()+","+matchesList.get(pos).getPin_code());
+            login.putExtra("store_add1",matchesList.get(pos).getArea()+","+matchesList.get(pos).getCity()+","+matchesList.get(pos).getState());
             login.putExtra("store_offer",matchesList.get(pos).getOffer());
-            login.putExtra("store_spofer",matchesList.get(pos).getSpecial_offer());
             login.putExtra("store_ph",matchesList.get(pos).getStore_phone_number());
+            login.putExtra("type", "0");
             //login.putExtra("store_ph",matchesList.get(pos).getp());
             startActivity(login);
             getActivity().overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);

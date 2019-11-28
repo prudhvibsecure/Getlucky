@@ -61,56 +61,14 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
         if (!TextUtils.isEmpty(getIntent().getStringExtra("store_image"))) {
             Glide.with(this).load(Constants.PATH + "assets/upload/avatar/" +getIntent().getStringExtra("store_image")).into(store_img);
         }
-        getSpecialOffers();
+        String type=getIntent().getStringExtra("type");
+        if (type.equalsIgnoreCase("0")){
+          String offer=  getIntent().getStringExtra("store_offer");
+        }else{
+            getSpecialOffers();
+        }
 
-        RecyclerViewSwipeHelper swipeHelper = new RecyclerViewSwipeHelper(this, sp_offer_vv) {
-            @Override
-            public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons, int mPos) {
-                underlayButtons.add(new RecyclerViewSwipeHelper.UnderlayButton(
-                        "Delete",
-                        0,
-                        Color.parseColor("#FF3C30"),
-                        new RecyclerViewSwipeHelper.UnderlayButtonClickListener() {
-                            @Override
-                            public void onClick(int pos) {
-                                // TODO: onDelete
-                                getDeleteDiloag(spList.get(pos).getOffer_sp_id());
-                            }
-                        }
-                ));
 
-                underlayButtons.add(new RecyclerViewSwipeHelper.UnderlayButton(
-                        "Edit",
-                        0,
-                        Color.parseColor("#FF9502"),
-                        new RecyclerViewSwipeHelper.UnderlayButtonClickListener() {
-                            @Override
-                            public void onClick(int pos) {
-                                // TODO: OnTransfer
-                                    editOfferDialog(spList.get(pos).getOffer_sp_id(),spList.get(pos).getOffer_description());
-                            }
-                        }
-                ));
-                String sts = spList.get(mPos).getStatus();
-                if (sts.equalsIgnoreCase("0")) {
-                    text_stats = "In-Active";
-                } else {
-                    text_stats = "Active";
-                }
-                underlayButtons.add(new RecyclerViewSwipeHelper.UnderlayButton(
-                        text_stats,
-                        0,
-                        Color.parseColor("#C7C7CB"),
-                        new RecyclerViewSwipeHelper.UnderlayButtonClickListener() {
-                            @Override
-                            public void onClick(int pos) {
-                                // TODO: OnUnshare
-                                getInactiveDiloag(spList.get(pos).getOffer_sp_id(), spList.get(pos).getStatus());
-                            }
-                        }
-                ));
-            }
-        };
     }
 
     private void editOfferDialog(final String offer_sp_id, String offer_description) {
@@ -118,6 +76,8 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
         editDiloag = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
         editDiloag.setContentView(R.layout.add_sp_offer);
         editDiloag.show();
+        ((TextView)editDiloag.findViewById(R.id.tv_title)).setText("Edit Special Offer");
+        ((TextView)editDiloag.findViewById(R.id.bt_add)).setText("Update Offer");
         ((EditText) editDiloag.findViewById(R.id.sp_offer)).setText(offer_description);
         editDiloag.findViewById(R.id.bt_add).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,14 +85,48 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
 
                 String offer = ((EditText) editDiloag.findViewById(R.id.sp_offer)).getText().toString();
                 if (offer.length() == 0) {
-                    Toast.makeText(ViewStoreDetails.this, "Enter Your Special Offer", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ViewStoreDetails.this, "Please Fill Required Field", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 editSpecailOffer(offer_sp_id, offer);
             }
         });
+        editDiloag.findViewById(R.id.bt_preview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String offer = ((EditText) editDiloag.findViewById(R.id.sp_offer)).getText().toString();
+                if (offer.length() == 0) {
+                    Toast.makeText(ViewStoreDetails.this, "Please Fill Required Field", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                previewOffer(offer);
+            }
+        });
     }
+    private void previewOffer(String offer) {
 
+        final Dialog previewDiloag = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
+        previewDiloag.setContentView(R.layout.preview_sp_offer);
+
+        String store_name= getIntent().getStringExtra("store_name");
+        String area= getIntent().getStringExtra("store_add1");
+        ((TextView)previewDiloag.findViewById(R.id.store_name_1)).setText(store_name);
+        ((TextView)previewDiloag.findViewById(R.id.tv_address_1)).setText(area);
+        ((TextView)previewDiloag.findViewById(R.id.tv_offer_1)).setText(offer);
+        String image=getIntent().getStringExtra("store_image");
+        ImageView iv_image=(ImageView) previewDiloag.findViewById(R.id.store_image_1);
+
+        if (!TextUtils.isEmpty(image) && image != null) {
+            Glide.with(this).load(Constants.PATH + "assets/upload/avatar/" + image).into(iv_image);
+        }
+        previewDiloag.findViewById(R.id.kk_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                previewDiloag.dismiss();
+            }
+        });
+        previewDiloag.show();
+    }
     private void editSpecailOffer(String offer_sp_id, String offer) {
 
         try {
@@ -161,9 +155,9 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
         mDialog.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                getDeletesp(_id);
                 mDialog.dismiss();
+                getDeletesp(_id);
+
             }
         });
     }
@@ -263,6 +257,7 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
             switch (requestType) {
                 case 100:
                     spList = new ArrayList<>();
+                    sp_offer_vv.setVisibility(View.VISIBLE);
                     JSONObject object = new JSONObject(response.toString());
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
                         JSONArray jsonarray2 = object.getJSONArray("special_offer_details");
@@ -279,7 +274,58 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
                             sp_offer_vv.setLayoutManager(linearLayoutManager);
                             sp_offer_vv.setAdapter(specialOfferAdapter);
+                            RecyclerViewSwipeHelper swipeHelper = new RecyclerViewSwipeHelper(this, sp_offer_vv) {
+                                @Override
+                                public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons, int mPos) {
+                                    underlayButtons.add(new RecyclerViewSwipeHelper.UnderlayButton(
+                                            "Delete",
+                                            0,
+                                            Color.parseColor("#FF3C30"),
+                                            new RecyclerViewSwipeHelper.UnderlayButtonClickListener() {
+                                                @Override
+                                                public void onClick(int pos) {
+                                                    // TODO: onDelete
+                                                    getDeleteDiloag(spList.get(pos).getOffer_sp_id());
+                                                }
+                                            }
+                                    ));
+
+                                    underlayButtons.add(new RecyclerViewSwipeHelper.UnderlayButton(
+                                            "Edit",
+                                            0,
+                                            Color.parseColor("#FF9502"),
+                                            new RecyclerViewSwipeHelper.UnderlayButtonClickListener() {
+                                                @Override
+                                                public void onClick(int pos) {
+                                                    // TODO: OnTransfer
+                                                    editOfferDialog(spList.get(pos).getOffer_sp_id(),spList.get(pos).getOffer_description());
+                                                }
+                                            }
+                                    ));
+                                    String sts = spList.get(mPos).getStatus();
+                                    if (sts.equalsIgnoreCase("0")) {
+                                        text_stats = "In-Active";
+                                    } else {
+                                        text_stats = "Active";
+                                    }
+                                    underlayButtons.add(new RecyclerViewSwipeHelper.UnderlayButton(
+                                            text_stats,
+                                            0,
+                                            Color.parseColor("#C7C7CB"),
+                                            new RecyclerViewSwipeHelper.UnderlayButtonClickListener() {
+                                                @Override
+                                                public void onClick(int pos) {
+                                                    // TODO: OnUnshare
+                                                    getInactiveDiloag(spList.get(pos).getOffer_sp_id(), spList.get(pos).getStatus());
+                                                }
+                                            }
+                                    ));
+                                }
+                            };
                         }
+                    }else{
+                        sp_offer_vv.removeAllViews();
+                        sp_offer_vv.setVisibility(View.GONE);
                     }
                     break;
                 case 101:
