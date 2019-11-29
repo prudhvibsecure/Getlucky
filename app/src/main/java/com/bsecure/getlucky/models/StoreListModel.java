@@ -5,7 +5,15 @@ public class StoreListModel {
             status,categories_array,
             keywords_array,store_id,store_name,
             address,area,special_offer,offer,store_image,
-            store_phone_number,city,state,country,pin_code,categories,keywords;
+            store_phone_number,city,state,country,pin_code,categories,keywords,lucky_offer_description;
+
+    public String getLucky_offer_description() {
+        return lucky_offer_description;
+    }
+
+    public void setLucky_offer_description(String lucky_offer_description) {
+        this.lucky_offer_description = lucky_offer_description;
+    }
 
     public String getOffer_date() {
         return offer_date;

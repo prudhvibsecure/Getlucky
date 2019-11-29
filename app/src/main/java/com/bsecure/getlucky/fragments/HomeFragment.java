@@ -253,6 +253,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                                 storeListModel.setOffer_date(jsonobject.optString("offer_date"));
                                 storeListModel.setCategories(jsonobject.optString("categories"));
                                 storeListModel.setKeywords(jsonobject.optString("keywords"));
+                                storeListModel.setLucky_offer_description(jsonobject.optString("lucky_offer_description"));
 //                                storeListModel.setSpecial_offer(jsonobject.optString("special_offer"));
                                 storeListModel.setStore_image(jsonobject.optString("store_image"));
                                 storeListModel.setStore_phone_number(jsonobject.optString("store_phone_number"));
@@ -499,6 +500,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
         String vl=AppPreferences.getInstance(getActivity()).getFromStore("first_time");
         if (vl.equalsIgnoreCase("0")) {
             AppPreferences.getInstance(getActivity()).addToStore("larea",loacal_area,true);
+            laView.findViewById(R.id.no_data).setVisibility(View.GONE);
             getStoreData();
         }
         if (!TextUtils.isEmpty(area)) {

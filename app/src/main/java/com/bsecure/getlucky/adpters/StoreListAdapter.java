@@ -102,6 +102,12 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
             }else{
                 contactViewHolder.tv_offer.setVisibility(View.GONE);
             }
+            if (!TextUtils.isEmpty(mycontactlist.getLucky_offer_description())||mycontactlist.getLucky_offer_description()!=null) {
+                contactViewHolder.tv_offer_n.setText(mycontactlist.getLucky_offer_description());
+                contactViewHolder.tv_offer_n.setVisibility(View.VISIBLE);
+            }else{
+                contactViewHolder.tv_offer_n.setVisibility(View.GONE);
+            }
             contactViewHolder.tv_address.setText(mycontactlist.getArea() + "," + mycontactlist.getCity() + "," + mycontactlist.getState());
             if (!TextUtils.isEmpty(mycontactlist.getStore_image()) && mycontactlist.getStore_image() != null) {
                 Glide.with(context).load(Constants.PATH + "assets/upload/avatar/" + mycontactlist.getStore_image()).into(contactViewHolder.store_image);
@@ -150,6 +156,7 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
         protected TextView store_name;
         protected TextView tv_address;
         protected TextView tv_offer;
+        protected TextView tv_offer_n;
         LinearLayout ll_item;
 
         ImageView store_image;
@@ -162,6 +169,7 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
             store_name = (TextView) v.findViewById(R.id.store_name);
             tv_address = (TextView) v.findViewById(R.id.tv_address);
             tv_offer = (TextView) v.findViewById(R.id.tv_offer);
+            tv_offer_n = (TextView) v.findViewById(R.id.tv_offer_n);
             store_image = (ImageView) v.findViewById(R.id.store_image);
             ll_item = v.findViewById(R.id.ll_item);
             mActionContainer = itemView.findViewById(R.id.view_list_repo_action_container);

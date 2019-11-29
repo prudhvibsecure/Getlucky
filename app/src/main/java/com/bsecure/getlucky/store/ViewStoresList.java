@@ -53,7 +53,8 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
     private String text_stats, message;
     private IntentFilter filter;
     Dialog dialog, add_Offer;
-    long temp_percent=0,refer_percent=0,store_refer_percent=0,admin_percent=0,total_percent=0,offer_percent=0;
+    long temp_percent = 0, refer_percent = 0, store_refer_percent = 0, admin_percent = 0, total_percent = 0, offer_percent = 0;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -295,6 +296,17 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                         Toast.makeText(this, object.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
                     break;
+                case 110:
+
+                    JSONObject object11 = new JSONObject(response.toString());
+                    if (object11.optString("statuscode").equalsIgnoreCase("200")) {
+                        add_Offer.dismiss();
+                        viewStorsList();
+                        Toast.makeText(this, object11.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, object11.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                    }
+                    break;
 
             }
 
@@ -418,7 +430,8 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
         ((EditText) add_Offer.findViewById(R.id.add_co)).addTextChangedListener(new TextWatcher() {
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start,
@@ -428,18 +441,18 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onTextChanged(CharSequence offer, int start,
                                       int before, int count) {
-                if(offer.length() != 0) {
-                    offer_percent=Long.parseLong(String.valueOf(offer));
+                if (offer.length() != 0) {
+                    offer_percent = Long.parseLong(String.valueOf(offer));
 
-                    temp_percent= (long) (offer_percent*0.4);
+                    temp_percent = (long) (offer_percent * 0.4);
 
-                    refer_percent= (long) (temp_percent*(0.5));
+                    refer_percent = (long) (temp_percent * (0.5));
 
-                    store_refer_percent= (long) (temp_percent*(0.25));
+                    store_refer_percent = (long) (temp_percent * (0.25));
 
-                    admin_percent=(long) (temp_percent*(0.25));
+                    admin_percent = (long) (temp_percent * (0.25));
 
-                    total_percent=offer_percent+refer_percent+store_refer_percent+admin_percent;
+                    total_percent = offer_percent + refer_percent + store_refer_percent + admin_percent;
                     ((EditText) add_Offer.findViewById(R.id.add_cr)).setText(String.valueOf(refer_percent));
                     ((EditText) add_Offer.findViewById(R.id.add_sr)).setText(String.valueOf(store_refer_percent));
                     ((EditText) add_Offer.findViewById(R.id.add_admin)).setText(String.valueOf(admin_percent));
@@ -451,18 +464,29 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onClick(View view) {
 
-               addOfferCal(matchesList,pos);
+                addOfferCal(matchesList, pos);
             }
         });
         add_Offer.findViewById(R.id.bt_preview).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String offer = ((EditText) add_Offer.findViewById(R.id.sp_offer)).getText().toString();
+                String offer = ((EditText) add_Offer.findViewById(R.id.add_co)).getText().toString();
                 if (offer.length() == 0) {
                     Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                previewOffer(matchesList, pos, offer);
+                String add_min = ((EditText) add_Offer.findViewById(R.id.add_min)).getText().toString();
+                if (add_min.length() == 0) {
+                    Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                String add_max = ((EditText) add_Offer.findViewById(R.id.add_max)).getText().toString();
+                if (add_max.length() == 0) {
+                    Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                String add_to = ((EditText) add_Offer.findViewById(R.id.add_to)).getText().toString();
+                previewOffer(matchesList, pos, add_to+"% getlucky cashback");
             }
         });
 
@@ -470,7 +494,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
 
     private void addOfferCal(List<StoreListModel> matchesList, int pos) {
 
-         String offer = ((EditText) add_Offer.findViewById(R.id.add_co)).getText().toString();
+        String offer = ((EditText) add_Offer.findViewById(R.id.add_co)).getText().toString();
         if (offer.length() == 0) {
             Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
             return;
@@ -522,7 +546,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
             object.put("admin_percent", admin_percent);
             object.put("total_percent", total_percent);
             object.put("status", matchesList.get(pos).getStatus());
-            new MethodResquest(this, this, Constants.PATH + "add_offers", object.toString(), 103);
+            new MethodResquest(this, this, Constants.PATH + "add_offers", object.toString(), 110);
         } catch (Exception e) {
             e.printStackTrace();
         }
