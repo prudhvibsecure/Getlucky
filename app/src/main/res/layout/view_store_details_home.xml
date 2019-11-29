@@ -102,7 +102,6 @@
         android:weightSum="2">
 
         <TextView
-            android:id="@+id/tv_spoffer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -115,7 +114,6 @@
             android:textSize="@dimen/_10sdp" />
 
         <TextView
-            android:id="@+id/tv_offers"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

@@ -33,6 +33,7 @@ import com.bsecure.getlucky.GetLucky;
 import com.bsecure.getlucky.Login;
 import com.bsecure.getlucky.R;
 import com.bsecure.getlucky.ViewStoreDetails;
+import com.bsecure.getlucky.ViewStoreDetails_Home;
 import com.bsecure.getlucky.adpters.StoreListAdapter;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.helper.RecyclerOnScrollListener;
@@ -327,7 +328,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
     public void onRowClicked(List<StoreListModel> matchesList, int pos) {
         String data= AppPreferences.getInstance(getActivity()).getFromStore("userData");
         if (data!=null &&!TextUtils.isEmpty(data)){
-            Intent login=new Intent(getActivity(), ViewStoreDetails.class);
+            Intent login=new Intent(getActivity(), ViewStoreDetails_Home.class);
             login.putExtra("store_name",matchesList.get(pos).getStore_name());
             login.putExtra("store_image",matchesList.get(pos).getStore_image());
             login.putExtra("store_add",matchesList.get(pos).getArea()+","+matchesList.get(pos).getCity()+","+matchesList.get(pos).getState()+","+matchesList.get(pos).getPin_code());

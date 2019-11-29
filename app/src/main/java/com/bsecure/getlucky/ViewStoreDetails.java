@@ -39,7 +39,7 @@ import java.util.List;
 public class ViewStoreDetails extends AppCompatActivity implements View.OnClickListener, RequestHandler, SpecialOfferAdapter.SpecialOfferListListener {
 
     ImageView store_img;
-    TextView tv_store_name,store_address;
+    TextView tv_store_name,store_address,tv_spoffer,tv_offers;
     RecyclerView sp_offer_vv;
     private SpecialOfferAdapter specialOfferAdapter;
     private List<OfferModel> spList;
@@ -52,6 +52,8 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
 
         store_img=findViewById(R.id.post_image);
         tv_store_name=findViewById(R.id.store_name);
+        tv_spoffer=findViewById(R.id.tv_spoffer);
+        tv_offers=findViewById(R.id.tv_offers);
         store_address=findViewById(R.id.store_address);
         sp_offer_vv=findViewById(R.id.sp_recyler);
         findViewById(R.id.bacl_btn).setOnClickListener(this);
@@ -62,12 +64,56 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
             Glide.with(this).load(Constants.PATH + "assets/upload/avatar/" +getIntent().getStringExtra("store_image")).into(store_img);
         }
         String type=getIntent().getStringExtra("type");
-        if (type.equalsIgnoreCase("0")){
-          String offer=  getIntent().getStringExtra("store_offer");
-        }else{
-            getSpecialOffers();
-        }
 
+        getSpecialOffers();
+        RecyclerViewSwipeHelper swipeHelper = new RecyclerViewSwipeHelper(this, sp_offer_vv) {
+            @Override
+            public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons, int mPos) {
+                underlayButtons.add(new RecyclerViewSwipeHelper.UnderlayButton(
+                        "Delete",
+                        0,
+                        Color.parseColor("#FF3C30"),
+                        new RecyclerViewSwipeHelper.UnderlayButtonClickListener() {
+                            @Override
+                            public void onClick(int pos) {
+                                // TODO: onDelete
+                                getDeleteDiloag(spList.get(pos).getOffer_sp_id());
+                            }
+                        }
+                ));
+
+                underlayButtons.add(new RecyclerViewSwipeHelper.UnderlayButton(
+                        "Edit",
+                        0,
+                        Color.parseColor("#FF9502"),
+                        new RecyclerViewSwipeHelper.UnderlayButtonClickListener() {
+                            @Override
+                            public void onClick(int pos) {
+                                // TODO: OnTransfer
+                                editOfferDialog(spList.get(pos).getOffer_sp_id(),spList.get(pos).getOffer_description());
+                            }
+                        }
+                ));
+                String sts = spList.get(mPos).getStatus();
+                if (sts.equalsIgnoreCase("0")) {
+                    text_stats = "In-Active";
+                } else {
+                    text_stats = "Active";
+                }
+                underlayButtons.add(new RecyclerViewSwipeHelper.UnderlayButton(
+                        text_stats,
+                        0,
+                        Color.parseColor("#C7C7CB"),
+                        new RecyclerViewSwipeHelper.UnderlayButtonClickListener() {
+                            @Override
+                            public void onClick(int pos) {
+                                // TODO: OnUnshare
+                                getInactiveDiloag(spList.get(pos).getOffer_sp_id(), spList.get(pos).getStatus());
+                            }
+                        }
+                ));
+            }
+        };
 
     }
 
@@ -274,54 +320,6 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
                             sp_offer_vv.setLayoutManager(linearLayoutManager);
                             sp_offer_vv.setAdapter(specialOfferAdapter);
-                            RecyclerViewSwipeHelper swipeHelper = new RecyclerViewSwipeHelper(this, sp_offer_vv) {
-                                @Override
-                                public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons, int mPos) {
-                                    underlayButtons.add(new RecyclerViewSwipeHelper.UnderlayButton(
-                                            "Delete",
-                                            0,
-                                            Color.parseColor("#FF3C30"),
-                                            new RecyclerViewSwipeHelper.UnderlayButtonClickListener() {
-                                                @Override
-                                                public void onClick(int pos) {
-                                                    // TODO: onDelete
-                                                    getDeleteDiloag(spList.get(pos).getOffer_sp_id());
-                                                }
-                                            }
-                                    ));
-
-                                    underlayButtons.add(new RecyclerViewSwipeHelper.UnderlayButton(
-                                            "Edit",
-                                            0,
-                                            Color.parseColor("#FF9502"),
-                                            new RecyclerViewSwipeHelper.UnderlayButtonClickListener() {
-                                                @Override
-                                                public void onClick(int pos) {
-                                                    // TODO: OnTransfer
-                                                    editOfferDialog(spList.get(pos).getOffer_sp_id(),spList.get(pos).getOffer_description());
-                                                }
-                                            }
-                                    ));
-                                    String sts = spList.get(mPos).getStatus();
-                                    if (sts.equalsIgnoreCase("0")) {
-                                        text_stats = "In-Active";
-                                    } else {
-                                        text_stats = "Active";
-                                    }
-                                    underlayButtons.add(new RecyclerViewSwipeHelper.UnderlayButton(
-                                            text_stats,
-                                            0,
-                                            Color.parseColor("#C7C7CB"),
-                                            new RecyclerViewSwipeHelper.UnderlayButtonClickListener() {
-                                                @Override
-                                                public void onClick(int pos) {
-                                                    // TODO: OnUnshare
-                                                    getInactiveDiloag(spList.get(pos).getOffer_sp_id(), spList.get(pos).getStatus());
-                                                }
-                                            }
-                                    ));
-                                }
-                            };
                         }
                     }else{
                         sp_offer_vv.removeAllViews();

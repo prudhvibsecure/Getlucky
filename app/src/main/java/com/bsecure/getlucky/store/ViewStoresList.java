@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -50,8 +52,8 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
     Dialog mDialog, InactiveDiloag;
     private String text_stats, message;
     private IntentFilter filter;
-    Dialog dialog;
-
+    Dialog dialog, add_Offer;
+    long temp_percent=0,refer_percent=0,store_refer_percent=0,admin_percent=0,total_percent=0,offer_percent=0;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -366,15 +368,15 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
         final Dialog previewDiloag = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
         previewDiloag.setContentView(R.layout.preview_sp_offer);
 
-        String store_name= soresList.get(pos).getStore_name();
-        String area= soresList.get(pos).getArea();
-        String city= soresList.get(pos).getCity();
-        String state= soresList.get(pos).getState();
-        ((TextView)previewDiloag.findViewById(R.id.store_name_1)).setText(store_name);
-        ((TextView)previewDiloag.findViewById(R.id.tv_address_1)).setText(area + "," + city+ "," +state);
-        ((TextView)previewDiloag.findViewById(R.id.tv_offer_1)).setText(offer);
-        String image=soresList.get(pos).getStore_image();
-        ImageView iv_image=(ImageView) previewDiloag.findViewById(R.id.store_image_1);
+        String store_name = soresList.get(pos).getStore_name();
+        String area = soresList.get(pos).getArea();
+        String city = soresList.get(pos).getCity();
+        String state = soresList.get(pos).getState();
+        ((TextView) previewDiloag.findViewById(R.id.store_name_1)).setText(store_name);
+        ((TextView) previewDiloag.findViewById(R.id.tv_address_1)).setText(area + "," + city + "," + state);
+        ((TextView) previewDiloag.findViewById(R.id.tv_offer_1)).setText(offer);
+        String image = soresList.get(pos).getStore_image();
+        ImageView iv_image = (ImageView) previewDiloag.findViewById(R.id.store_image_1);
 
         if (!TextUtils.isEmpty(image) && image != null) {
             Glide.with(this).load(Constants.PATH + "assets/upload/avatar/" + soresList.get(pos).getStore_image()).into(iv_image);
@@ -382,7 +384,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
         previewDiloag.findViewById(R.id.kk_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               previewDiloag.dismiss();
+                previewDiloag.dismiss();
             }
         });
         previewDiloag.show();
@@ -408,8 +410,122 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
     }
 
     @Override
-    public void onRowClickedOffer(List<StoreListModel> matchesList, int pos) {
+    public void onRowClickedOffer(final List<StoreListModel> matchesList, final int pos) {
+        add_Offer = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
+        add_Offer.setContentView(R.layout.add_m_offer);
+        add_Offer.show();
 
+        ((EditText) add_Offer.findViewById(R.id.add_co)).addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence offer, int start,
+                                      int before, int count) {
+                if(offer.length() != 0) {
+                    offer_percent=Long.parseLong(String.valueOf(offer));
+
+                    temp_percent= (long) (offer_percent*0.4);
+
+                    refer_percent= (long) (temp_percent*(0.5));
+
+                    store_refer_percent= (long) (temp_percent*(0.25));
+
+                    admin_percent=(long) (temp_percent*(0.25));
+
+                    total_percent=offer_percent+refer_percent+store_refer_percent+admin_percent;
+                    ((EditText) add_Offer.findViewById(R.id.add_cr)).setText(String.valueOf(refer_percent));
+                    ((EditText) add_Offer.findViewById(R.id.add_sr)).setText(String.valueOf(store_refer_percent));
+                    ((EditText) add_Offer.findViewById(R.id.add_admin)).setText(String.valueOf(admin_percent));
+                    ((EditText) add_Offer.findViewById(R.id.add_to)).setText(String.valueOf(total_percent));
+                }
+            }
+        });
+        add_Offer.findViewById(R.id.bt_add).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+               addOfferCal(matchesList,pos);
+            }
+        });
+        add_Offer.findViewById(R.id.bt_preview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String offer = ((EditText) add_Offer.findViewById(R.id.sp_offer)).getText().toString();
+                if (offer.length() == 0) {
+                    Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                previewOffer(matchesList, pos, offer);
+            }
+        });
+
+    }
+
+    private void addOfferCal(List<StoreListModel> matchesList, int pos) {
+
+         String offer = ((EditText) add_Offer.findViewById(R.id.add_co)).getText().toString();
+        if (offer.length() == 0) {
+            Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String add_min = ((EditText) add_Offer.findViewById(R.id.add_min)).getText().toString();
+        if (add_min.length() == 0) {
+            Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String add_max = ((EditText) add_Offer.findViewById(R.id.add_max)).getText().toString();
+        if (add_max.length() == 0) {
+            Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String add_cr = ((EditText) add_Offer.findViewById(R.id.add_cr)).getText().toString();
+        if (add_cr.length() == 0) {
+            Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String add_sr = ((EditText) add_Offer.findViewById(R.id.add_sr)).getText().toString();
+        if (add_sr.length() == 0) {
+            Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String add_admin = ((EditText) add_Offer.findViewById(R.id.add_admin)).getText().toString();
+        if (add_admin.length() == 0) {
+            Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String add_to = ((EditText) add_Offer.findViewById(R.id.add_to)).getText().toString();
+        if (add_to.length() == 0) {
+            Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        try {
+            String session_data = AppPreferences.getInstance(this).getFromStore("userData");
+            JSONArray ayArray = new JSONArray(session_data);
+            JSONObject object = new JSONObject();
+            object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
+            object.put("store_id", matchesList.get(pos).getStore_id());
+            object.put("offer_percent", offer_percent);
+            object.put("min_amount", add_min);
+            object.put("max_amount", add_max);
+            object.put("refer_percent", refer_percent);
+            object.put("store_refer_percent", store_refer_percent);
+            object.put("admin_percent", admin_percent);
+            object.put("total_percent", total_percent);
+            object.put("status", matchesList.get(pos).getStatus());
+            new MethodResquest(this, this, Constants.PATH + "add_offers", object.toString(), 103);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void getInactiveDiloag(final String store_id, final String status) {
