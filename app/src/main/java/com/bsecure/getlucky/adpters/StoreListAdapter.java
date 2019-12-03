@@ -96,17 +96,19 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
         try {
             final StoreListModel mycontactlist = matchesList.get(position);
             contactViewHolder.store_name.setText(mycontactlist.getStore_name());
-            if (!TextUtils.isEmpty(mycontactlist.getOffer())||mycontactlist.getOffer()!=null) {
+            if (TextUtils.isEmpty(mycontactlist.getOffer())) {
+                contactViewHolder.tv_offer.setVisibility(View.INVISIBLE);
+            }else{
                 contactViewHolder.tv_offer.setText(mycontactlist.getOffer());
                 contactViewHolder.tv_offer.setVisibility(View.VISIBLE);
-            }else{
-                contactViewHolder.tv_offer.setVisibility(View.GONE);
+
             }
-            if (!TextUtils.isEmpty(mycontactlist.getLucky_offer_description())||mycontactlist.getLucky_offer_description()!=null) {
+            if (TextUtils.isEmpty(mycontactlist.getLucky_offer_description())) {
+                contactViewHolder.tv_offer_n.setVisibility(View.GONE);
+            }else{
                 contactViewHolder.tv_offer_n.setText(mycontactlist.getLucky_offer_description());
                 contactViewHolder.tv_offer_n.setVisibility(View.VISIBLE);
-            }else{
-                contactViewHolder.tv_offer_n.setVisibility(View.GONE);
+
             }
             contactViewHolder.tv_address.setText(mycontactlist.getArea() + "," + mycontactlist.getCity() + "," + mycontactlist.getState());
             if (!TextUtils.isEmpty(mycontactlist.getStore_image()) && mycontactlist.getStore_image() != null) {

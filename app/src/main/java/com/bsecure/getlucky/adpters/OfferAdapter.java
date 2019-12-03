@@ -75,6 +75,8 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ContactViewH
         try {
             final OfferModel mycontactlist = contactList.get(position);
             contactViewHolder.offer_desc.setText(mycontactlist.getOffer_percent_description());
+            contactViewHolder.min.setText("Minimum Amount "+mycontactlist.getMin_amount());
+            contactViewHolder.max.setText("Maximum Amount "+mycontactlist.getMax_amount());
             applyClickEvents(contactViewHolder, contactList, position);
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,7 +100,7 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ContactViewH
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.offer_row_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.offer_row_item_n, parent, false);
         ContactViewHolder myHoder = new ContactViewHolder(view);
         return myHoder;
 
@@ -107,11 +109,15 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ContactViewH
     public class ContactViewHolder extends RecyclerView.ViewHolder {
 
         protected TextView offer_desc;
+        protected TextView min;
+        protected TextView max;
 
         public ContactViewHolder(View v) {
             super(v);
 
-            offer_desc = (TextView) v.findViewById(R.id.sp_off);
+            offer_desc = (TextView) v.findViewById(R.id.sp_off1);
+            min = (TextView) v.findViewById(R.id.min);
+            max = (TextView) v.findViewById(R.id.max);
         }
     }
 

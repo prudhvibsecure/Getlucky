@@ -34,6 +34,7 @@ import com.bumptech.glide.Glide;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,7 +50,9 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
     private List<OfferModel> spList,offerModelList;
     private String text_stats, message, msg;
     private Dialog InactiveDiloag, mDialog, editDiloag;
-    long temp_percent = 0, refer_percent = 0, store_refer_percent = 0, admin_percent = 0, total_percent = 0, offer_percent = 0;
+    double temp_percent = 0, refer_percent = 0, store_refer_percent = 0, admin_percent = 0, total_percent = 0, offer_percent = 0;
+    private static DecimalFormat df = new DecimalFormat("0.00");
+    double min = 0, max = 0;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,7 +160,7 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
                             }
                         }
                 ));
-                String sts = spList.get(mPos).getStatus();
+                String sts = offerModelList.get(mPos).getStatus();
                 if (sts.equalsIgnoreCase("0")) {
                     text_stats = "In-Active";
                 } else {
@@ -171,7 +174,7 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
                             @Override
                             public void onClick(int pos) {
                                 // TODO: OnUnshare
-                                getInactiveDiloagOffer(offerModelList.get(pos).getOffer_sp_id(), offerModelList.get(pos).getStatus());
+                                getInactiveDiloagOffer(offerModelList.get(pos).getOffer_id(), offerModelList.get(pos).getStatus());
                             }
                         }
                 ));
@@ -217,7 +220,7 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
         editDiloag = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
         editDiloag.setContentView(R.layout.add_m_offer);
         editDiloag.show();
-        ((TextView) editDiloag.findViewById(R.id.tv_title1)).setText("Edit Special Offer");
+        ((TextView) editDiloag.findViewById(R.id.tv_title1)).setText("Edit Offer");
         ((TextView) editDiloag.findViewById(R.id.bt_add)).setText("Update Offer");
 
         ((EditText) editDiloag.findViewById(R.id.add_co)).setText(offerList.get(pos).getOffer_percent());
@@ -243,21 +246,22 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
             public void onTextChanged(CharSequence offer, int start,
                                       int before, int count) {
                 if (offer.length() != 0) {
-                    offer_percent = Long.parseLong(String.valueOf(offer));
 
-                    temp_percent = (long) (offer_percent * 0.4);
+                    offer_percent = Double.parseDouble(String.valueOf(offer));
 
-                    refer_percent = (long) (temp_percent * (0.5));
+                    temp_percent = offer_percent * 0.4;
 
-                    store_refer_percent = (long) (temp_percent * (0.25));
+                    refer_percent = temp_percent * 0.5;
 
-                    admin_percent = (long) (temp_percent * (0.25));
+                    store_refer_percent = temp_percent * 0.25;
+
+                    admin_percent = temp_percent * 0.25;
 
                     total_percent = offer_percent + refer_percent + store_refer_percent + admin_percent;
-                    ((EditText) editDiloag.findViewById(R.id.add_cr)).setText(String.valueOf(refer_percent));
-                    ((EditText) editDiloag.findViewById(R.id.add_sr)).setText(String.valueOf(store_refer_percent));
-                    ((EditText) editDiloag.findViewById(R.id.add_admin)).setText(String.valueOf(admin_percent));
-                    ((EditText) editDiloag.findViewById(R.id.add_to)).setText(String.valueOf(total_percent));
+                    ((EditText) editDiloag.findViewById(R.id.add_cr)).setText(df.format(refer_percent));
+                    ((EditText) editDiloag.findViewById(R.id.add_sr)).setText(df.format(store_refer_percent));
+                    ((EditText) editDiloag.findViewById(R.id.add_admin)).setText(df.format(admin_percent));
+                    ((EditText) editDiloag.findViewById(R.id.add_to)).setText(df.format(total_percent));
                 }
             }
         });
@@ -265,66 +269,39 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
             @Override
             public void onClick(View view) {
 
-                String offer = ((EditText) editDiloag.findViewById(R.id.add_co)).getText().toString();
-                if (offer.length() == 0) {
-                    Toast.makeText(ViewStoreDetails.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+                String offer = ((EditText) editDiloag.findViewById(R.id.add_co)).getText().toString().trim();
+                if (offer.length() == 0||offer.equalsIgnoreCase("0")) {
+                    Toast.makeText(ViewStoreDetails.this, "Please Fill Required Field", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 String add_min = ((EditText) editDiloag.findViewById(R.id.add_min)).getText().toString();
-                if (add_min.length() == 0) {
-                    Toast.makeText(ViewStoreDetails.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+                if (add_min.length() == 0 || add_min.equalsIgnoreCase("0")) {
+                    ((EditText) editDiloag.findViewById(R.id.add_min)).setText("");
                     return;
                 }
                 String add_max = ((EditText) editDiloag.findViewById(R.id.add_max)).getText().toString();
-                if (add_max.length() == 0) {
-                    Toast.makeText(ViewStoreDetails.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
-                    return;
+                if (add_max.length()>0) {
+                    min = Double.parseDouble(add_min);
+                    max = Double.parseDouble(add_max);
+                    if (Double.compare(min, max)> 0) {
+                        Toast.makeText(ViewStoreDetails.this, "Maximum Amount Must Be Greater Than Minimum Amount", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                 }
-                String add_cr = ((EditText) editDiloag.findViewById(R.id.add_cr)).getText().toString();
-                if (add_cr.length() == 0) {
-                    Toast.makeText(ViewStoreDetails.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                String add_sr = ((EditText) editDiloag.findViewById(R.id.add_sr)).getText().toString();
-                if (add_sr.length() == 0) {
-                    Toast.makeText(ViewStoreDetails.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                String add_admin = ((EditText) editDiloag.findViewById(R.id.add_admin)).getText().toString();
-                if (add_admin.length() == 0) {
-                    Toast.makeText(ViewStoreDetails.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                String add_to = ((EditText) editDiloag.findViewById(R.id.add_to)).getText().toString();
-                if (add_to.length() == 0) {
-                    Toast.makeText(ViewStoreDetails.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
                 editOffer(offerList.get(pos).getOffer_id(), add_min,add_max);
             }
         });
         editDiloag.findViewById(R.id.bt_preview).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String offer = ((EditText) editDiloag.findViewById(R.id.add_co)).getText().toString();
-                if (offer.length() == 0) {
-                    Toast.makeText(ViewStoreDetails.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                String add_min = ((EditText) editDiloag.findViewById(R.id.add_min)).getText().toString();
-                if (add_min.length() == 0) {
-                    Toast.makeText(ViewStoreDetails.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                String add_max = ((EditText) editDiloag.findViewById(R.id.add_max)).getText().toString();
-                if (add_max.length() == 0) {
-                    Toast.makeText(ViewStoreDetails.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+                String offer = ((EditText) editDiloag.findViewById(R.id.add_co)).getText().toString().trim();
+                if (offer.length() == 0||offer.equalsIgnoreCase("0")) {
+                    Toast.makeText(ViewStoreDetails.this, "Please Fill Required Field", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 String offer_l = ((EditText) editDiloag.findViewById(R.id.add_to)).getText().toString();
-                previewOffer(offer_l+"% getlucky cashback");
+                previewOffer(offer+"% Cashback On All Purchase");
             }
         });
     }
@@ -336,9 +313,12 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
 
         String store_name = getIntent().getStringExtra("store_name");
         String area = getIntent().getStringExtra("store_add1");
+        ((TextView) previewDiloag.findViewById(R.id.tv_offer_1)).setVisibility(View.GONE);
         ((TextView) previewDiloag.findViewById(R.id.store_name_1)).setText(store_name);
+        ((TextView) previewDiloag.findViewById(R.id.tv_offer_12)).setVisibility(View.VISIBLE);
         ((TextView) previewDiloag.findViewById(R.id.tv_address_1)).setText(area);
-        ((TextView) previewDiloag.findViewById(R.id.tv_offer_1)).setText(offer);
+
+        ((TextView) previewDiloag.findViewById(R.id.tv_offer_12)).setText(offer);
         String image = getIntent().getStringExtra("store_image");
         ImageView iv_image = (ImageView) previewDiloag.findViewById(R.id.store_image_1);
 

@@ -2,28 +2,62 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-   android:background="@color/white"
-    tools:context=".Splash">
+    android:background="#fff">
 
+
+    <RelativeLayout
+        android:id="@+id/hidden_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/ic_launcher" />
+    </RelativeLayout>
 
     <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@mipmap/ic_launcher"
-        android:layout_centerInParent="true"/>
-
-    <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/spin_kit"
-        style="@style/SpinKitView.Large.ThreeBounce"
-        android:layout_width="wrap_content"
+        android:id="@+id/bottom_img"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:padding="5dp"
-        android:layout_centerInParent="true"
-        android:layout_margin="5dp"
         android:layout_alignParentBottom="true"
-        app:SpinKit_Color="@color/colorPrimaryDark" />
+        android:layout_marginBottom="40dp"
+       android:adjustViewBounds="true"
+        android:visibility="gone"
+        android:src="@mipmap/ic_store_bottom_sp" />
+
+    <LinearLayout
+        android:id="@+id/loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/spin_kit"
+            style="@style/SpinKitView.Large.Circle"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:padding="5dp"
+            android:layout_centerInParent="true"
+            android:layout_margin="5dp"
+            android:layout_alignParentBottom="true"
+            app:SpinKit_Color="@color/colorPrimaryDark" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="Loading Stores..." />
+    </LinearLayout>
 
 </RelativeLayout>

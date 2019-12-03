@@ -6,6 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.fragments.HomeFragment;
@@ -20,12 +25,45 @@ import org.json.JSONObject;
 
 public class Splash extends AppCompatActivity implements RequestHandler {
 
+    private ViewGroup hiddenPanel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AppPreferences.getInstance(this).addToStore("first_time","0",true);
         getListCats();
+
+        hiddenPanel = (ViewGroup) findViewById(R.id.hidden_panel);
+        hiddenPanel.setVisibility(View.VISIBLE);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+
+                findViewById(R.id.bottom_img).setVisibility(View.VISIBLE);
+
+                TranslateAnimation animate;
+                if (findViewById(R.id.bottom_img).getHeight() == 0) {
+                    findViewById(R.id.bottom_img).getHeight(); // parent layout
+                    animate = new TranslateAnimation(findViewById(R.id.bottom_img).getWidth() / 2,
+                            0, 0, 0);
+                } else {
+                    animate = new TranslateAnimation(findViewById(R.id.bottom_img).getWidth(), 0, 0, 0);
+                }
+
+                animate.setDuration(1500);
+                animate.setFillAfter(true);
+                findViewById(R.id.bottom_img).startAnimation(animate);
+                findViewById(R.id.bottom_img).setVisibility(View.VISIBLE);
+            }
+        }, 2000);
+
+
+        Animation bottomUp = AnimationUtils.loadAnimation(this,
+                R.anim.bottom_up);
+
+        hiddenPanel.startAnimation(bottomUp);
+        hiddenPanel.setVisibility(View.VISIBLE);
 
         new Handler().postDelayed(new Runnable() {
 

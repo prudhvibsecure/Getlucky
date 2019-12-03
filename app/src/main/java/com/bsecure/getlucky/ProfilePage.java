@@ -162,6 +162,7 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
             }
 
         }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         datePickerDialog.show();
     }
 
@@ -171,12 +172,12 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
             JSONArray ayArray = new JSONArray(session_data);
             // customer_id,name,area,city,state,country,pin_code,date_of_birth,gender,profile_image
 
-            String u_name = name.getText().toString();
+            String u_name = name.getText().toString().trim();
             if (u_name.length() == 0) {
                 Toast.makeText(this, "Please Enter Name", Toast.LENGTH_SHORT).show();
                 return;
             }
-            String dobs = dob.getText().toString();
+            String dobs = dob.getText().toString().trim();
             if (dobs.length() == 0) {
                 Toast.makeText(this, "Please Select Date Of Birth", Toast.LENGTH_SHORT).show();
                 return;

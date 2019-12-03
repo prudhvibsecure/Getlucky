@@ -39,6 +39,7 @@ import com.bumptech.glide.Glide;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,7 +54,9 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
     private String text_stats, message;
     private IntentFilter filter;
     Dialog dialog, add_Offer;
-    long temp_percent = 0, refer_percent = 0, store_refer_percent = 0, admin_percent = 0, total_percent = 0, offer_percent = 0;
+    double temp_percent = 0, refer_percent = 0, store_refer_percent = 0, admin_percent = 0, total_percent = 0, offer_percent = 0;
+    private static DecimalFormat df = new DecimalFormat("0.00");
+    double min = 0, max = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -353,7 +356,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onClick(View view) {
 
-                String offer = ((EditText) dialog.findViewById(R.id.sp_offer)).getText().toString();
+                String offer = ((EditText) dialog.findViewById(R.id.sp_offer)).getText().toString().trim();
                 if (offer.length() == 0) {
                     Toast.makeText(ViewStoresList.this, "Please Fill Required Field", Toast.LENGTH_SHORT).show();
                     return;
@@ -364,18 +367,18 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
         dialog.findViewById(R.id.bt_preview).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String offer = ((EditText) dialog.findViewById(R.id.sp_offer)).getText().toString();
+                String offer = ((EditText) dialog.findViewById(R.id.sp_offer)).getText().toString().trim();
                 if (offer.length() == 0) {
                     Toast.makeText(ViewStoresList.this, "Please Fill Required Field", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                previewOffer(matchesList, pos, offer);
+                previewOffer(matchesList, pos, offer,"0");
             }
         });
 
     }
 
-    private void previewOffer(List<StoreListModel> soresList, int pos, String offer) {
+    private void previewOffer(List<StoreListModel> soresList, int pos, String offer,String condition) {
 
         final Dialog previewDiloag = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
         previewDiloag.setContentView(R.layout.preview_sp_offer);
@@ -386,7 +389,15 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
         String state = soresList.get(pos).getState();
         ((TextView) previewDiloag.findViewById(R.id.store_name_1)).setText(store_name);
         ((TextView) previewDiloag.findViewById(R.id.tv_address_1)).setText(area + "," + city + "," + state);
-        ((TextView) previewDiloag.findViewById(R.id.tv_offer_1)).setText(offer);
+        if (condition.equalsIgnoreCase("0")) {
+            ((TextView) previewDiloag.findViewById(R.id.tv_offer_1)).setVisibility(View.VISIBLE);
+            ((TextView) previewDiloag.findViewById(R.id.tv_offer_12)).setVisibility(View.GONE);
+            ((TextView) previewDiloag.findViewById(R.id.tv_offer_1)).setText(offer);
+        }else{
+            ((TextView) previewDiloag.findViewById(R.id.tv_offer_1)).setVisibility(View.GONE);
+            ((TextView) previewDiloag.findViewById(R.id.tv_offer_12)).setVisibility(View.VISIBLE);
+            ((TextView) previewDiloag.findViewById(R.id.tv_offer_12)).setText(offer);
+        }
         String image = soresList.get(pos).getStore_image();
         ImageView iv_image = (ImageView) previewDiloag.findViewById(R.id.store_image_1);
 
@@ -442,21 +453,21 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
             public void onTextChanged(CharSequence offer, int start,
                                       int before, int count) {
                 if (offer.length() != 0) {
-                    offer_percent = Long.parseLong(String.valueOf(offer));
+                    offer_percent = Double.parseDouble(String.valueOf(offer));
 
-                    temp_percent = (long) (offer_percent * 0.4);
+                    temp_percent = offer_percent * 0.4;
 
-                    refer_percent = (long) (temp_percent * (0.5));
+                    refer_percent = temp_percent * (0.5);
 
-                    store_refer_percent = (long) (temp_percent * (0.25));
+                    store_refer_percent = temp_percent * (0.25);
 
-                    admin_percent = (long) (temp_percent * (0.25));
+                    admin_percent = temp_percent * (0.25);
 
                     total_percent = offer_percent + refer_percent + store_refer_percent + admin_percent;
-                    ((EditText) add_Offer.findViewById(R.id.add_cr)).setText(String.valueOf(refer_percent));
-                    ((EditText) add_Offer.findViewById(R.id.add_sr)).setText(String.valueOf(store_refer_percent));
-                    ((EditText) add_Offer.findViewById(R.id.add_admin)).setText(String.valueOf(admin_percent));
-                    ((EditText) add_Offer.findViewById(R.id.add_to)).setText(String.valueOf(total_percent));
+                    ((EditText) add_Offer.findViewById(R.id.add_cr)).setText(df.format(refer_percent));
+                    ((EditText) add_Offer.findViewById(R.id.add_sr)).setText(df.format(store_refer_percent));
+                    ((EditText) add_Offer.findViewById(R.id.add_admin)).setText(df.format(admin_percent));
+                    ((EditText) add_Offer.findViewById(R.id.add_to)).setText(df.format(total_percent));
                 }
             }
         });
@@ -470,23 +481,13 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
         add_Offer.findViewById(R.id.bt_preview).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String offer = ((EditText) add_Offer.findViewById(R.id.add_co)).getText().toString();
+                String offer = ((EditText) add_Offer.findViewById(R.id.add_co)).getText().toString().trim();
                 if (offer.length() == 0) {
-                    Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                String add_min = ((EditText) add_Offer.findViewById(R.id.add_min)).getText().toString();
-                if (add_min.length() == 0) {
-                    Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                String add_max = ((EditText) add_Offer.findViewById(R.id.add_max)).getText().toString();
-                if (add_max.length() == 0) {
-                    Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ViewStoresList.this, "Please Fill Required Field", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 String add_to = ((EditText) add_Offer.findViewById(R.id.add_to)).getText().toString();
-                previewOffer(matchesList, pos, add_to+"% getlucky cashback");
+                previewOffer(matchesList, pos, offer + "% Cashback On All Purchase","1");
             }
         });
 
@@ -494,43 +495,26 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
 
     private void addOfferCal(List<StoreListModel> matchesList, int pos) {
 
-        String offer = ((EditText) add_Offer.findViewById(R.id.add_co)).getText().toString();
-        if (offer.length() == 0) {
-            Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+        String offer = ((EditText) add_Offer.findViewById(R.id.add_co)).getText().toString().trim();
+        if (offer.length() == 0||offer.equalsIgnoreCase("0")) {
+            Toast.makeText(ViewStoresList.this, "Please Fill Required Field", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String add_min = ((EditText) add_Offer.findViewById(R.id.add_min)).getText().toString();
-        if (add_min.length() == 0) {
-            Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+        String add_min = ((EditText) add_Offer.findViewById(R.id.add_min)).getText().toString().trim();
+        if (add_min.length() == 0 || add_min.equalsIgnoreCase("0")) {
+            ((EditText) add_Offer.findViewById(R.id.add_min)).setText("");
             return;
         }
-        String add_max = ((EditText) add_Offer.findViewById(R.id.add_max)).getText().toString();
-        if (add_max.length() == 0) {
-            Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
-            return;
+        String add_max = ((EditText) add_Offer.findViewById(R.id.add_max)).getText().toString().trim();
+        if (add_max.length()>0) {
+            min = Double.parseDouble(add_min);
+            max = Double.parseDouble(add_max);
+            if (Double.compare(min, max)> 0) {
+                Toast.makeText(this, "Maximum Amount Must Be Greater Than Minimum Amount", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
-        String add_cr = ((EditText) add_Offer.findViewById(R.id.add_cr)).getText().toString();
-        if (add_cr.length() == 0) {
-            Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        String add_sr = ((EditText) add_Offer.findViewById(R.id.add_sr)).getText().toString();
-        if (add_sr.length() == 0) {
-            Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        String add_admin = ((EditText) add_Offer.findViewById(R.id.add_admin)).getText().toString();
-        if (add_admin.length() == 0) {
-            Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        String add_to = ((EditText) add_Offer.findViewById(R.id.add_to)).getText().toString();
-        if (add_to.length() == 0) {
-            Toast.makeText(ViewStoresList.this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
 
         try {
             String session_data = AppPreferences.getInstance(this).getFromStore("userData");

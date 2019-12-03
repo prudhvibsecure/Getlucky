@@ -52,6 +52,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="left"
                     android:text="Store Name"
+                    android:singleLine="true"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_13sdp"
                     android:textStyle="bold" />
@@ -76,9 +77,26 @@
                     android:drawablePadding="5dp"
                     android:gravity="left|center"
                     android:paddingTop="5dp"
+                    android:singleLine="true"
                     android:paddingBottom="5dp"
                     android:text="40% Special Offer"
-                    android:textColor="@color/titlecolor2"
+                    android:textColor="#A17168"
+                    android:textSize="@dimen/_12sdp" />
+
+                <TextView
+                    android:id="@+id/tv_offer_12"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:drawableLeft="@mipmap/ic_offer_p"
+                    android:drawablePadding="5dp"
+                    android:gravity="left|center"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:singleLine="true"
+                    android:visibility="gone"
+                    android:text="40% Special Offer"
+                    android:textColor="@color/red"
                     android:textSize="@dimen/_12sdp" />
 
                 <View

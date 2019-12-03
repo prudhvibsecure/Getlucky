@@ -131,11 +131,13 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/sp_recyler"
         android:layout_width="match_parent"
+        android:layout_marginTop="8dp"
         android:layout_height="wrap_content" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/offer_recyler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:visibility="gone"/>
 </LinearLayout>

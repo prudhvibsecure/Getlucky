@@ -18,6 +18,7 @@ import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
@@ -122,7 +123,7 @@ public class MethodResquest implements MethodHandler {
                     showAlertView(message);
                 } else if (error instanceof ParseError) {
                     typeError = 4;
-                    message = "No Data Found";
+                    message = error.getMessage();
                     dismissProgress(context);
                     showAlertView(message);
                 } else if (error instanceof NoConnectionError) {
@@ -150,62 +151,28 @@ public class MethodResquest implements MethodHandler {
                 return headers;
             }
 
-//            @Override
-//            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-//                try {
-//                    Cache.Entry cacheEntry = HttpHeaderParser.parseCacheHeaders(response);
-//                    if (cacheEntry == null) {
-//                        cacheEntry = new Cache.Entry();
-//                    }
-//                    final long cacheHitButRefreshed = 1 * 60 * 1000; // in 1 minutes cache will be hit, but also refreshed on background
-//                    final long cacheExpired = 24 * 60 * 60 * 1000; // in 24 hours this cache entry expires completely
-//                    long now = System.currentTimeMillis();
-//                    final long softExpire = now + cacheHitButRefreshed;
-//                    final long ttl = now + cacheExpired;
-//                    cacheEntry.data = response.data;
-//                    cacheEntry.softTtl = softExpire;
-//                    cacheEntry.ttl = ttl;
-//                    String headerValue;
-//                    headerValue = response.headers.get("Date");
-//                    if (headerValue != null) {
-//                        cacheEntry.serverDate = HttpHeaderParser.parseDateAsEpoch(headerValue);
-//                    }
-//                    headerValue = response.headers.get("Last-Modified");
-//                    if (headerValue != null) {
-//                        cacheEntry.lastModified = HttpHeaderParser.parseDateAsEpoch(headerValue);
-//                    }
-//                    cacheEntry.responseHeaders = response.headers;
-//                    final String jsonString = new String(response.data,
-//                            HttpHeaderParser.parseCharset(response.headers));
-//                    return Response.success(new JSONObject(jsonString), cacheEntry);
-//                } catch (UnsupportedEncodingException e) {
-//                    return Response.error(new ParseError(e));
-//                } catch (JSONException e) {
-//                    return Response.error(new ParseError(e));
-//                }
-//            }
-//
-//            @Override
-//            protected void deliverResponse(JSONObject response) {
-//                super.deliverResponse(response);
-//            }
-//
-//            @Override
-//            public void deliverError(VolleyError error) {
-//                super.deliverError(error);
-//            }
-//
-//            @Override
-//            protected VolleyError parseNetworkError(VolleyError volleyError) {
-//                return super.parseNetworkError(volleyError);
-//            }
         };
+        queue.add(jsonObjectRequest).setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 5000;
+            }
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                0,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(jsonObjectRequest);
+            @Override
+            public int getCurrentRetryCount() {
+                return 0; //retry turn off
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        });
+//        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+//                0,
+//                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+//                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+       // queue.add(jsonObjectRequest);
     }
 
     private void showAlertView(String message) {

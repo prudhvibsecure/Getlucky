@@ -69,8 +69,9 @@
                 android:gravity="left|center"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
+                android:singleLine="true"
                 android:text="40% Special Offer"
-                android:textColor="@color/titlecolor2"
+                android:textColor="#A17168"
                 android:textSize="@dimen/_12sdp" />
 
             <TextView
@@ -83,16 +84,17 @@
                 android:gravity="left|center"
                 android:text="10% Getlucky Offer"
                 android:textColor="@color/red"
+                android:singleLine="true"
                 android:textSize="@dimen/_10sdp" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/light_gray2"
-                android:paddingTop="2dp"
-                android:paddingBottom="5dp" />
         </LinearLayout>
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="100dp"
+        android:background="@color/light_gray2"
+        android:paddingTop="2dp"
+        android:paddingBottom="5dp" />
 
 </LinearLayout>
