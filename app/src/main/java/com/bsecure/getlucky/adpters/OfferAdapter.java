@@ -83,7 +83,12 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ContactViewH
         }
 
     }
-
+    public void clear() {
+        // matchesList=null;
+        final int size = contactList.size();
+        contactList.clear();
+        notifyItemRangeRemoved(0, size);
+    }
     @Override
     public int getItemViewType(int position) {
         return position;

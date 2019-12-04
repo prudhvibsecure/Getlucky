@@ -16,6 +16,8 @@ import com.bsecure.getlucky.R;
 import com.bsecure.getlucky.models.StoreListModel;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bumptech.glide.Glide;
+import com.loopeer.itemtouchhelperextension.Extension;
+import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 
 import org.json.JSONArray;
 
@@ -34,7 +36,11 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
     private SparseBooleanArray animationItemsIndex;
     private static int currentSelectedIndex = -1;
     private HashMap<Integer, Boolean> isChecked = new HashMap<>();
-
+    public static final int ITEM_TYPE_RECYCLER_WIDTH = 1000;
+    public static final int ITEM_TYPE_ACTION_WIDTH = 1001;
+    public static final int ITEM_TYPE_ACTION_WIDTH_NO_SPRING = 1002;
+    public static final int ITEM_TYPE_NO_SWIPE = 1003;
+    private ItemTouchHelperExtension mItemTouchHelperExtension;
     public StoreListOwnerAdapter(List<StoreListModel> list, Context context, StoreAdapterListener listener) {
         this.context = context;
         this.listener = listener;
@@ -43,11 +49,9 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
         selectedItems = new SparseBooleanArray();
         animationItemsIndex = new SparseBooleanArray();
     }
-
-    public int getSelectedItemCount() {
-        return selectedItems.size();
+    public void setItemTouchHelperExtension(ItemTouchHelperExtension itemTouchHelperExtension) {
+        mItemTouchHelperExtension = itemTouchHelperExtension;
     }
-
     public void setOnClickListener(View.OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }
@@ -95,28 +99,22 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
         try {
             final StoreListModel mycontactlist = matchesList.get(position);
             contactViewHolder.store_name.setText(mycontactlist.getStore_name());
+
             contactViewHolder.tv_address.setText(mycontactlist.getArea() + "," + mycontactlist.getCity() + "," + mycontactlist.getState());
             if (!TextUtils.isEmpty(mycontactlist.getStore_image()) && mycontactlist.getStore_image() != null) {
                 Glide.with(context).load(Constants.PATH + "assets/upload/avatar/" + mycontactlist.getStore_image()).into(contactViewHolder.store_image);
             }
             applyClickEvents(contactViewHolder, matchesList, position);
+            applyEvents(contactViewHolder, matchesList, position);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
-
-    public long getItemId(int position) {
-        return position;
-    }
 
     private void applyClickEvents(ContactViewHolder contactViewHolder, final List<StoreListModel> matchesList, final int position) {
-        contactViewHolder.ll_item.setOnClickListener(new View.OnClickListener() {
+        contactViewHolder.mViewContent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
@@ -148,16 +146,64 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
         });
 
     }
+    private void applyEvents(ContactViewHolder contactViewHolder, final List<StoreListModel> classModelList, final int position) {
 
+        if (contactViewHolder instanceof ItemSwipeWithActionWidthViewHolder) {
+            final ItemSwipeWithActionWidthViewHolder viewHolder = (ItemSwipeWithActionWidthViewHolder) contactViewHolder;
+            viewHolder.mActionViewDelete.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            listener.swipeToDelete(position, classModelList);
+                        }
+                    }
+
+            );
+            if (classModelList.get(position).getStatus().equalsIgnoreCase("0")) {
+                ((TextView) viewHolder.mActionViewStatus.findViewById(R.id.view_list_repo_action_status)).setText("In-Active");
+            }else{
+                ((TextView) viewHolder.mActionViewStatus.findViewById(R.id.view_list_repo_action_status)).setText("Active");
+            }
+            viewHolder.mActionViewStatus.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            listener.swipeToStatus(position, classModelList);
+
+                        }
+                    }
+
+            );
+            viewHolder.mActionViewEdit.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            listener.swipeToEdit(position, classModelList);
+
+                        }
+                    }
+
+            );
+
+        }
+    }
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_store_item_nn, parent, false);
-        ContactViewHolder myHoder = new ContactViewHolder(view);
-        return myHoder;
-
+//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_store_item_nn, parent, false);
+//        ContactViewHolder myHoder = new ContactViewHolder(view);
+//        return myHoder;
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.store_item_row_view_1, parent, false);
+        if (viewType == ITEM_TYPE_ACTION_WIDTH)
+            return new ItemSwipeWithActionWidthViewHolder(itemView);
+        return new ContactViewHolder(itemView);
     }
+    @Override
+    public int getItemViewType(int position) {
 
+        return ITEM_TYPE_ACTION_WIDTH;
+    }
     public class ContactViewHolder extends RecyclerView.ViewHolder {
 
         public TextView store_name, tv_offer, tv_offer_n;
@@ -176,7 +222,8 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
             tv_offer = (TextView) v.findViewById(R.id.tv_offer);
             tv_offer_n = (TextView) v.findViewById(R.id.tv_offer_n);
             store_image = (ImageView) v.findViewById(R.id.store_image);
-            ll_item = v.findViewById(R.id.ll_item);
+
+            mViewContent = itemView.findViewById(R.id.ll_item);
             mActionContainer = itemView.findViewById(R.id.view_list_repo_action_container);
 
         }
@@ -189,5 +236,29 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
         void onRowClickedSpecialOffer(List<StoreListModel> matchesList, int pos);
 
         void onRowClickedOffer(List<StoreListModel> matchesList, int pos);
+
+        void swipeToEdit(int position, List<StoreListModel> classModelList);
+
+        void swipeToDelete(int position, List<StoreListModel> classModelList);
+
+        void swipeToStatus(int position, List<StoreListModel> classModelList);
+    }
+    class ItemSwipeWithActionWidthViewHolder extends ContactViewHolder implements Extension {
+
+        View mActionViewDelete;
+        View mActionViewStatus;
+        View mActionViewEdit;
+
+        public ItemSwipeWithActionWidthViewHolder(View itemView) {
+            super(itemView);
+            mActionViewDelete = itemView.findViewById(R.id.view_list_repo_action_delete);
+            mActionViewStatus = itemView.findViewById(R.id.view_list_repo_action_status);
+            mActionViewEdit = itemView.findViewById(R.id.view_list_edit_view);
+        }
+
+        @Override
+        public float getActionWidth() {
+            return mActionContainer.getWidth();
+        }
     }
 }

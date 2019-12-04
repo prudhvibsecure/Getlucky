@@ -106,7 +106,12 @@ public class SpecialOfferAdapter  extends RecyclerView.Adapter<SpecialOfferAdapt
         return myHoder;
 
     }
-
+    public void clear() {
+        // matchesList=null;
+        final int size = contactList.size();
+        contactList.clear();
+        notifyItemRangeRemoved(0, size);
+    }
     public class ContactViewHolder extends RecyclerView.ViewHolder {
 
         protected TextView offer_desc;

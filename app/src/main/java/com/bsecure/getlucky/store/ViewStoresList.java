@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -26,15 +24,15 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.bsecure.getlucky.Login;
 import com.bsecure.getlucky.R;
 import com.bsecure.getlucky.ViewStoreDetails;
-import com.bsecure.getlucky.adpters.StoreListAdapter;
 import com.bsecure.getlucky.adpters.StoreListOwnerAdapter;
 import com.bsecure.getlucky.common.AppPreferences;
-import com.bsecure.getlucky.helper.RecyclerViewSwipeHelper;
+import com.bsecure.getlucky.interfaces.ItemTouchHelperCallback;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.models.StoreListModel;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 import com.bumptech.glide.Glide;
+import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -57,7 +55,9 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
     double temp_percent = 0, refer_percent = 0, store_refer_percent = 0, admin_percent = 0, total_percent = 0, offer_percent = 0;
     private static DecimalFormat df = new DecimalFormat("0.00");
     double min = 0, max = 0;
-
+    LinearLayoutManager linearLayoutManager;
+    public ItemTouchHelperExtension mItemTouchHelper;
+    public ItemTouchHelperExtension.Callback mCallback;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +68,10 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
         findViewById(R.id.id_add_store).setOnClickListener(this);
 
         mRecyclerView = findViewById(R.id.view_store_rec);
+        mRecyclerView.setHasFixedSize(true);
+        linearLayoutManager= new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swip_refresh);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorPrimaryDark,
                 R.color.colorPrimaryDark, R.color.colorPrimaryDark, R.color.colorPrimaryDark);
@@ -83,8 +87,9 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
             }
         });
         findViewById(R.id.bacl_btn).setOnClickListener(this);
+        viewStorsList();
 
-        RecyclerViewSwipeHelper swipeHelper = new RecyclerViewSwipeHelper(this, mRecyclerView) {
+       /* RecyclerViewSwipeHelper swipeHelper = new RecyclerViewSwipeHelper(this, mRecyclerView) {
             @Override
             public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons, int mPos) {
                 underlayButtons.add(new RecyclerViewSwipeHelper.UnderlayButton(
@@ -95,7 +100,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                             @Override
                             public void onClick(int pos) {
                                 // TODO: onDelete
-                                getDeleteDiloag(storeListModelList.get(pos).getStore_id());
+
                             }
                         }
                 ));
@@ -109,32 +114,11 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                             public void onClick(int pos) {
                                 // TODO: OnTransfer
 
-                                Intent edit_store = new Intent(ViewStoresList.this, EditStore.class);
-                                edit_store.putExtra("store_id", storeListModelList.get(pos).getStore_id());
-                                edit_store.putExtra("store_name", storeListModelList.get(pos).getStore_name());
-                                edit_store.putExtra("store_image", storeListModelList.get(pos).getStore_image());
-                                edit_store.putExtra("area", storeListModelList.get(pos).getArea());
-                                edit_store.putExtra("city", storeListModelList.get(pos).getCity());
-                                edit_store.putExtra("state", storeListModelList.get(pos).getState());
-                                edit_store.putExtra("country", storeListModelList.get(pos).getCountry());
-                                edit_store.putExtra("pin_code", storeListModelList.get(pos).getPin_code());
-                                edit_store.putExtra("store_phone_number", storeListModelList.get(pos).getStore_phone_number());
-                                edit_store.putExtra("categories", storeListModelList.get(pos).getCategories());
-                                edit_store.putExtra("keywords", storeListModelList.get(pos).getKeywords());
-                                edit_store.putExtra("categories_array", storeListModelList.get(pos).getCategories_array());
-                                edit_store.putExtra("keywords_array", storeListModelList.get(pos).getKeywords_array());
-                                edit_store.putExtra("custom_keywords", storeListModelList.get(pos).getCustom_keywords());
-                                startActivity(edit_store);
-                                overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
+
                             }
                         }
                 ));
-                String sts = storeListModelList.get(mPos).getStatus();
-                if (sts.equalsIgnoreCase("0")) {
-                    text_stats = "In-Active";
-                } else {
-                    text_stats = "Active";
-                }
+
                 underlayButtons.add(new RecyclerViewSwipeHelper.UnderlayButton(
                         text_stats,
                         0,
@@ -143,7 +127,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                             @Override
                             public void onClick(int pos) {
                                 // TODO: OnUnshare
-                                getInactiveDiloag(storeListModelList.get(pos).getStore_id(), storeListModelList.get(pos).getStatus());
+
                             }
                         }
                 ));
@@ -151,8 +135,11 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
         };
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeHelper);
-        itemTouchHelper.attachToRecyclerView(mRecyclerView);
-        viewStorsList();
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);*/
+        mCallback = new ItemTouchHelperCallback();
+        mItemTouchHelper = new ItemTouchHelperExtension(mCallback);
+        mItemTouchHelper.attachToRecyclerView(mRecyclerView);
+
     }
 
 
@@ -254,9 +241,9 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                                 storeListModelList.add(storeListModel);
                             }
                             adapter = new StoreListOwnerAdapter(storeListModelList, this, this);
-                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-                            mRecyclerView.setLayoutManager(linearLayoutManager);
+
                             mRecyclerView.setAdapter(adapter);
+                            adapter.setItemTouchHelperExtension(mItemTouchHelper);
                         } else {
                             findViewById(R.id.spin_kit).setVisibility(View.GONE);
                             findViewById(R.id.id_add_store).setVisibility(View.GONE);
@@ -493,6 +480,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
 
     }
 
+
     private void addOfferCal(List<StoreListModel> matchesList, int pos) {
 
         String offer = ((EditText) add_Offer.findViewById(R.id.add_co)).getText().toString().trim();
@@ -611,5 +599,41 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    @Override
+    public void swipeToEdit(int pos, List<StoreListModel> storeListModelList) {
+        Intent edit_store = new Intent(ViewStoresList.this, EditStore.class);
+        edit_store.putExtra("store_id", storeListModelList.get(pos).getStore_id());
+        edit_store.putExtra("store_name", storeListModelList.get(pos).getStore_name());
+        edit_store.putExtra("store_image", storeListModelList.get(pos).getStore_image());
+        edit_store.putExtra("area", storeListModelList.get(pos).getArea());
+        edit_store.putExtra("city", storeListModelList.get(pos).getCity());
+        edit_store.putExtra("state", storeListModelList.get(pos).getState());
+        edit_store.putExtra("country", storeListModelList.get(pos).getCountry());
+        edit_store.putExtra("pin_code", storeListModelList.get(pos).getPin_code());
+        edit_store.putExtra("store_phone_number", storeListModelList.get(pos).getStore_phone_number());
+        edit_store.putExtra("categories", storeListModelList.get(pos).getCategories());
+        edit_store.putExtra("keywords", storeListModelList.get(pos).getKeywords());
+        edit_store.putExtra("categories_array", storeListModelList.get(pos).getCategories_array());
+        edit_store.putExtra("keywords_array", storeListModelList.get(pos).getKeywords_array());
+        edit_store.putExtra("custom_keywords", storeListModelList.get(pos).getCustom_keywords());
+        startActivity(edit_store);
+        overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
+    }
+
+    @Override
+    public void swipeToDelete(int position, List<StoreListModel> storeListModelList) {
+        getDeleteDiloag(storeListModelList.get(position).getStore_id());
+    }
+
+    @Override
+    public void swipeToStatus(int pos, List<StoreListModel> storeListModelList) {
+//        String sts = storeListModelList.get(pos).getStatus();
+//        if (sts.equalsIgnoreCase("0")) {
+//            text_stats = "In-Active";
+//        } else {
+//            text_stats = "Active";
+//        }
+        getInactiveDiloag(storeListModelList.get(pos).getStore_id(), storeListModelList.get(pos).getStatus());
     }
 }
