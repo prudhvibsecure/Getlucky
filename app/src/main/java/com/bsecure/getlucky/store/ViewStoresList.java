@@ -35,7 +35,6 @@ import com.bsecure.getlucky.models.StoreListModel;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 import com.bumptech.glide.Glide;
-import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -59,8 +58,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
     private static DecimalFormat df = new DecimalFormat("0.00");
     double min = 0, max = 0;
     LinearLayoutManager linearLayoutManager;
-    public ItemTouchHelperExtension mItemTouchHelper;
-    public ItemTouchHelperExtension.Callback mCallback;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -266,7 +264,6 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                             }
                             adapter = new StoreListOwnerAdapter(storeListModelList, this, this);
                             mRecyclerView.setAdapter(adapter);
-                            adapter.setItemTouchHelperExtension(mItemTouchHelper);
                             adapter.notifyDataSetChanged();
                         } else {
                             findViewById(R.id.spin_kit).setVisibility(View.GONE);
@@ -525,6 +522,9 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
             return;
         }
         String add_max = ((EditText) add_Offer.findViewById(R.id.add_max)).getText().toString().trim();
+        if (add_max.length()==0){
+            add_max="∞";
+        }
         if (add_max.length()>0) {
             min = Double.parseDouble(add_min);
             max = Double.parseDouble(add_max);

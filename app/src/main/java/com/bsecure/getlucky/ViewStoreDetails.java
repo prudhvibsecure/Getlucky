@@ -242,8 +242,12 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
         ((EditText) editDiloag.findViewById(R.id.add_sr)).setText(offerList.get(pos).getStore_refer_percent());
         ((EditText) editDiloag.findViewById(R.id.add_admin)).setText(offerList.get(pos).getAdmin_percent());
         ((EditText) editDiloag.findViewById(R.id.add_to)).setText(offerList.get(pos).getTotal_percent());
-        ((EditText) editDiloag.findViewById(R.id.add_max)).setText(offerList.get(pos).getMax_amount());
         ((EditText) editDiloag.findViewById(R.id.add_min)).setText(offerList.get(pos).getMin_amount());
+        if (TextUtils.isEmpty(offerList.get(pos).getMax_amount())||offerList.get(pos).getMax_amount().equalsIgnoreCase("0")) {
+            ((EditText) editDiloag.findViewById(R.id.add_max)).setText("infinity(∞)");
+        }else{
+            ((EditText) editDiloag.findViewById(R.id.add_max)).setText(offerList.get(pos).getMax_amount());
+        }
 
         ((EditText) editDiloag.findViewById(R.id.add_co)).addTextChangedListener(new TextWatcher() {
 
@@ -365,6 +369,10 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
 
         try {
 
+            String session_data = AppPreferences.getInstance(this).getFromStore("userData");
+            JSONArray ayArray = new JSONArray(session_data);
+
+
             JSONObject object = new JSONObject();
             object.put("offer_id", offer_sp_id);
             object.put("offer_percent", offer_percent);
@@ -374,6 +382,8 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
             object.put("store_refer_percent", store_refer_percent);
             object.put("admin_percent", admin_percent);
             object.put("total_percent", total_percent);
+            object.put("store_id", getIntent().getStringExtra("store_id"));
+            object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
             new MethodResquest(this, this, Constants.PATH + "edit_offers", object.toString(), 107);
         } catch (Exception e) {
             e.printStackTrace();

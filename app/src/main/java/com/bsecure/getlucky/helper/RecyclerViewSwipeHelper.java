@@ -73,7 +73,7 @@ public abstract class RecyclerViewSwipeHelper extends ItemTouchHelper.SimpleCall
         }
     };
 
-    public RecyclerViewSwipeHelper(Context context, RecyclerView recyclerView) {
+    public  RecyclerViewSwipeHelper(Context context, RecyclerView recyclerView) {
         super(0, ItemTouchHelper.LEFT);
         this.recyclerView = recyclerView;
         this.buttons = new ArrayList<>();

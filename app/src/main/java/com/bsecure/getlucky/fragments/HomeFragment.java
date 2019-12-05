@@ -323,7 +323,9 @@ public class HomeFragment extends ParentFragment implements  IItemHandler,Google
                     } else {
                         if (count_page == 0) {
                             mRecyclerView.removeAllViews();
-                            adapter.clear();
+                            if (adapter!=null) {
+                                adapter.clear();
+                            }
                             mSwipeRefreshLayout.setRefreshing(false);
                             mSwipeRefreshLayout.setEnabled(true);
                             laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
