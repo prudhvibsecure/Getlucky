@@ -29,4 +29,20 @@
 
     <string name="delete_store">Are you Sure You Want To Delete Store?</string>
 
+    <string name="isr">Something went wrong. Please try again</string>
+
+    <string name="sct">Something went wrong. Please try again</string>
+
+    <string name="snr1">Something went wrong. Please try again</string>
+
+    <string name="snr2">Something went wrong. Please try again</string>
+
+    <string name="snr3">Something went wrong. Please try again</string>
+
+    <string name="iurl">Something went wrong. Please try again</string>
+
+    <string name="oopsmsg">Something went wrong. Please try again</string>
+
+    <string name="nipcyns">Can\'t connect right now. Please check your internet connection</string>
+
 </resources>

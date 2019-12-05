@@ -242,6 +242,11 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
                 Toast.makeText(this, "Please Enter Name", Toast.LENGTH_SHORT).show();
                 return;
             }
+            if (name.length()<=2){
+                Toast.makeText(this, "Name Must Be Of Minimum Three Characters", Toast.LENGTH_SHORT).show();
+                return;
+
+            }
             if (!ch_terms.isChecked()){
                 Toast.makeText(this, "Please Select Terms & Conditions", Toast.LENGTH_SHORT).show();
                 return;

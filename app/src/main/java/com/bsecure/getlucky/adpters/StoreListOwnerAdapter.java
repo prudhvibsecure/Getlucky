@@ -105,7 +105,7 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
                 Glide.with(context).load(Constants.PATH + "assets/upload/avatar/" + mycontactlist.getStore_image()).into(contactViewHolder.store_image);
             }
             applyClickEvents(contactViewHolder, matchesList, position);
-            applyEvents(contactViewHolder, matchesList, position);
+            //applyEvents(contactViewHolder, matchesList, position);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -149,7 +149,7 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
     private void applyEvents(ContactViewHolder contactViewHolder, final List<StoreListModel> classModelList, final int position) {
 
         if (contactViewHolder instanceof ItemSwipeWithActionWidthViewHolder) {
-            final ItemSwipeWithActionWidthViewHolder viewHolder = (ItemSwipeWithActionWidthViewHolder) contactViewHolder;
+            ItemSwipeWithActionWidthViewHolder viewHolder = (ItemSwipeWithActionWidthViewHolder) contactViewHolder;
             viewHolder.mActionViewDelete.setOnClickListener(
                     new View.OnClickListener() {
                         @Override
@@ -190,9 +190,6 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_store_item_nn, parent, false);
-//        ContactViewHolder myHoder = new ContactViewHolder(view);
-//        return myHoder;
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.store_item_row_view_1, parent, false);
         if (viewType == ITEM_TYPE_ACTION_WIDTH)
@@ -208,11 +205,9 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
 
         public TextView store_name, tv_offer, tv_offer_n;
         protected TextView tv_address;
-        LinearLayout ll_item;
-
-        ImageView store_image;
         public View mViewContent;
-        public View mActionContainer;
+        ImageView store_image;
+
 
         public ContactViewHolder(View v) {
             super(v);
@@ -222,9 +217,7 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
             tv_offer = (TextView) v.findViewById(R.id.tv_offer);
             tv_offer_n = (TextView) v.findViewById(R.id.tv_offer_n);
             store_image = (ImageView) v.findViewById(R.id.store_image);
-
-            mViewContent = itemView.findViewById(R.id.ll_item);
-            mActionContainer = itemView.findViewById(R.id.view_list_repo_action_container);
+            mViewContent = v.findViewById(R.id.ll_item);
 
         }
     }
@@ -245,15 +238,19 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
     }
     class ItemSwipeWithActionWidthViewHolder extends ContactViewHolder implements Extension {
 
-        View mActionViewDelete;
-        View mActionViewStatus;
-        View mActionViewEdit;
+        public View mActionViewDelete;
+        public View mActionViewStatus;
+        public View mActionViewEdit;
+
+        public View mActionContainer;
 
         public ItemSwipeWithActionWidthViewHolder(View itemView) {
             super(itemView);
             mActionViewDelete = itemView.findViewById(R.id.view_list_repo_action_delete);
             mActionViewStatus = itemView.findViewById(R.id.view_list_repo_action_status);
             mActionViewEdit = itemView.findViewById(R.id.view_list_edit_view);
+
+            mActionContainer = itemView.findViewById(R.id.view_list_repo_action_container);
         }
 
         @Override

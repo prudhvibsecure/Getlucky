@@ -289,9 +289,11 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
             nav_Menu.findItem(R.id.nav_store).setVisible(false);
             nav_Menu.findItem(R.id.nav_view_store).setVisible(true);
             nav_Menu.findItem(R.id.nav_bar_code).setVisible(true);
+            nav_Menu.findItem(R.id.nav_operator).setVisible(false);
         } else {
             nav_Menu.findItem(R.id.nav_profile).setVisible(false);
             nav_Menu.findItem(R.id.nav_login).setVisible(true);
+            nav_Menu.findItem(R.id.nav_operator).setVisible(true);
             nav_Menu.findItem(R.id.nav_store).setVisible(false);
             nav_Menu.findItem(R.id.nav_view_store).setVisible(false);
             nav_Menu.findItem(R.id.nav_bar_code).setVisible(false);

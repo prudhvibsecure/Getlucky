@@ -5,6 +5,7 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,16 +29,17 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ContactViewH
     private List<OfferModel> contactList = null;
     private SparseBooleanArray selectedItems;
     private SparseBooleanArray animationItemsIndex;
-    private static int currentSelectedIndex = -1;
+    private  int currentSelectedIndex = -1;
     private HashMap<Integer, Boolean> isChecked = new HashMap<>();
     boolean isSelectedAll = false;
     private static String keyword = "";
     private List<KeyWords> my_select_list = new ArrayList<>();
-
-    public OfferAdapter(List<OfferModel> contactList, Context context, OfferListListener listener) {
+    private String code_status;
+    public OfferAdapter(List<OfferModel> contactList, Context context, OfferListListener listener,String code) {
         this.context = context;
         this.listener = listener;
         this.contactList = contactList;
+        this.code_status = code;
         selectedItems = new SparseBooleanArray();
         animationItemsIndex = new SparseBooleanArray();
     }
@@ -77,7 +79,18 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ContactViewH
             contactViewHolder.offer_desc.setText(mycontactlist.getOffer_percent_description());
             contactViewHolder.min.setText("Minimum Amount "+mycontactlist.getMin_amount());
             contactViewHolder.max.setText("Maximum Amount "+mycontactlist.getMax_amount());
-            applyClickEvents(contactViewHolder, contactList, position);
+            if (code_status.equalsIgnoreCase("2")) {
+                if (mycontactlist.getDefault_status().equalsIgnoreCase("1")) {
+                    contactViewHolder.selct_rd.setChecked(true);
+
+                } else {
+                    contactViewHolder.selct_rd.setChecked(false);
+                }
+            }else{
+                contactViewHolder.selct_rd.setVisibility(View.GONE);
+            }
+           // contactViewHolder.selct_rd.setChecked(currentSelectedIndex == position);
+            applyClickEvents(contactViewHolder, contactList, position,contactViewHolder.selct_rd);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -98,8 +111,17 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ContactViewH
         return position;
     }
 
-    private void applyClickEvents(ContactViewHolder contactViewHolder, final List<OfferModel> matchesList, final int position) {
+    private void applyClickEvents(ContactViewHolder contactViewHolder, final List<OfferModel> matchesList, final int position, final RadioButton selct_rd) {
+        contactViewHolder.selct_rd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    listener.onRowClickedPos2(matchesList, position,selct_rd);
+                } catch (Exception e) {
 
+                }
+            }
+        });
     }
 
     @Override
@@ -116,6 +138,7 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ContactViewH
         protected TextView offer_desc;
         protected TextView min;
         protected TextView max;
+        protected RadioButton selct_rd;
 
         public ContactViewHolder(View v) {
             super(v);
@@ -123,11 +146,13 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ContactViewH
             offer_desc = (TextView) v.findViewById(R.id.sp_off1);
             min = (TextView) v.findViewById(R.id.min);
             max = (TextView) v.findViewById(R.id.max);
+            selct_rd =  v.findViewById(R.id.offer_select_n);
         }
     }
 
     public interface OfferListListener {
 
         void onRowClickedOffer(List<OfferModel> matchesList, int pos);
+        void onRowClickedPos2(List<OfferModel> matchesList, int position, RadioButton selct_rd);
     }
 }

@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,9 +25,6 @@ import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.helper.RecyclerViewSwipeHelper;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.models.OfferModel;
-import com.bsecure.getlucky.models.StoreListModel;
-import com.bsecure.getlucky.store.EditStore;
-import com.bsecure.getlucky.store.ViewStoresList;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 import com.bumptech.glide.Glide;
@@ -35,24 +33,23 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-public class ViewStoreDetails extends AppCompatActivity implements View.OnClickListener, RequestHandler, SpecialOfferAdapter.SpecialOfferListListener ,OfferAdapter.OfferListListener{
+public class ViewStoreDetails extends AppCompatActivity implements View.OnClickListener, RequestHandler, SpecialOfferAdapter.SpecialOfferListListener, OfferAdapter.OfferListListener {
 
     ImageView store_img;
     TextView tv_store_name, store_address, tv_spoffer, tv_offers;
-    RecyclerView sp_offer_vv,offer_vv;
+    RecyclerView sp_offer_vv, offer_vv;
     private SpecialOfferAdapter specialOfferAdapter;
     private OfferAdapter offerAdapter;
-    private List<OfferModel> spList,offerModelList;
+    private List<OfferModel> spList, offerModelList;
     private String text_stats, message, msg;
-    private Dialog InactiveDiloag, mDialog, editDiloag;
+    private Dialog InactiveDiloag, mDialog, editDiloag, nmDiloag;
     double temp_percent = 0, refer_percent = 0, store_refer_percent = 0, admin_percent = 0, total_percent = 0, offer_percent = 0;
     private static DecimalFormat df = new DecimalFormat("0.00");
     double min = 0, max = 0;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +75,17 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
             Glide.with(this).load(Constants.PATH + "assets/upload/avatar/" + getIntent().getStringExtra("store_image")).into(store_img);
         }
 
-        getSpecialOffers();
+        if (getIntent().getStringExtra("type").equalsIgnoreCase("1")) {
+            getSpecialOffers();
+        } else {
+            tv_spoffer.setBackground(getResources().getDrawable(R.drawable.button_bg_cancel_gray));
+            tv_offers.setBackground(getResources().getDrawable(R.drawable.button_bg_submit_blue));
+            tv_spoffer.setTextColor(getResources().getColor(R.color.black));
+            tv_offers.setTextColor(getResources().getColor(R.color.black));
+            sp_offer_vv.setVisibility(View.GONE);
+            offer_vv.setVisibility(View.VISIBLE);
+            getOffers();
+        }
 
         // Special offer swipping code
 
@@ -156,7 +163,7 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
                             @Override
                             public void onClick(int pos) {
                                 // TODO: OnTransfer
-                                editOfferDialog_New(offerModelList,mPos);
+                                editOfferDialog_New(offerModelList, mPos);
                             }
                         }
                 ));
@@ -215,11 +222,18 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
             }
         });
     }
+
     private void editOfferDialog_New(final List<OfferModel> offerList, final int pos) {
 
-        editDiloag = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
+        editDiloag = new Dialog(this, R.style.Theme_MaterialComponents_DialogWhenLarge);
         editDiloag.setContentView(R.layout.add_m_offer);
         editDiloag.show();
+        editDiloag.findViewById(R.id.iv_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editDiloag.dismiss();
+            }
+        });
         ((TextView) editDiloag.findViewById(R.id.tv_title1)).setText("Edit Offer");
         ((TextView) editDiloag.findViewById(R.id.bt_add)).setText("Update Offer");
 
@@ -270,7 +284,7 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
             public void onClick(View view) {
 
                 String offer = ((EditText) editDiloag.findViewById(R.id.add_co)).getText().toString().trim();
-                if (offer.length() == 0||offer.equalsIgnoreCase("0")) {
+                if (offer.length() == 0 || offer.equalsIgnoreCase("0")) {
                     Toast.makeText(ViewStoreDetails.this, "Please Fill Required Field", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -281,27 +295,27 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
                     return;
                 }
                 String add_max = ((EditText) editDiloag.findViewById(R.id.add_max)).getText().toString();
-                if (add_max.length()>0) {
+                if (add_max.length() > 0) {
                     min = Double.parseDouble(add_min);
                     max = Double.parseDouble(add_max);
-                    if (Double.compare(min, max)> 0) {
+                    if (Double.compare(min, max) > 0) {
                         Toast.makeText(ViewStoreDetails.this, "Maximum Amount Must Be Greater Than Minimum Amount", Toast.LENGTH_SHORT).show();
                         return;
                     }
                 }
-                editOffer(offerList.get(pos).getOffer_id(), add_min,add_max);
+                editOffer(offerList.get(pos).getOffer_id(), add_min, add_max);
             }
         });
         editDiloag.findViewById(R.id.bt_preview).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String offer = ((EditText) editDiloag.findViewById(R.id.add_co)).getText().toString().trim();
-                if (offer.length() == 0||offer.equalsIgnoreCase("0")) {
+                if (offer.length() == 0 || offer.equalsIgnoreCase("0")) {
                     Toast.makeText(ViewStoreDetails.this, "Please Fill Required Field", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 String offer_l = ((EditText) editDiloag.findViewById(R.id.add_to)).getText().toString();
-                previewOffer(offer+"% Cashback On All Purchase");
+                previewOffer(offer + "% Cashback On All Purchase");
             }
         });
     }
@@ -347,7 +361,7 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private void editOffer(String offer_sp_id, String add_min,String add_max) {
+    private void editOffer(String offer_sp_id, String add_min, String add_max) {
 
         try {
 
@@ -387,6 +401,7 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
             }
         });
     }
+
     private void getDeleteDiloag_offer(final String _id) {
 
         mDialog = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
@@ -435,6 +450,7 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
             }
         });
     }
+
     private void getInactiveDiloagOffer(final String store_id, final String status) {
 
         if (status.equalsIgnoreCase("0")) {
@@ -479,6 +495,7 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
             e.printStackTrace();
         }
     }
+
     private void getinactiveStoreOffer(String _id, String k_status) {
 
         String myStatus;
@@ -507,6 +524,7 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
             e.printStackTrace();
         }
     }
+
     private void getDeleteOffer(String offer_sp_id) {
 
         try {
@@ -531,6 +549,7 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
         }
 
     }
+
     private void getOffers() {
         try {
             String session_data = AppPreferences.getInstance(this).getFromStore("userData");
@@ -583,6 +602,85 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
+    public void onRowClickedPos(final List<OfferModel> matchesList, final int position, final RadioButton offer_select) {
+
+        nmDiloag = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
+        nmDiloag.setContentView(R.layout.custom_alert_show);
+        message = "Selected Special offer will show on your Store.";
+        ((TextView) nmDiloag.findViewById(R.id.text_message)).setText(message);
+        nmDiloag.show();
+        nmDiloag.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                offer_select.setChecked(false);
+                nmDiloag.dismiss();
+            }
+        });
+        nmDiloag.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                getapperOffersc(matchesList.get(position).getOffer_sp_id());
+                nmDiloag.dismiss();
+            }
+        });
+
+
+    }
+
+    private void getapperOffersc(String special_offer_id) {
+        try {
+
+            JSONObject object = new JSONObject();
+            object.put("special_offer_id", special_offer_id);
+            new MethodResquest(this, this, Constants.PATH + "change_special_offers_default_status", object.toString(), 109);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void onRowClickedPos2(final List<OfferModel> matchesList, final int position, final RadioButton selct_rd) {
+
+        nmDiloag = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
+        nmDiloag.setContentView(R.layout.custom_alert_show);
+        message = "Selected  offer will show on your Store.";
+        ((TextView) nmDiloag.findViewById(R.id.text_message)).setText(message);
+        nmDiloag.show();
+        nmDiloag.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selct_rd.setChecked(false);
+                nmDiloag.dismiss();
+            }
+        });
+        nmDiloag.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                getapperOffersc2(matchesList.get(position).getOffer_id());
+                nmDiloag.dismiss();
+            }
+        });
+
+
+    }
+
+    private void getapperOffersc2(String offer_id) {
+        try {
+
+            JSONObject object = new JSONObject();
+            object.put("offer_id", offer_id);
+            new MethodResquest(this, this, Constants.PATH + "change_offers_default_status", object.toString(), 108);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @Override
     public void requestStarted() {
 
     }
@@ -604,9 +702,10 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
                                 storeListModel.setOffer_description(jsonobject.optString("offer_description"));
                                 storeListModel.setOffer_sp_id(jsonobject.optString("special_offer_id"));
                                 storeListModel.setStatus(jsonobject.optString("status"));
+                                storeListModel.setDefault_status(jsonobject.optString("default_status"));
                                 spList.add(storeListModel);
                             }
-                            specialOfferAdapter = new SpecialOfferAdapter(spList, this, this);
+                            specialOfferAdapter = new SpecialOfferAdapter(spList, this, this,"2");
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
                             sp_offer_vv.setLayoutManager(linearLayoutManager);
                             sp_offer_vv.setAdapter(specialOfferAdapter);
@@ -619,7 +718,7 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
                 case 101:
                     JSONObject deletObj = new JSONObject(response.toString());
                     if (deletObj.optString("statuscode").equalsIgnoreCase("200")) {
-                        getSpecialOffers();
+                        redirectClass("1");
                         Toast.makeText(this, deletObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this, deletObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
@@ -628,7 +727,7 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
                 case 102:
                     JSONObject object1 = new JSONObject(response.toString());
                     if (object1.optString("statuscode").equalsIgnoreCase("200")) {
-                        getSpecialOffers();
+                        redirectClass("1");
                         Toast.makeText(this, object1.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this, object1.optString("statusdescription"), Toast.LENGTH_SHORT).show();
@@ -638,14 +737,14 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
                     JSONObject object2 = new JSONObject(response.toString());
                     if (object2.optString("statuscode").equalsIgnoreCase("200")) {
                         editDiloag.dismiss();
-                        getSpecialOffers();
+                        redirectClass("1");
                         Toast.makeText(this, object2.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this, object2.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
                     break;
                 case 104:
-                   // store_name,offer_percent,min_amount,max_amount,refer_percent,store_refer_percent,admin_percent,total_percent]
+                    // store_name,offer_percent,min_amount,max_amount,refer_percent,store_refer_percent,admin_percent,total_percent]
                     offerModelList = new ArrayList<>();
                     offer_vv.setVisibility(View.VISIBLE);
                     JSONObject object21 = new JSONObject(response.toString());
@@ -666,9 +765,10 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
                                 storeListModel.setStore_refer_percent(jsonobject.optString("store_refer_percent"));
                                 storeListModel.setAdmin_percent(jsonobject.optString("admin_percent"));
                                 storeListModel.setTotal_percent(jsonobject.optString("total_percent"));
+                                storeListModel.setDefault_status(jsonobject.optString("default_status"));
                                 offerModelList.add(storeListModel);
                             }
-                            offerAdapter = new OfferAdapter(offerModelList, this, this);
+                            offerAdapter = new OfferAdapter(offerModelList, this, this,"2");
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
                             offer_vv.setLayoutManager(linearLayoutManager);
                             offer_vv.setAdapter(offerAdapter);
@@ -682,7 +782,8 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
                 case 105:
                     JSONObject deletObj1 = new JSONObject(response.toString());
                     if (deletObj1.optString("statuscode").equalsIgnoreCase("200")) {
-                        getOffers();
+                        redirectClass("2");
+
                         Toast.makeText(this, deletObj1.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this, deletObj1.optString("statusdescription"), Toast.LENGTH_SHORT).show();
@@ -691,7 +792,7 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
                 case 106:
                     JSONObject object11 = new JSONObject(response.toString());
                     if (object11.optString("statuscode").equalsIgnoreCase("200")) {
-                        getOffers();
+                        redirectClass("2");
                         Toast.makeText(this, object11.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this, object11.optString("statusdescription"), Toast.LENGTH_SHORT).show();
@@ -701,10 +802,27 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
                     JSONObject object211 = new JSONObject(response.toString());
                     if (object211.optString("statuscode").equalsIgnoreCase("200")) {
                         editDiloag.dismiss();
-                        getOffers();
+                        redirectClass("2");
                         Toast.makeText(this, object211.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this, object211.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                    case 108:
+                    JSONObject g = new JSONObject(response.toString());
+                    if (g.optString("statuscode").equalsIgnoreCase("200")) {
+                        redirectClass("2");
+                        Toast.makeText(this, g.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, g.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                    }
+                    break; case 109:
+                    JSONObject g1 = new JSONObject(response.toString());
+                    if (g1.optString("statuscode").equalsIgnoreCase("200")) {
+                        redirectClass("1");
+                        Toast.makeText(this, g1.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, g1.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
                     break;
             }
@@ -722,5 +840,17 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
     @Override
     public void onRowClickedOffer(List<OfferModel> matchesList, int pos) {
 
+    }
+
+    public void redirectClass(String type) {
+        Intent in = new Intent(this, ViewStoreDetails.class);
+        in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        in.putExtra("type", type);
+        in.putExtra("store_id", getIntent().getStringExtra("store_id"));
+        in.putExtra("store_name", getIntent().getStringExtra("store_name"));
+        in.putExtra("store_add", getIntent().getStringExtra("store_add"));
+        in.putExtra("store_image", getIntent().getStringExtra("store_image"));
+        startActivity(in);
+        overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
     }
 }

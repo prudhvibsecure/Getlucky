@@ -5,8 +5,7 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bsecure.getlucky.R;
 import com.bsecure.getlucky.models.KeyWords;
 import com.bsecure.getlucky.models.OfferModel;
-import com.bsecure.getlucky.models.StoreListModel;
 
 import org.json.JSONArray;
 
@@ -36,11 +34,13 @@ public class SpecialOfferAdapter  extends RecyclerView.Adapter<SpecialOfferAdapt
     boolean isSelectedAll = false;
     private static String keyword = "";
     private List<KeyWords> my_select_list = new ArrayList<>();
-
-    public SpecialOfferAdapter(List<OfferModel> contactList, Context context, SpecialOfferListListener listener) {
+    private int lastSelectedPosition = -1;
+    private String code_status;
+    public SpecialOfferAdapter(List<OfferModel> contactList, Context context, SpecialOfferListListener listener,String code_status) {
         this.context = context;
         this.listener = listener;
         this.contactList = contactList;
+        this.code_status = code_status;
         selectedItems = new SparseBooleanArray();
         animationItemsIndex = new SparseBooleanArray();
     }
@@ -78,7 +78,19 @@ public class SpecialOfferAdapter  extends RecyclerView.Adapter<SpecialOfferAdapt
         try {
             final OfferModel mycontactlist = contactList.get(position);
             contactViewHolder.offer_desc.setText(mycontactlist.getOffer_description());
-            applyClickEvents(contactViewHolder, contactList, position);
+            if (code_status.equalsIgnoreCase("2")) {
+                if (mycontactlist.getDefault_status().equalsIgnoreCase("1")) {
+                    contactViewHolder.offer_select.setChecked(true);
+
+                } else {
+                    contactViewHolder.offer_select.setChecked(false);
+                }
+            }else{
+                contactViewHolder.offer_select.setVisibility(View.GONE);
+            }
+            //contactViewHolder.offer_select.setChecked(lastSelectedPosition == position);
+            applyClickEvents(contactViewHolder, contactList, position,contactViewHolder.offer_select);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -94,8 +106,17 @@ public class SpecialOfferAdapter  extends RecyclerView.Adapter<SpecialOfferAdapt
         return position;
     }
 
-    private void applyClickEvents(ContactViewHolder contactViewHolder, final List<OfferModel> matchesList, final int position) {
+    private void applyClickEvents(ContactViewHolder contactViewHolder, final List<OfferModel> matchesList, final int position, final RadioButton offer_select) {
+        contactViewHolder.offer_select.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    listener.onRowClickedPos(matchesList, position,offer_select);
+                } catch (Exception e) {
 
+                }
+            }
+        });
     }
 
     @Override
@@ -115,16 +136,21 @@ public class SpecialOfferAdapter  extends RecyclerView.Adapter<SpecialOfferAdapt
     public class ContactViewHolder extends RecyclerView.ViewHolder {
 
         protected TextView offer_desc;
+        protected RadioButton offer_select;
 
         public ContactViewHolder(View v) {
             super(v);
 
             offer_desc = (TextView) v.findViewById(R.id.sp_off);
+            offer_select = v.findViewById(R.id.offer_select);
+           
         }
     }
 
     public interface SpecialOfferListListener {
 
         void onRowClicked(List<OfferModel> matchesList, int pos);
+
+        void onRowClickedPos(List<OfferModel> matchesList, int position, RadioButton offer_select);
     }
 }

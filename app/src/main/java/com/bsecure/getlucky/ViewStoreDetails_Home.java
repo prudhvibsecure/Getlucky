@@ -1,14 +1,12 @@
 package com.bsecure.getlucky;
 
 import android.app.Dialog;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bsecure.getlucky.adpters.OfferAdapter;
 import com.bsecure.getlucky.adpters.SpecialOfferAdapter;
 import com.bsecure.getlucky.common.AppPreferences;
-import com.bsecure.getlucky.helper.RecyclerViewSwipeHelper;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.models.OfferModel;
 import com.bsecure.getlucky.volleyhttp.Constants;
@@ -122,6 +119,11 @@ public class ViewStoreDetails_Home extends AppCompatActivity implements View.OnC
     }
 
     @Override
+    public void onRowClickedPos(List<OfferModel> matchesList, int position, RadioButton offer_select) {
+
+    }
+
+    @Override
     public void requestStarted() {
 
     }
@@ -144,9 +146,10 @@ public class ViewStoreDetails_Home extends AppCompatActivity implements View.OnC
                                 storeListModel.setOffer_description(jsonobject.optString("offer_description"));
                                 storeListModel.setOffer_sp_id(jsonobject.optString("special_offer_id"));
                                 storeListModel.setStatus(jsonobject.optString("status"));
+                                storeListModel.setDefault_status(jsonobject.optString("default_status"));
                                 spList.add(storeListModel);
                             }
-                            specialOfferAdapter = new SpecialOfferAdapter(spList, this, this);
+                            specialOfferAdapter = new SpecialOfferAdapter(spList, this, this,"1");
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
                             sp_offer_vv.setLayoutManager(linearLayoutManager);
                             sp_offer_vv.setAdapter(specialOfferAdapter);
@@ -170,9 +173,10 @@ public class ViewStoreDetails_Home extends AppCompatActivity implements View.OnC
                                 storeListModel.setStore_refer_percent(jsonobject.optString("store_refer_percent"));
                                 storeListModel.setAdmin_percent(jsonobject.optString("admin_percent"));
                                 storeListModel.setTotal_percent(jsonobject.optString("total_percent"));
+                                storeListModel.setDefault_status(jsonobject.optString("default_status"));
                                 offerModelList.add(storeListModel);
                             }
-                            offerAdapter = new OfferAdapter(offerModelList, this, this);
+                            offerAdapter = new OfferAdapter(offerModelList, this, this,"1");
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
                             offer_vv.setLayoutManager(linearLayoutManager);
                             offer_vv.setAdapter(offerAdapter);
@@ -197,6 +201,11 @@ public class ViewStoreDetails_Home extends AppCompatActivity implements View.OnC
 
     @Override
     public void onRowClickedOffer(List<OfferModel> matchesList, int pos) {
+
+    }
+
+    @Override
+    public void onRowClickedPos2(List<OfferModel> matchesList, int position, RadioButton selct_rd) {
 
     }
 }

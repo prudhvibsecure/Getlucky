@@ -2,7 +2,29 @@ package com.bsecure.getlucky.models;
 
 public class OfferModel {
 
-    String offer_id,store_name,offer_description,offer_sp_id,status,offer_percent,min_amount,max_amount,refer_percent,store_refer_percent,admin_percent,total_percent,offer_percent_description;
+    String default_status;
+
+    public String getDefault_status() {
+        return default_status;
+    }
+
+    public void setDefault_status(String default_status) {
+        this.default_status = default_status;
+    }
+
+    String offer_id;
+    String store_name;
+    String offer_description;
+    String offer_sp_id;
+    String status;
+    String offer_percent;
+    String min_amount;
+    String max_amount;
+    String refer_percent;
+    String store_refer_percent;
+    String admin_percent;
+    String total_percent;
+    String offer_percent_description;
 
     public String getOffer_id() {
         return offer_id;

@@ -14,23 +14,28 @@ import android.view.animation.TranslateAnimation;
 
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.fragments.HomeFragment;
+import com.bsecure.getlucky.interfaces.IItemHandler;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.pinstore.AddPin;
 import com.bsecure.getlucky.pinstore.VerifyPin;
 import com.bsecure.getlucky.volleyhttp.Constants;
+import com.bsecure.getlucky.volleyhttp.HTTPPostTask;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class Splash extends AppCompatActivity implements RequestHandler {
+public class Splash extends AppCompatActivity implements IItemHandler {
 
     private ViewGroup hiddenPanel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AppPreferences.getInstance(this).addToStore("first_time","0",true);
+
+        AppPreferences.getInstance(this).addToStore("first_time", "0", true);
+
         getListCats();
 
         hiddenPanel = (ViewGroup) findViewById(R.id.hidden_panel);
@@ -72,11 +77,11 @@ public class Splash extends AppCompatActivity implements RequestHandler {
                 String pin = AppPreferences.getInstance(Splash.this).getFromStore("pin_view");
                 if (pin.length() != 0 || !TextUtils.isEmpty(pin)) {
                     startActivity(new Intent(Splash.this, VerifyPin.class));
-                    overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
+                    overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                     finish();
-                }else {
+                } else {
                     startActivity(new Intent(Splash.this, GetLucky.class));
-                    overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
+                    overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                     finish();
                 }
 
@@ -89,37 +94,35 @@ public class Splash extends AppCompatActivity implements RequestHandler {
     private void getListCats() {
 
         JSONObject object = new JSONObject();
-        MethodResquest resquest = new MethodResquest(this, this, Constants.PATH + "get_category", object.toString(), 100);
-        resquest.dismissProgress(this);
+        HTTPPostTask task = new HTTPPostTask(this, this);
+        task.userRequest("", 100, Constants.PATH + "get_category", object.toString());
     }
 
     @Override
-    public void requestStarted() {
-
-    }
-
-    @Override
-    public void requestCompleted(JSONObject response, int requestType) {
+    public void onFinish(Object results, int requestId) {
         try {
-            switch (requestType) {
+            switch (requestId) {
 
                 case 100:
-                    JSONObject object=new JSONObject(response.toString());
-                    if (object.optString("statuscode").equalsIgnoreCase("200")){
-                        JSONArray array=object.getJSONArray("category_details");
-                        AppPreferences.getInstance(this).addToStore("category",array.toString(),true);
+                    JSONObject object = new JSONObject(results.toString());
+                    if (object.optString("statuscode").equalsIgnoreCase("200")) {
+                        JSONArray array = object.getJSONArray("category_details");
+                        AppPreferences.getInstance(this).addToStore("category", array.toString(), true);
                     }
                     break;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    @Override
+    public void onError(String errorCode, int requestId) {
 
     }
 
     @Override
-    public void requestEndedWithError(String error, int errorcode) {
+    public void onProgressChange(int requestId, Long... values) {
 
     }
 }

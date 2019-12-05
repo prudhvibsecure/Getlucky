@@ -97,7 +97,7 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
             final StoreListModel mycontactlist = matchesList.get(position);
             contactViewHolder.store_name.setText(mycontactlist.getStore_name());
             if (TextUtils.isEmpty(mycontactlist.getOffer())) {
-                contactViewHolder.tv_offer.setVisibility(View.INVISIBLE);
+                contactViewHolder.tv_offer.setVisibility(View.GONE);
             }else{
                 contactViewHolder.tv_offer.setText(mycontactlist.getOffer());
                 contactViewHolder.tv_offer.setVisibility(View.VISIBLE);

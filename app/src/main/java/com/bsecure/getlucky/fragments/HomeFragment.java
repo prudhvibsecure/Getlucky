@@ -41,11 +41,13 @@ import com.bsecure.getlucky.ViewStoreDetails_Home;
 import com.bsecure.getlucky.adpters.StoreListAdapter;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.helper.RecyclerOnScrollListener;
+import com.bsecure.getlucky.interfaces.IItemHandler;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.models.StoreListModel;
 import com.bsecure.getlucky.network.CheckNetwork;
 import com.bsecure.getlucky.services.GetAddressIntentService;
 import com.bsecure.getlucky.volleyhttp.Constants;
+import com.bsecure.getlucky.volleyhttp.HTTPPostTask;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -64,7 +66,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 
-public class HomeFragment extends ParentFragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RequestHandler, StoreListAdapter.StoreAdapterListener {
+public class HomeFragment extends ParentFragment implements  IItemHandler,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RequestHandler, StoreListAdapter.StoreAdapterListener {
 
     private GetLucky getLucky;
     private String pin_code, area = "", city = "", country = "", phone, category_ids = "", state = "", loacal_area;
@@ -122,8 +124,10 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
             category_ids = category_ids.replaceFirst(",", "");
             JSONObject object = new JSONObject();
             object.put("category_ids", category_ids.trim());
-            MethodResquest ms = new MethodResquest(getActivity(), this, Constants.PATH + "get_keywords", object.toString(), 100);
-            ms.dismissProgress(getActivity());
+            HTTPPostTask task=new HTTPPostTask(getActivity(),this);
+            task.userRequest("",100,Constants.PATH + "get_keywords",object.toString());
+//            MethodResquest ms = new MethodResquest(getActivity(), this, Constants.PATH + "get_keywords", object.toString(), 100);
+//            ms.dismissProgress(getActivity());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -269,17 +273,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
         try {
 
             switch (requestType) {
-                case 100:
 
-                    JSONObject object = new JSONObject(response.toString());
-                    if (object.optString("statuscode").equalsIgnoreCase("200")) {
-                        JSONArray array = object.getJSONArray("keywords_ios");
-                        AppPreferences.getInstance(getActivity()).addToStore("keywords", array.toString(), true);
-                        AppPreferences.getInstance(getActivity()).addToStore("keywords_new", array.toString(), true);
-                        AppPreferences.getInstance(getActivity()).addToStore("first_time", "Yes", true);
-                    }
-                    searchStore(count_page);
-                    break;
                 case 101:
 
                     JSONObject object1 = new JSONObject(response.toString());
@@ -302,8 +296,8 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
                                 storeListModel.setPin_code(jsonobject.optString("pin_code"));
                                 storeListModel.setOffer(jsonobject.optString("offer_description"));
                                 storeListModel.setOffer_date(jsonobject.optString("offer_date"));
-                                storeListModel.setCategories(jsonobject.optString("categories"));
-                                storeListModel.setKeywords(jsonobject.optString("keywords"));
+//                                storeListModel.setCategories(jsonobject.optString("categories"));
+//                                storeListModel.setKeywords(jsonobject.optString("keywords"));
                                 storeListModel.setLucky_offer_description(jsonobject.optString("lucky_offer_description"));
                                 storeListModel.setStore_image(jsonobject.optString("store_image"));
                                 storeListModel.setStore_phone_number(jsonobject.optString("store_phone_number"));
@@ -401,6 +395,39 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
             startActivity(login);
             getActivity().overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
         }
+
+    }
+
+    @Override
+    public void onFinish(Object results, int requestId) {
+        try {
+            switch (requestId){
+                case 100:
+
+                    JSONObject object = new JSONObject(results.toString());
+                    if (object.optString("statuscode").equalsIgnoreCase("200")) {
+                        JSONArray array = object.getJSONArray("keywords_ios");
+                        AppPreferences.getInstance(getActivity()).addToStore("keywords", array.toString(), true);
+                        AppPreferences.getInstance(getActivity()).addToStore("keywords_new", array.toString(), true);
+
+                    }
+                    searchStore(count_page);
+                    break;
+                    default:
+                        break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onError(String errorCode, int requestId) {
+
+    }
+
+    @Override
+    public void onProgressChange(int requestId, Long... values) {
 
     }
 
@@ -553,6 +580,7 @@ public class HomeFragment extends ParentFragment implements GoogleApiClient.Conn
             AppPreferences.getInstance(getActivity()).addToStore("larea", loacal_area, true);
             laView.findViewById(R.id.no_data).setVisibility(View.GONE);
             if (isNetworkAvailable()) {
+                AppPreferences.getInstance(getActivity()).addToStore("first_time", "Yes", true);
                 count_page = 0;
                 storeListModelList = new ArrayList<>();
                 getStoreData();
