@@ -518,13 +518,10 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
 
         String add_min = ((EditText) add_Offer.findViewById(R.id.add_min)).getText().toString().trim();
         if (add_min.length() == 0 || add_min.equalsIgnoreCase("0")) {
-            ((EditText) add_Offer.findViewById(R.id.add_min)).setText("");
+            ((EditText) add_Offer.findViewById(R.id.add_min)).setText("1");
             return;
         }
         String add_max = ((EditText) add_Offer.findViewById(R.id.add_max)).getText().toString().trim();
-        if (add_max.length()==0){
-            add_max="∞";
-        }
         if (add_max.length()>0) {
             min = Double.parseDouble(add_min);
             max = Double.parseDouble(add_max);

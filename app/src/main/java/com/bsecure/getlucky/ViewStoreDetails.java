@@ -244,7 +244,7 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
         ((EditText) editDiloag.findViewById(R.id.add_to)).setText(offerList.get(pos).getTotal_percent());
         ((EditText) editDiloag.findViewById(R.id.add_min)).setText(offerList.get(pos).getMin_amount());
         if (TextUtils.isEmpty(offerList.get(pos).getMax_amount())||offerList.get(pos).getMax_amount().equalsIgnoreCase("0")) {
-            ((EditText) editDiloag.findViewById(R.id.add_max)).setText("infinity(∞)");
+            ((EditText) editDiloag.findViewById(R.id.add_max)).setText("");
         }else{
             ((EditText) editDiloag.findViewById(R.id.add_max)).setText(offerList.get(pos).getMax_amount());
         }
@@ -295,10 +295,13 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
 
                 String add_min = ((EditText) editDiloag.findViewById(R.id.add_min)).getText().toString();
                 if (add_min.length() == 0 || add_min.equalsIgnoreCase("0")) {
-                    ((EditText) editDiloag.findViewById(R.id.add_min)).setText("");
+                    ((EditText) editDiloag.findViewById(R.id.add_min)).setText("1");
                     return;
                 }
                 String add_max = ((EditText) editDiloag.findViewById(R.id.add_max)).getText().toString();
+                if (add_max.equalsIgnoreCase("∞")){
+                    add_max="";
+                }
                 if (add_max.length() > 0) {
                     min = Double.parseDouble(add_min);
                     max = Double.parseDouble(add_max);
@@ -614,26 +617,26 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
     @Override
     public void onRowClickedPos(final List<OfferModel> matchesList, final int position, final RadioButton offer_select) {
 
-        nmDiloag = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
-        nmDiloag.setContentView(R.layout.custom_alert_show);
-        message = "Selected Special offer will show on your Store.";
-        ((TextView) nmDiloag.findViewById(R.id.text_message)).setText(message);
-        nmDiloag.show();
-        nmDiloag.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                offer_select.setChecked(false);
-                nmDiloag.dismiss();
-            }
-        });
-        nmDiloag.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+//        nmDiloag = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
+//        nmDiloag.setContentView(R.layout.custom_alert_show);
+//        message = "Selected Special offer will show on your Store.";
+//        ((TextView) nmDiloag.findViewById(R.id.text_message)).setText(message);
+//        nmDiloag.show();
+//        nmDiloag.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                offer_select.setChecked(false);
+//                nmDiloag.dismiss();
+//            }
+//        });
+//        nmDiloag.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
 
                 getapperOffersc(matchesList.get(position).getOffer_sp_id());
-                nmDiloag.dismiss();
-            }
-        });
+//                nmDiloag.dismiss();
+//            }
+//        });
 
 
     }
@@ -653,26 +656,26 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
     @Override
     public void onRowClickedPos2(final List<OfferModel> matchesList, final int position, final RadioButton selct_rd) {
 
-        nmDiloag = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
-        nmDiloag.setContentView(R.layout.custom_alert_show);
-        message = "Selected  offer will show on your Store.";
-        ((TextView) nmDiloag.findViewById(R.id.text_message)).setText(message);
-        nmDiloag.show();
-        nmDiloag.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selct_rd.setChecked(false);
-                nmDiloag.dismiss();
-            }
-        });
-        nmDiloag.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+//        nmDiloag = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
+//        nmDiloag.setContentView(R.layout.custom_alert_show);
+//        message = "Selected  offer will show on your Store.";
+//        ((TextView) nmDiloag.findViewById(R.id.text_message)).setText(message);
+//        nmDiloag.show();
+//        nmDiloag.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                selct_rd.setChecked(false);
+//                nmDiloag.dismiss();
+//            }
+//        });
+//        nmDiloag.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
 
                 getapperOffersc2(matchesList.get(position).getOffer_id());
-                nmDiloag.dismiss();
-            }
-        });
+//                nmDiloag.dismiss();
+//            }
+//        });
 
 
     }

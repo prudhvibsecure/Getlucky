@@ -169,6 +169,7 @@
                     android:layout_gravity="end"
                     android:background="@null"
                     android:ems="6"
+                    android:hint="infinity(∞)"
                     android:gravity="left"
                     android:singleLine="true"
                     android:inputType="number"
