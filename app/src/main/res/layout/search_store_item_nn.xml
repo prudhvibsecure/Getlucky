@@ -58,37 +58,53 @@
                 android:text="Address"
                 android:textSize="@dimen/_12sdp" />
 
-            <LinearLayout
+            <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/tv_offer"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_gravity="left|center"
                     android:layout_weight="1"
                     android:background="@drawable/template_pop_but_sel_red"
                     android:gravity="left|center"
-                    android:text="+ Special Offer"
+                    android:text="+Sp.Offer"
+                    android:singleLine="true"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_9sdp" />
 
                 <TextView
                     android:id="@+id/tv_offer_n"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_gravity="left|center"
                     android:layout_weight="1"
                     android:background="@drawable/template_pop_but_sel"
-                    android:gravity="center"
-                    android:text="+ Offer"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="10dp"
+                    android:gravity="left|center"
+                    android:text="+Offer"
+                    android:singleLine="true"
+                    android:layout_marginLeft="2dp"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_9sdp" />
-            </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_operator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center"
+                    android:layout_weight="1"
+                    android:background="@drawable/template_pop_but_sel"
+                    android:gravity="left|center"
+                    android:text="+Operator"
+                    android:singleLine="true"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="5dp"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_9sdp" />
+            </TableRow>
 
             <View
                 android:layout_width="match_parent"

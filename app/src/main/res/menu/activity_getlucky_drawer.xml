@@ -42,5 +42,12 @@
             android:title="Store Operator Login" />
     </group>
 
+    <group android:id="@+id/m7">
+        <item
+            android:id="@+id/nav_wallet"
+            android:icon="@mipmap/ic_wallet"
+            android:title="Wallet" />
+    </group>
+
 
 </menu>

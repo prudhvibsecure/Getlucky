@@ -169,13 +169,13 @@
                     android:layout_gravity="end"
                     android:background="@null"
                     android:ems="6"
-                    android:hint="infinity(∞)"
+                    android:hint="∞"
                     android:gravity="left"
                     android:singleLine="true"
                     android:inputType="number"
                     android:padding="10dp"
                     android:textColor="@color/black"
-                    android:textColorHint="@color/text_hint_color" />
+                    android:textColorHint="@color/black" />
             </LinearLayout>
         </LinearLayout>
 

@@ -32,6 +32,7 @@ import com.bsecure.getlucky.helper.RecyclerViewSwipeHelper;
 import com.bsecure.getlucky.interfaces.ItemTouchHelperCallback;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.models.StoreListModel;
+import com.bsecure.getlucky.operator.OperatorsList;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 import com.bumptech.glide.Glide;
@@ -507,6 +508,14 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
 
     }
 
+    @Override
+    public void onRowClickedOperators(List<StoreListModel> matchesList, int pos) {
+        Intent store_operator=new Intent(this, OperatorsList.class);
+        store_operator.putExtra("store_id",matchesList.get(pos).getStore_id());
+        startActivity(store_operator);
+
+    }
+
 
     private void addOfferCal(List<StoreListModel> matchesList, int pos) {
 
@@ -517,7 +526,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
         }
 
         String add_min = ((EditText) add_Offer.findViewById(R.id.add_min)).getText().toString().trim();
-        if (add_min.length() == 0 || add_min.equalsIgnoreCase("0")) {
+        if (add_min.length() == 0 || add_min.equalsIgnoreCase("0")||add_min.startsWith("0")) {
             ((EditText) add_Offer.findViewById(R.id.add_min)).setText("1");
             return;
         }
@@ -583,6 +592,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
         mDialog = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
         mDialog.setContentView(R.layout.custom_alert_show);
         mDialog.show();
+
         mDialog.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

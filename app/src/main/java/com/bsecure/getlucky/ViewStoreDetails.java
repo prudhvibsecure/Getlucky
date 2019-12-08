@@ -236,12 +236,17 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
         });
         ((TextView) editDiloag.findViewById(R.id.tv_title1)).setText("Edit Offer");
         ((TextView) editDiloag.findViewById(R.id.bt_add)).setText("Update Offer");
+        offer_percent= Double.parseDouble(offerList.get(pos).getOffer_percent());
+        refer_percent=Double.parseDouble(offerList.get(pos).getRefer_percent());
+        store_refer_percent= Double.parseDouble(offerList.get(pos).getStore_refer_percent());
+        admin_percent=Double.parseDouble(offerList.get(pos).getAdmin_percent());
+        total_percent= Double.parseDouble(offerList.get(pos).getTotal_percent());
 
         ((EditText) editDiloag.findViewById(R.id.add_co)).setText(offerList.get(pos).getOffer_percent());
-        ((EditText) editDiloag.findViewById(R.id.add_cr)).setText(offerList.get(pos).getOffer_percent());
-        ((EditText) editDiloag.findViewById(R.id.add_sr)).setText(offerList.get(pos).getStore_refer_percent());
-        ((EditText) editDiloag.findViewById(R.id.add_admin)).setText(offerList.get(pos).getAdmin_percent());
-        ((EditText) editDiloag.findViewById(R.id.add_to)).setText(offerList.get(pos).getTotal_percent());
+        ((EditText) editDiloag.findViewById(R.id.add_cr)).setText(df.format(refer_percent));
+        ((EditText) editDiloag.findViewById(R.id.add_sr)).setText(df.format(store_refer_percent));
+        ((EditText) editDiloag.findViewById(R.id.add_admin)).setText(df.format(admin_percent));
+        ((EditText) editDiloag.findViewById(R.id.add_to)).setText(df.format(total_percent));
         ((EditText) editDiloag.findViewById(R.id.add_min)).setText(offerList.get(pos).getMin_amount());
         if (TextUtils.isEmpty(offerList.get(pos).getMax_amount())||offerList.get(pos).getMax_amount().equalsIgnoreCase("0")) {
             ((EditText) editDiloag.findViewById(R.id.add_max)).setText("");
@@ -294,7 +299,7 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
                 }
 
                 String add_min = ((EditText) editDiloag.findViewById(R.id.add_min)).getText().toString();
-                if (add_min.length() == 0 || add_min.equalsIgnoreCase("0")) {
+                if (add_min.length() == 0 || add_min.equalsIgnoreCase("0")||add_min.startsWith("0")) {
                     ((EditText) editDiloag.findViewById(R.id.add_min)).setText("1");
                     return;
                 }
@@ -862,6 +867,7 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
         in.putExtra("store_id", getIntent().getStringExtra("store_id"));
         in.putExtra("store_name", getIntent().getStringExtra("store_name"));
         in.putExtra("store_add", getIntent().getStringExtra("store_add"));
+        in.putExtra("store_add1", getIntent().getStringExtra("store_add1"));
         in.putExtra("store_image", getIntent().getStringExtra("store_image"));
         startActivity(in);
         overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);

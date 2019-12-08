@@ -45,7 +45,9 @@ public class AddPin extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
+
                 getPinData(s.toString());
+
             }
 
             @Override
@@ -68,28 +70,28 @@ public class AddPin extends AppCompatActivity {
             public void onClick(View v) {
 
 
-
             }
         });
     }
+
     private void getPinData(String otpone) {
 
 
         if (TextUtils.isEmpty(otpone)) {
             Toast.makeText(AddPin.this, "Enter your 4 Digits Pin", Toast.LENGTH_SHORT).show();
             return;
-        } else {
-            if (otpone.length() >= 4) {
-                Toast.makeText(AddPin.this, "Invalid Pin", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            AppPreferences.getInstance(AddPin.this).addToStore("pin_view",otpone,true);
-            Intent in = new Intent(AddPin.this, GetLucky.class);
-            in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(in);
-            overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
-            finish();
         }
+        if (otpone.length() <=3) {
+            Toast.makeText(AddPin.this, "Enter your 4 Digits Pin", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        AppPreferences.getInstance(AddPin.this).addToStore("pin_view", otpone, true);
+        Intent in = new Intent(AddPin.this, GetLucky.class);
+        in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(in);
+        overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
+        finish();
+
 
     }
 }

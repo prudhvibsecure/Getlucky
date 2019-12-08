@@ -62,10 +62,11 @@
         android:layout_marginTop="50dp"
         android:background="@drawable/square"
         android:hint="Name"
-        android:inputType="textPersonName"
-        android:drawableLeft="@mipmap/ic_user"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 "
+        android:drawableLeft="@mipmap/icc_user"
         android:drawablePadding="10dp"
         android:padding="8dp"
+        android:inputType="textCapCharacters"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"/>
 

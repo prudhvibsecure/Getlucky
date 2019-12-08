@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbarlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/tool_color"
+            android:minHeight="?attr/actionBarSize"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/bacl_btn"
+                    android:layout_width="22dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/ic_back"
+                    android:tint="@color/black" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/logo" />
+
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/appbarlayout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:src="@mipmap/ic_launcher"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/op_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/name_u"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="70dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/square"
+            android:drawableLeft="@mipmap/icc_user"
+            android:drawablePadding="10dp"
+            android:hint="Username"
+            android:inputType="textPersonName"
+            android:padding="8dp" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/password_u"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/square"
+            android:drawableLeft="@mipmap/ic_key"
+            android:drawablePadding="10dp"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:padding="8dp" />
+
+        <Button
+            android:id="@+id/submit_login"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/gradient"
+            android:hint="LOGIN"
+            android:padding="10dp"
+            android:textColorHint="#fff"
+            android:textStyle="bold" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/op_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/add_opetaror"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ADD OPERATOR"
+            android:textSize="20sp"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_below="@+id/appbarlayout"
+            android:gravity="center"
+            android:layout_marginTop="70dp"/>
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/name_nm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/square"
+            android:drawableLeft="@mipmap/icc_user"
+            android:drawablePadding="10dp"
+            android:hint="Name"
+            android:inputType="textPersonName"
+            android:padding="8dp" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/name_u1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/square"
+            android:drawableLeft="@mipmap/icc_user"
+            android:drawablePadding="10dp"
+            android:hint="Username"
+            android:inputType="textPersonName"
+            android:padding="8dp" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/password_u1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/square"
+            android:drawableLeft="@mipmap/ic_key"
+            android:drawablePadding="10dp"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:padding="8dp" />
+
+        <Button
+            android:id="@+id/add_login"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/gradient"
+            android:hint="Add"
+            android:padding="10dp"
+            android:textColorHint="#fff"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</LinearLayout>

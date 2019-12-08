@@ -25,6 +25,7 @@ import com.bsecure.getlucky.barcode.Mybarcode;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.fragments.HomeFragment;
 import com.bsecure.getlucky.fragments.ParentFragment;
+import com.bsecure.getlucky.operator.OperatorLogin;
 import com.bsecure.getlucky.store.AddStore;
 import com.bsecure.getlucky.store.ViewStoresList;
 import com.bsecure.getlucky.utils.TraceUtils;
@@ -124,9 +125,9 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
         navigationView.setNavigationItemSelectedListener(this);
 
-         header = navigationView.getHeaderView(0);
+        header = navigationView.getHeaderView(0);
 
-       getprofileData();
+        getprofileData();
 
         FirebaseDynamicLinks.getInstance()
                 .getDynamicLink(getIntent())
@@ -141,10 +142,10 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
                         if (deepLink != null
                                 && deepLink.getBooleanQueryParameter("invitedby", false)) {
                             String referrerUid = deepLink.getQueryParameter("invitedby");
-                            Log.e("invite",referrerUid);
-                            AppPreferences.getInstance(GetLucky.this).addToStore("refer", referrerUid,true);
-                        }else{
-                            AppPreferences.getInstance(GetLucky.this).addToStore("refer", "",true);
+                            Log.e("invite", referrerUid);
+                            AppPreferences.getInstance(GetLucky.this).addToStore("refer", referrerUid, true);
+                        } else {
+                            AppPreferences.getInstance(GetLucky.this).addToStore("refer", "", true);
                         }
                     }
                 });
@@ -198,9 +199,9 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
     @Override
     protected void onResume() {
-        try{
+        try {
             getprofileData();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         super.onResume();
@@ -229,11 +230,11 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
                     "&isi=" + "1482252408" +
                     "&ibi=" + "ios package" +
                     "&st=" + getString(R.string.app_name) +
-                    "&sd=" + "Referral Code : "+ ayArray.getJSONObject(0).optString("customer_referral_code") +
+                    "&sd=" + "Referral Code : " + ayArray.getJSONObject(0).optString("customer_referral_code") +
                     "&si=" + "";
             // invitation?referrer="+ UserSession.getFarmerId()
 
-             FirebaseDynamicLinks.getInstance().createDynamicLink()
+            FirebaseDynamicLinks.getInstance().createDynamicLink()
                     //.setLongLink(dynamicLink.getUri())
                     .setLongLink(Uri.parse(sharelinktext))  // manually
                     .buildShortDynamicLink()
@@ -261,7 +262,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
                             }
                         }
                     });
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -281,7 +282,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-       // getMenuInflater().inflate(R.menu.activity_getlucky_drawer, menu);
+        // getMenuInflater().inflate(R.menu.activity_getlucky_drawer, menu);
         Menu nav_Menu = navigationView.getMenu();
         if (session_data != null && !TextUtils.isEmpty(session_data)) {
             nav_Menu.findItem(R.id.nav_profile).setVisible(true);
@@ -290,6 +291,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
             nav_Menu.findItem(R.id.nav_view_store).setVisible(true);
             nav_Menu.findItem(R.id.nav_bar_code).setVisible(true);
             nav_Menu.findItem(R.id.nav_operator).setVisible(false);
+            nav_Menu.findItem(R.id.nav_wallet).setVisible(true);
         } else {
             nav_Menu.findItem(R.id.nav_profile).setVisible(false);
             nav_Menu.findItem(R.id.nav_login).setVisible(true);
@@ -297,6 +299,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
             nav_Menu.findItem(R.id.nav_store).setVisible(false);
             nav_Menu.findItem(R.id.nav_view_store).setVisible(false);
             nav_Menu.findItem(R.id.nav_bar_code).setVisible(false);
+            nav_Menu.findItem(R.id.nav_wallet).setVisible(false);
         }
         return true;
     }
@@ -310,32 +313,39 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
             case R.id.nav_login:
                 Intent login = new Intent(this, Login.class);
                 startActivity(login);
-                overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
+                overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
             case R.id.nav_profile:
 
                 Intent prof = new Intent(this, ProfilePage.class);
                 startActivity(prof);
-                overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
+                overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
             case R.id.nav_store:
 
                 Intent store = new Intent(this, AddStore.class);
                 startActivity(store);
-                overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
+                overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
 
             case R.id.nav_view_store:
 
                 Intent nav_view_store = new Intent(this, ViewStoresList.class);
                 startActivity(nav_view_store);
-                overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
+                overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
             case R.id.nav_bar_code:
 
                 Intent code = new Intent(this, Mybarcode.class);
                 startActivity(code);
-                overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
+                overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
+                break;
+
+            case R.id.nav_operator:
+
+                Intent op_log = new Intent(this, OperatorLogin.class);
+                startActivity(op_log);
+                overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
         }
 

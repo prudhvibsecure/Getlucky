@@ -41,6 +41,7 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
     public static final int ITEM_TYPE_ACTION_WIDTH_NO_SPRING = 1002;
     public static final int ITEM_TYPE_NO_SWIPE = 1003;
     private ItemTouchHelperExtension mItemTouchHelperExtension;
+
     public StoreListOwnerAdapter(List<StoreListModel> list, Context context, StoreAdapterListener listener) {
         this.context = context;
         this.listener = listener;
@@ -49,9 +50,11 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
         selectedItems = new SparseBooleanArray();
         animationItemsIndex = new SparseBooleanArray();
     }
+
     public void setItemTouchHelperExtension(ItemTouchHelperExtension itemTouchHelperExtension) {
         mItemTouchHelperExtension = itemTouchHelperExtension;
     }
+
     public void setOnClickListener(View.OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }
@@ -144,8 +147,19 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
                 }
             }
         });
+        contactViewHolder.tv_operator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    listener.onRowClickedOperators(matchesList, position);
+                } catch (Exception e) {
+
+                }
+            }
+        });
 
     }
+
     private void applyEvents(ContactViewHolder contactViewHolder, final List<StoreListModel> classModelList, final int position) {
 
         if (contactViewHolder instanceof ItemSwipeWithActionWidthViewHolder) {
@@ -161,7 +175,7 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
             );
             if (classModelList.get(position).getStatus().equalsIgnoreCase("0")) {
                 ((TextView) viewHolder.mActionViewStatus.findViewById(R.id.view_list_repo_action_status)).setText("In-Active");
-            }else{
+            } else {
                 ((TextView) viewHolder.mActionViewStatus.findViewById(R.id.view_list_repo_action_status)).setText("Active");
             }
             viewHolder.mActionViewStatus.setOnClickListener(
@@ -187,6 +201,7 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
 
         }
     }
+
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -196,14 +211,16 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
             return new ItemSwipeWithActionWidthViewHolder(itemView);
         return new ContactViewHolder(itemView);
     }
+
     @Override
     public int getItemViewType(int position) {
 
         return ITEM_TYPE_ACTION_WIDTH;
     }
+
     public class ContactViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView store_name, tv_offer, tv_offer_n;
+        public TextView store_name, tv_offer, tv_offer_n, tv_operator;
         protected TextView tv_address;
         public View mViewContent;
         ImageView store_image;
@@ -216,6 +233,7 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
             tv_address = (TextView) v.findViewById(R.id.tv_address);
             tv_offer = (TextView) v.findViewById(R.id.tv_offer);
             tv_offer_n = (TextView) v.findViewById(R.id.tv_offer_n);
+            tv_operator = (TextView) v.findViewById(R.id.tv_operator);
             store_image = (ImageView) v.findViewById(R.id.store_image);
             mViewContent = v.findViewById(R.id.ll_item);
 
@@ -230,12 +248,15 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
 
         void onRowClickedOffer(List<StoreListModel> matchesList, int pos);
 
+        void onRowClickedOperators(List<StoreListModel> matchesList, int pos);
+
         void swipeToEdit(int position, List<StoreListModel> classModelList);
 
         void swipeToDelete(int position, List<StoreListModel> classModelList);
 
         void swipeToStatus(int position, List<StoreListModel> classModelList);
     }
+
     class ItemSwipeWithActionWidthViewHolder extends ContactViewHolder implements Extension {
 
         public View mActionViewDelete;
