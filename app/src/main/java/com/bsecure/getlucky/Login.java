@@ -131,6 +131,7 @@ public class Login extends AppCompatActivity implements RequestHandler {
 
                     if (result.optString("statuscode").equalsIgnoreCase("200")) {
                         Intent in = new Intent(Login.this, OtpScreen.class);
+                        AppPreferences.getInstance(this).addToStore("user_type","1",true);
                         in.putExtra("phone", phone);
                         AppPreferences.getInstance(Login.this).addToStore("pin_view","",true);
                         startActivity(in);

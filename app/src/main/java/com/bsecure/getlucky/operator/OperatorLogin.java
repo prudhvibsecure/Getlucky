@@ -9,7 +9,10 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bsecure.getlucky.Login;
+import com.bsecure.getlucky.OtpScreen;
 import com.bsecure.getlucky.R;
+import com.bsecure.getlucky.cashback.AddCashback;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.volleyhttp.Constants;
@@ -44,15 +47,18 @@ public class OperatorLogin extends AppCompatActivity implements RequestHandler {
 
     private void OperatorLoginv() {
 
+        //mahi123
         try {
             JSONObject object = new JSONObject();
             String u_name = ((EditText) findViewById(R.id.name_u)).getText().toString().trim();
             if (u_name.length() == 0) {
                 Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+                return;
             }
             String password = ((EditText) findViewById(R.id.password_u)).getText().toString().trim();
             if (password.length() == 0) {
                 Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+                return;
             }
             object.put("username", u_name);
             object.put("password", password);
@@ -75,8 +81,13 @@ public class OperatorLogin extends AppCompatActivity implements RequestHandler {
                 case 101:
                     JSONObject object = new JSONObject(response.toString());
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
+                        AppPreferences.getInstance(this).addToStore("user_type","2",true);
                         Toast.makeText(this, object.optString("statusdescription"), Toast.LENGTH_SHORT).show();
-                        this.finish();
+                        Intent in = new Intent(OperatorLogin.this, AddCashback.class);
+                        in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(in);
+                        overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
+                        finishAffinity();
                     } else {
                         Toast.makeText(this, object.optString("statusdescription"), Toast.LENGTH_LONG).show();
                     }

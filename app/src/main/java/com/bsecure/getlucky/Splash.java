@@ -12,6 +12,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 
+import com.bsecure.getlucky.cashback.AddCashback;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.fragments.HomeFragment;
 import com.bsecure.getlucky.interfaces.IItemHandler;
@@ -74,9 +75,20 @@ public class Splash extends AppCompatActivity implements IItemHandler {
 
             @Override
             public void run() {
-                String pin = AppPreferences.getInstance(Splash.this).getFromStore("pin_view");
-                if (pin.length() != 0 || !TextUtils.isEmpty(pin)) {
-                    startActivity(new Intent(Splash.this, VerifyPin.class));
+                String user_type = AppPreferences.getInstance(Splash.this).getFromStore("user_type");
+                if (user_type.equalsIgnoreCase("1")) {
+                    String pin = AppPreferences.getInstance(Splash.this).getFromStore("pin_view");
+                    if (pin.length() != 0 || !TextUtils.isEmpty(pin)) {
+                        startActivity(new Intent(Splash.this, VerifyPin.class));
+                        overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
+                        finish();
+                    } else {
+                        startActivity(new Intent(Splash.this, GetLucky.class));
+                        overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
+                        finish();
+                    }
+                } else if (user_type.equalsIgnoreCase("2")) {
+                    startActivity(new Intent(Splash.this, AddCashback.class));
                     overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                     finish();
                 } else {
@@ -84,7 +96,6 @@ public class Splash extends AppCompatActivity implements IItemHandler {
                     overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                     finish();
                 }
-
             }
 
         }, 5000);
