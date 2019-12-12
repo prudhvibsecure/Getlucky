@@ -652,7 +652,8 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
 
 
     }
-    public  void redirectClass(){
+    public  void
+    redirectClass(){
         Intent in = new Intent(this, ViewStoresList.class);
         in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(in);

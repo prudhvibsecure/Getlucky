@@ -26,20 +26,21 @@ import java.util.Date;
 
 public class AddOperator extends AppCompatActivity implements RequestHandler {
 
-    String codes="";
+    String codes = "";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.operator_login);
         findViewById(R.id.op_login).setVisibility(View.GONE);
         findViewById(R.id.op_add).setVisibility(View.VISIBLE);
-        Button add=findViewById(R.id.add_login);
-        codes=getIntent().getStringExtra("code");
+        Button add = findViewById(R.id.add_login);
+        codes = getIntent().getStringExtra("code");
 
-        if (codes.equalsIgnoreCase("1")){
+        if (codes.equalsIgnoreCase("1")) {
             add.setText("Add");
             add.setTextColor(Color.WHITE);
-        }else{
+        } else {
             ((EditText) findViewById(R.id.name_nm)).setText(getIntent().getStringExtra("operator_name"));
             ((EditText) findViewById(R.id.name_u1)).setText(getIntent().getStringExtra("username"));
             ((EditText) findViewById(R.id.password_u1)).setText(getIntent().getStringExtra("password"));
@@ -82,7 +83,11 @@ public class AddOperator extends AppCompatActivity implements RequestHandler {
                 Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (codes.equalsIgnoreCase("1")){
+            if (password.length() >= 16) {
+                Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (codes.equalsIgnoreCase("1")) {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
                 String currentDateandTime = sdf.format(new Date());
                 String session_data = AppPreferences.getInstance(this).getFromStore("userData");
@@ -97,11 +102,22 @@ public class AddOperator extends AppCompatActivity implements RequestHandler {
                 object.put("status", "0");
                 MethodResquest req = new MethodResquest(this, this, Constants.PATH + "add_store_operator", object.toString(), 101);
                 req.dismissProgress(this);
-            }else{
+            } else {
+
+
+                String password1 = ((EditText) findViewById(R.id.password_u1)).getText().toString().trim();
+                if (password.length() == 0) {
+                    Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (password.length() >= 16) {
+                    Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 //store_operator_id,operator_name,password
                 object.put("operator_name", name);
                 object.put("store_operator_id", getIntent().getStringExtra("store_operator_id"));
-                object.put("password", getIntent().getStringExtra("password"));
+                object.put("password", password1);
                 MethodResquest req = new MethodResquest(this, this, Constants.PATH + "edit_store_operator", object.toString(), 101);
                 req.dismissProgress(this);
             }
