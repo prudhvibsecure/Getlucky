@@ -37,7 +37,8 @@ public class OperatorLogin extends AppCompatActivity implements RequestHandler {
             public void onClick(View view) {
                 finish();
             }
-        });findViewById(R.id.submit_login).setOnClickListener(new View.OnClickListener() {
+        });
+        findViewById(R.id.submit_login).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 OperatorLoginv();
@@ -47,7 +48,7 @@ public class OperatorLogin extends AppCompatActivity implements RequestHandler {
 
     private void OperatorLoginv() {
 
-        //mahi123
+        //Mahi526,12345
         try {
             JSONObject object = new JSONObject();
             String u_name = ((EditText) findViewById(R.id.name_u)).getText().toString().trim();
@@ -81,12 +82,23 @@ public class OperatorLogin extends AppCompatActivity implements RequestHandler {
                 case 101:
                     JSONObject object = new JSONObject(response.toString());
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
-                        AppPreferences.getInstance(this).addToStore("user_type","2",true);
+
+                        JSONArray array = object.getJSONArray("store_operator_details");
+                        if(array.length()>0){
+
+                            AppPreferences.getInstance(this).addToStore("username", array.getJSONObject(0).optString("username"), true);
+                            AppPreferences.getInstance(this).addToStore("customer_id", array.getJSONObject(0).optString("customer_id"), true);
+                            AppPreferences.getInstance(this).addToStore("store_id", array.getJSONObject(0).optString("store_id"), true);
+                            AppPreferences.getInstance(this).addToStore("store_name", array.getJSONObject(0).optString("store_name"), true);
+                            AppPreferences.getInstance(this).addToStore("operator_name", array.getJSONObject(0).optString("operator_name"), true);
+
+                        }
+                        AppPreferences.getInstance(this).addToStore("user_type", "2", true);
                         Toast.makeText(this, object.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                         Intent in = new Intent(OperatorLogin.this, AddCashback.class);
                         in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(in);
-                        overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
+                        overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                         finishAffinity();
                     } else {
                         Toast.makeText(this, object.optString("statusdescription"), Toast.LENGTH_LONG).show();

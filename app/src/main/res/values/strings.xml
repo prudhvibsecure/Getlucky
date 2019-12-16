@@ -44,5 +44,6 @@
     <string name="oopsmsg">Something went wrong. Please try again</string>
 
     <string name="nipcyns">Can\'t connect right now. Please check your internet connection</string>
+    <string name="notification_channel_id">channelId</string>
 
 </resources>

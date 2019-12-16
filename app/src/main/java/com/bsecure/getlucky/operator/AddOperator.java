@@ -104,20 +104,10 @@ public class AddOperator extends AppCompatActivity implements RequestHandler {
                 req.dismissProgress(this);
             } else {
 
-
-                String password1 = ((EditText) findViewById(R.id.password_u1)).getText().toString().trim();
-                if (password.length() == 0) {
-                    Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (password.length() >= 16) {
-                    Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 //store_operator_id,operator_name,password
                 object.put("operator_name", name);
                 object.put("store_operator_id", getIntent().getStringExtra("store_operator_id"));
-                object.put("password", password1);
+                object.put("password", password);
                 MethodResquest req = new MethodResquest(this, this, Constants.PATH + "edit_store_operator", object.toString(), 101);
                 req.dismissProgress(this);
             }

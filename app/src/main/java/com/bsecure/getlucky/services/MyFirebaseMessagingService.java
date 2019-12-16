@@ -1,6 +1,11 @@
 package com.bsecure.getlucky.services;
 
 
+import android.content.Intent;
+import android.text.Html;
+
+import com.bsecure.getlucky.GetLucky;
+import com.bsecure.getlucky.R;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.utils.TraceUtils;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -58,7 +63,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         try {
             //getting the json data
             JSONObject data = new JSONObject(json.toString());
+            String imageUrl = data.optString("image");
+            String message_data = data.getString("message");
+            JSONObject object = new JSONObject(message_data);
+            String messsages = object.optString("msg");
+            MyNotificationManager mNotificationManager = new MyNotificationManager(getApplicationContext());
+            Intent intent_pending = new Intent(this, GetLucky.class);
+            if (imageUrl.equals("null") || imageUrl.isEmpty()) {
+                mNotificationManager.showSmallNotification(getString(R.string.app_name), String.valueOf(Html.fromHtml(messsages)), intent_pending);
 
+            } else {
+                mNotificationManager.showBigNotification(getString(R.string.app_name), String.valueOf(Html.fromHtml(messsages)), imageUrl, intent_pending);
+
+            }
         } catch (JSONException e) {
             TraceUtils.logException(e);
         } catch (Exception e) {
