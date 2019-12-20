@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +40,7 @@ import com.bsecure.getlucky.R;
 import com.bsecure.getlucky.ViewStoreDetails;
 import com.bsecure.getlucky.ViewStoreDetails_Home;
 import com.bsecure.getlucky.adpters.StoreListAdapter;
+import com.bsecure.getlucky.cashback.ViewStoresListCash;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.helper.RecyclerOnScrollListener;
 import com.bsecure.getlucky.interfaces.IItemHandler;
@@ -46,9 +48,11 @@ import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.models.StoreListModel;
 import com.bsecure.getlucky.network.CheckNetwork;
 import com.bsecure.getlucky.services.GetAddressIntentService;
+import com.bsecure.getlucky.store.ViewStoresList;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.HTTPPostTask;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -59,6 +63,7 @@ import com.google.android.gms.location.LocationServices;
 import com.tooltip.Tooltip;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -151,6 +156,31 @@ public class HomeFragment extends ParentFragment implements  IItemHandler,Google
                     count_page = 0;
                     searchStore(count_page);
                 }
+            }
+        });
+        String session_data = AppPreferences.getInstance(getActivity()).getFromStore("userData");
+        if (session_data != null && !TextUtils.isEmpty(session_data)) {
+            try {
+                JSONArray ayArray = new JSONArray(session_data);
+                String cs_no=ayArray.getJSONObject(0).optString("customer_number");
+                if (cs_no.equalsIgnoreCase("2")){
+                    laView.findViewById(R.id.add_cashbak).setVisibility(View.VISIBLE);
+                }else{
+                    laView.findViewById(R.id.add_cashbak).setVisibility(View.GONE);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }else{
+            laView.findViewById(R.id.add_cashbak).setVisibility(View.GONE);
+        }
+        laView.findViewById(R.id.add_cashbak).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent in = new Intent(getActivity(), ViewStoresListCash.class);
+                startActivity(in);
+                getActivity().overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
             }
         });
         mSwipeRefreshLayout = laView.findViewById(R.id.swip_refresh);

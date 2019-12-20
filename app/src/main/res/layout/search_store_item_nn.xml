@@ -65,7 +65,7 @@
 
                 <TextView
                     android:id="@+id/tv_offer"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left|center"
                     android:layout_weight="1"
@@ -74,11 +74,11 @@
                     android:text="+Sp.Offer"
                     android:singleLine="true"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_9sdp" />
+                    android:textSize="@dimen/_8sdp" />
 
                 <TextView
                     android:id="@+id/tv_offer_n"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left|center"
                     android:layout_weight="1"
@@ -88,11 +88,11 @@
                     android:singleLine="true"
                     android:layout_marginLeft="2dp"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_9sdp" />
+                    android:textSize="@dimen/_8sdp" />
 
                 <TextView
                     android:id="@+id/tv_operator"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left|center"
                     android:layout_weight="1"
@@ -103,7 +103,7 @@
                     android:layout_marginLeft="2dp"
                     android:layout_marginRight="5dp"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_9sdp" />
+                    android:textSize="@dimen/_8sdp" />
             </TableRow>
 
             <View

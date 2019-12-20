@@ -2,7 +2,8 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -52,11 +53,12 @@
                     android:singleLine="true" />
 
 
-                <Button
+                <TextView
                     android:id="@+id/search"
                     android:layout_width="50dp"
-                    android:layout_height="43dp"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
+                    android:gravity="center"
                     android:background="@drawable/template_pop_but_sel_red"
                     android:padding="10dp"
                     android:text="Go"
@@ -130,4 +132,14 @@
             android:gravity="left|center"
             android:text="Loading..." />
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/add_cashbak"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="25dp"
+        app:srcCompat="@mipmap/ic_cashback"
+        android:layout_marginBottom="25dp"/>
 </RelativeLayout>

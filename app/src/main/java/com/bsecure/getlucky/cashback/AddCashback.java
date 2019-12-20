@@ -90,7 +90,7 @@ public class AddCashback extends AppCompatActivity implements RequestHandler {
                         custom_alert_cash.setContentView(R.layout.custom_alert_cash);
                         custom_alert_cash.show();
                         custom_alert_cash.setCancelable(false);
-                        ((TextView)custom_alert_cash.findViewById(R.id.text_message)).setText(Html.fromHtml("Amount-"+add_amount+",<br/> Customer Code-"+add_cust_code+",<br/>.<br/><br/>Are You Sure You Want To Submit"));
+                        ((TextView)custom_alert_cash.findViewById(R.id.text_message)).setText(Html.fromHtml("Amount - "+add_amount+",<br/> Customer Code - "+add_cust_code+",<br/><br/>Are You Sure You Want To Submit"));
                         custom_alert_cash.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {

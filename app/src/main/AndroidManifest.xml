@@ -217,7 +217,37 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".operator.OperatorsListCashBack"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".cashback.AddCashback"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".cashback.ViewStoresListCash"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".wallet.ViewWallet"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible">
             <intent-filter>

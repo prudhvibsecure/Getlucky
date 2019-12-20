@@ -29,6 +29,7 @@ import com.bsecure.getlucky.operator.OperatorLogin;
 import com.bsecure.getlucky.store.AddStore;
 import com.bsecure.getlucky.store.ViewStoresList;
 import com.bsecure.getlucky.utils.TraceUtils;
+import com.bsecure.getlucky.wallet.ViewWallet;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -166,6 +167,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
                         getShareRefer();
                     }
                 });
+                AppPreferences.getInstance(this).addToStore("customer_id", ayArray.getJSONObject(0).optString("customer_id"), true);
                 ((TextView) header.findViewById(R.id.refer_code)).setText("Referral Code - " + ayArray.getJSONObject(0).optString("customer_referral_code"));
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -345,6 +347,13 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
                 Intent op_log = new Intent(this, OperatorLogin.class);
                 startActivity(op_log);
+                overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
+                break;
+
+            case R.id.nav_wallet:
+
+                Intent nav_wallet = new Intent(this, ViewWallet.class);
+                startActivity(nav_wallet);
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
         }
