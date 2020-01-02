@@ -31,10 +31,24 @@
                     android:tint="@color/black" />
 
                 <ImageView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
+                    android:layout_weight="1"
                     android:src="@mipmap/logo" />
+
+                <TextView
+                    android:id="@+id/trs_wallet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:padding="6dp"
+                    android:textColor="@color/white"
+                    android:background="@drawable/button_bg_submit_orange"
+                    android:layout_margin="10dp"
+                    android:text="Transfer"/>
 
             </LinearLayout>
 

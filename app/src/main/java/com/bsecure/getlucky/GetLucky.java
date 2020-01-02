@@ -181,7 +181,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
     private void getShareRefer() {
 
         try {
-            referDialog = new Dialog(this, R.style.MyAlertDialogStyle);
+            referDialog = new Dialog(this, R.style.Theme_MaterialComponents_Light_BottomSheetDialog);
             referDialog.setContentView(R.layout.share_dialog);
             referDialog.setCancelable(true);
             referDialog.setCanceledOnTouchOutside(true);

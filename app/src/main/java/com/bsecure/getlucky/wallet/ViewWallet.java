@@ -1,7 +1,10 @@
 package com.bsecure.getlucky.wallet;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,9 +27,9 @@ import org.json.JSONObject;
 
 public class ViewWallet extends AppCompatActivity implements RequestHandler, View.OnClickListener {
     JSONArray ayArray;
-    String wallet_amt = "";
-    TextView total_amt, total_amt_b, total_amt_clr;
-    TextInputEditText tv_wamt;
+    String wallet_amt = "", customer_number, payment_type;
+    TextView total_amt, total_amt_b, total_amt_clr, history_wl;
+    TextInputEditText tv_wamt, tv_amount_b;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,22 +37,43 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
         setContentView(R.layout.view_wallet);
 
         total_amt_b = findViewById(R.id.total_amt_b);
+        tv_amount_b = findViewById(R.id.tv_amount_b);
         total_amt = findViewById(R.id.total_amt);
         total_amt_clr = findViewById(R.id.total_amt_clr);
         tv_wamt = findViewById(R.id.tv_amount);
+        history_wl = findViewById(R.id.history_wl);
+        history_wl.setOnClickListener(this);
+        findViewById(R.id.bacl_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                overridePendingTransition(R.anim.fade_out_anim, R.anim.fade_in_anim);
+                finish();
+            }
+        });
         String session_data = AppPreferences.getInstance(this).getFromStore("userData");
+        Log.e("session::::", session_data);
         if (session_data != null && !TextUtils.isEmpty(session_data)) {
             try {
                 ayArray = new JSONArray(session_data);
                 ImageView profile = (ImageView) findViewById(R.id.tv_profileicon);
                 Glide.with(this).load(ayArray.getJSONObject(0).optString("profile_image")).into(profile);
                 ((TextView) findViewById(R.id.name_n)).setText(ayArray.getJSONObject(0).optString("name"));
+                customer_number = ayArray.getJSONObject(0).optString("customer_number");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
         }
+        if (customer_number.equalsIgnoreCase("2")) {
+            findViewById(R.id.v1_wall).setVisibility(View.VISIBLE);
+            findViewById(R.id.v1_wall2).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.v1_wall).setVisibility(View.VISIBLE);
+            findViewById(R.id.v1_wall2).setVisibility(View.GONE);
+        }
         findViewById(R.id.tv_transfer).setOnClickListener(this);
+        findViewById(R.id.tv_recharge_b).setOnClickListener(this);
+        findViewById(R.id.tv_transfer_b).setOnClickListener(this);
         getWallet();
     }
 
@@ -79,11 +103,17 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
                 case 101:
                     JSONObject oob = new JSONObject(response.toString());
                     if (oob.optString("statuscode").equalsIgnoreCase("200")) {
-
                         wallet_amt = oob.optString("wallet_amount");
                         total_amt.setText("₹ " + oob.optString("wallet_amount"));
                         total_amt_b.setText("₹ " + oob.optString("business_wallet_amount"));
-                        total_amt_clr.setText("* ₹ " + oob.optString("wallet_subject_to_clearance_amount")+" is subject to clearance");
+                        total_amt_clr.setText("* ₹ " + oob.optString("wallet_subject_to_clearance_amount") + " is subject to clearance");
+                    }
+                    break;
+                case 102:
+                    JSONObject oob1 = new JSONObject(response.toString());
+                    if (oob1.optString("statuscode").equalsIgnoreCase("200")) {
+                        Toast.makeText(this, oob1.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                        getWallet();
                     }
                     break;
                 default:
@@ -119,8 +149,84 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
                     tv_wamt.requestFocus();
                     return;
                 }
+
+                Dialog mDialog = new Dialog(this, R.style.Theme_MaterialComponents_Light_BottomSheetDialog);
+                mDialog.setContentView(R.layout.paymetoption);
+                mDialog.show();
+
+                mDialog.findViewById(R.id.net_bank).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        payment_type = "Net Banking";
+                        redirectClass();
+                        //addBanks();
+                    }
+                });
+                mDialog.findViewById(R.id.net_gp).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        payment_type = "google pay";
+                        Toast.makeText(ViewWallet.this, "Coming Soon", Toast.LENGTH_SHORT).show();
+                        //addBanks();
+                        redirectClass();
+                    }
+                });
+                mDialog.findViewById(R.id.net_paytim).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        payment_type = "paytm";
+                        Toast.makeText(ViewWallet.this, "Coming Soon", Toast.LENGTH_SHORT).show();
+                        // addBanks();
+                        redirectClass();
+                    }
+                });
+                break;
+            case R.id.history_wl:
+                Intent mp_hist = new Intent(this, HistoryPayment.class);
+                startActivity(mp_hist);
+                overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
+                break;
+            case R.id.tv_recharge_b:
+                String bamt = tv_amount_b.getText().toString().trim();
+                if (bamt.length() == 0) {
+                    Toast.makeText(this, "Please Enter Amount", Toast.LENGTH_SHORT).show();
+                    tv_amount_b.requestFocus();
+                    return;
+                }
+                float bw_amount = Float.parseFloat(wallet_amt);
+                float bamount = Float.parseFloat(bamt);
+                if (bamount > bw_amount) {
+                    Toast.makeText(this, "Insufficient Funds", Toast.LENGTH_SHORT).show();
+                    tv_amount_b.requestFocus();
+                    return;
+                }
+                addBanks();
                 break;
         }
 
+    }
+
+    private void redirectClass() {
+        Intent mp_hist = new Intent(this, ViewBankList.class);
+        mp_hist.putExtra("payment_type", payment_type);
+        mp_hist.putExtra("amount", tv_amount_b.getText().toString().trim());
+        startActivity(mp_hist);
+        overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
+
+    }
+
+    private void addBanks() {
+
+        try {
+            JSONObject object = new JSONObject();
+            object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
+            object.put("amount", tv_amount_b.getText().toString().trim());
+            object.put("request_date", System.currentTimeMillis());
+            object.put("bank_id", "");
+            object.put("payment_type", "");
+            new MethodResquest(this, this, Constants.PATH + "wallet/transfer_wallet", object.toString(), 102);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

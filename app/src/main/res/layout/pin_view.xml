@@ -64,10 +64,10 @@
                 app:cursorColor="@color/black"
                 app:cursorWidth="2dp"
                 app:itemCount="4"
-                app:itemHeight="40dp"
+                app:itemHeight="25dp"
                 app:itemRadius="10dp"
                 app:itemSpacing="5dp"
-                app:itemWidth="50dp"
+                app:itemWidth="30dp"
                 app:lineColor="@color/black"
                 app:lineWidth="1dp"
                 app:viewType="rectangle" />
@@ -76,7 +76,7 @@
     </LinearLayout>
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/otp"
         android:gravity="end"
@@ -85,6 +85,7 @@
         android:textColor="@color/black"
         android:textSize="16dp"
         android:visibility="gone"
+       android:layout_alignParentEnd="true"
         android:text="Forgot Pin" />
 
     <Button

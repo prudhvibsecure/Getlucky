@@ -113,17 +113,26 @@ public class MethodResquest implements MethodHandler {
                     typeError = 2;
                     message = "The server could not be found. Please try again after some time!!";
                    // showProgress(message, context);
+                    Log.e("RequestURL:::",request_url);
+                    Log.e("Postdata:::",json.toString());
+                    Log.e("Response:::",message);
                     dismissProgress(context);
                     showAlertView(message);
                 } else if (error instanceof AuthFailureError) {
                     typeError = 3;
                     message = "Your Token Expired Try After Some Time";
                     dismissProgress(context);
+                    Log.e("RequestURL:::",request_url);
+                    Log.e("Postdata:::",json.toString());
+                    Log.e("Response:::",message);
                    // showProgress(message, context);
                     showAlertView(message);
                 } else if (error instanceof ParseError) {
                     typeError = 4;
                     message = error.getMessage();
+                    Log.e("RequestURL:::",request_url);
+                    Log.e("Postdata:::",json.toString());
+                    Log.e("Response:::",message);
                     dismissProgress(context);
                     showAlertView(message);
                 } else if (error instanceof NoConnectionError) {
@@ -135,6 +144,9 @@ public class MethodResquest implements MethodHandler {
                 } else if (error instanceof TimeoutError) {
                     typeError = 6;
                     message = "TimeOut! Please Try Again Later.";
+                    Log.e("RequestURL:::",request_url);
+                    Log.e("Postdata:::",json.toString());
+                    Log.e("Response:::",message);
                     dismissProgress(context);
                     showAlertView(message);
                 }
