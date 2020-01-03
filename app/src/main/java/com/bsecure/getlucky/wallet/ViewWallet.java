@@ -1,11 +1,16 @@
 package com.bsecure.getlucky.wallet;
 
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,12 +35,14 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
     String wallet_amt = "", customer_number, payment_type;
     TextView total_amt, total_amt_b, total_amt_clr, history_wl;
     TextInputEditText tv_wamt, tv_amount_b;
-
+    private IntentFilter filter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_wallet);
 
+        filter = new IntentFilter("com.addbank_refrsh2");
+        filter.setPriority(1);
         total_amt_b = findViewById(R.id.total_amt_b);
         tv_amount_b = findViewById(R.id.tv_amount_b);
         total_amt = findViewById(R.id.total_amt);
@@ -76,7 +83,25 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
         findViewById(R.id.tv_transfer_b).setOnClickListener(this);
         getWallet();
     }
+    @Override
+    protected void onResume() {
+        registerReceiver(mBroadcastReceiver, filter);
+        super.onResume();
+    }
 
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(mBroadcastReceiver);
+        super.onDestroy();
+    }
+    BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            tv_wamt.setText("");
+            tv_amount_b.setText("");
+            getWallet();
+        }
+    };
     private void getWallet() {
 
         try {
@@ -112,8 +137,18 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
                 case 102:
                     JSONObject oob1 = new JSONObject(response.toString());
                     if (oob1.optString("statuscode").equalsIgnoreCase("200")) {
-                        Toast.makeText(this, oob1.optString("statusdescription"), Toast.LENGTH_SHORT).show();
-                        getWallet();
+                        final Dialog custom_alert_cash = new Dialog(this, R.style.Theme_MaterialComponents_Light_BottomSheetDialog);
+                        custom_alert_cash.setContentView(R.layout.custom_alert_show_new);
+                        custom_alert_cash.show();
+                        custom_alert_cash.setCancelable(false);
+                        ((TextView)custom_alert_cash.findViewById(R.id.text_message)).setText(Html.fromHtml(oob1.optString("statusdescription")));
+                        custom_alert_cash.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                getWallet();
+                                custom_alert_cash.dismiss();
+                            }
+                        });
                     }
                     break;
                 default:
@@ -150,7 +185,7 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
                     return;
                 }
 
-                Dialog mDialog = new Dialog(this, R.style.Theme_MaterialComponents_Light_BottomSheetDialog);
+                final Dialog mDialog = new Dialog(this, R.style.Theme_MaterialComponents_Light_BottomSheetDialog);
                 mDialog.setContentView(R.layout.paymetoption);
                 mDialog.show();
 
@@ -159,6 +194,9 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
                     public void onClick(View view) {
                         payment_type = "Net Banking";
                         redirectClass();
+                        AppPreferences.getInstance(getApplicationContext()).addToStore("amount",tv_wamt.getText().toString().trim(),true);
+                        AppPreferences.getInstance(getApplicationContext()).addToStore("p_type",payment_type,true);
+                        mDialog.dismiss();
                         //addBanks();
                     }
                 });
@@ -168,6 +206,7 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
                         payment_type = "google pay";
                         Toast.makeText(ViewWallet.this, "Coming Soon", Toast.LENGTH_SHORT).show();
                         //addBanks();
+                       // mDialog.dismiss();
                         redirectClass();
                     }
                 });
@@ -177,7 +216,8 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
                         payment_type = "paytm";
                         Toast.makeText(ViewWallet.this, "Coming Soon", Toast.LENGTH_SHORT).show();
                         // addBanks();
-                        redirectClass();
+                       // redirectClass();
+                        mDialog.dismiss();
                     }
                 });
                 break;
@@ -209,7 +249,7 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
     private void redirectClass() {
         Intent mp_hist = new Intent(this, ViewBankList.class);
         mp_hist.putExtra("payment_type", payment_type);
-        mp_hist.putExtra("amount", tv_amount_b.getText().toString().trim());
+        mp_hist.putExtra("amount", tv_wamt.getText().toString().trim());
         startActivity(mp_hist);
         overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
 

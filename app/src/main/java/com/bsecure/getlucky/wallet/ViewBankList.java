@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
@@ -60,7 +61,8 @@ public class ViewBankList extends AppCompatActivity implements View.OnClickListe
     private IntentFilter filter;
     Dialog dialog;
     LinearLayoutManager linearLayoutManager;
-
+    JSONArray ayArray;
+    private int mPostion=0;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -177,7 +179,7 @@ public class ViewBankList extends AppCompatActivity implements View.OnClickListe
     private void viewStorsList() {
         try {
             String session_data = AppPreferences.getInstance(this).getFromStore("userData");
-            JSONArray ayArray = new JSONArray(session_data);
+            ayArray= new JSONArray(session_data);
             JSONObject object = new JSONObject();
             object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
             MethodResquest req = new MethodResquest(this, this, Constants.PATH + "view_banks", object.toString(), 101);
@@ -203,8 +205,18 @@ public class ViewBankList extends AppCompatActivity implements View.OnClickListe
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
                 case R.id.trs_wallet:
+                    try {
+                        JSONObject object = new JSONObject();
+                        object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
+                        object.put("amount", AppPreferences.getInstance(getApplicationContext()).getFromStore("amount"));
+                        object.put("request_date", System.currentTimeMillis());
+                        object.put("bank_id",bankListModelList.get(mPostion).getBank_id());
+                        object.put("payment_type", AppPreferences.getInstance(getApplicationContext()).getFromStore("p_type"));
+                        new MethodResquest(this, this, Constants.PATH + "wallet/transfer_wallet", object.toString(), 104);
+                    } catch (Exception e) {
+                        e.printStackTrace();
 
-
+                }
                 break;
 
 
@@ -289,7 +301,31 @@ public class ViewBankList extends AppCompatActivity implements View.OnClickListe
                         Toast.makeText(this, object.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
                     break;
+                case 104:
+                    JSONObject oob1 = new JSONObject(response.toString());
+                    if (oob1.optString("statuscode").equalsIgnoreCase("200")) {
 
+                        final Dialog custom_alert_cash = new Dialog(this, R.style.Theme_MaterialComponents_Light_BottomSheetDialog);
+                        custom_alert_cash.setContentView(R.layout.custom_alert_show_new);
+                        custom_alert_cash.show();
+                        custom_alert_cash.setCancelable(false);
+                        ((TextView)custom_alert_cash.findViewById(R.id.text_message)).setText(Html.fromHtml(oob1.optString("statusdescription")));
+                        custom_alert_cash.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                custom_alert_cash.dismiss();
+                                AppPreferences.getInstance(getApplicationContext()).addToStore("amount","",true);
+                                AppPreferences.getInstance(getApplicationContext()).addToStore("p_type","",true);
+                                Intent scen=new Intent("com.addbank_refrsh2");
+                                sendBroadcast(scen);
+                                finish();
+
+                            }
+                        });
+                        Toast.makeText(this, oob1.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+
+                    }
+                    break;
             }
 
         } catch (Exception e) {
@@ -305,6 +341,7 @@ public class ViewBankList extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onRowClicked(List<AccountModel> matchesList, int pos) {
+        mPostion=pos;
     }
 
     private void getInactiveDiloag(final String store_id, final String status) {

@@ -2,6 +2,7 @@ package com.bsecure.getlucky.wallet;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
@@ -65,7 +66,7 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 public class AddBankAccount extends AppCompatActivity implements View.OnClickListener, RequestHandler {
 
     private TextInputEditText et_acname, et_acnum, et_accnnum, et_ifsc, et_address;
-
+    private String bank_name,ifse_id;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +99,7 @@ public class AddBankAccount extends AppCompatActivity implements View.OnClickLis
             }
         });
         et_address = findViewById(R.id.tv_address);
+        et_address.setVisibility(View.GONE);
     }
 
     private void serachIFSC(String ifsccode) {
@@ -167,9 +169,10 @@ public class AddBankAccount extends AppCompatActivity implements View.OnClickLis
             JSONObject object = new JSONObject();
             object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
             object.put("bank_acc_name", st_name);
+            object.put("bank_name", bank_name);
             object.put("bank_address", address);
             object.put("bank_acc_no", et_acnumer);
-            object.put("bank_ifsc_code_id", et_ifscs);
+            object.put("bank_ifsc_code_id", ifse_id);
             new MethodResquest(this, this, Constants.PATH + "add_bank", object.toString(), 100);
         } catch (Exception e) {
             e.printStackTrace();
@@ -185,7 +188,7 @@ public class AddBankAccount extends AppCompatActivity implements View.OnClickLis
     public void requestCompleted(JSONObject response, int requestType) {
 
         try {
-          //  {"statuscode":"201","statusdescription":"No Bank Found - Please Check IFSC Code"}
+            //  {"statuscode":"201","statusdescription":"No Bank Found - Please Check IFSC Code"}
 //            {"statuscode":"200","bank_address":
 //                [{"bank_ifsc_code_id":"1","bank_name":"ABU DHABI COMMERCIAL BANK","address":"75, REHMAT MANZIL, V. N. ROAD, CURCHGATE, MUMBAI - 400020"}]}
             switch (requestType) {
@@ -195,13 +198,21 @@ public class AddBankAccount extends AppCompatActivity implements View.OnClickLis
                         Toast.makeText(this, myObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                         sendBroadcast(new Intent("com.addbank_refrsh"));
                         this.finish();
+                    }else{
+                        Toast.makeText(this, myObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
                     break;
                 case 101:
                     JSONObject myObj1 = new JSONObject(response.toString());
                     if (myObj1.optString("statuscode").equalsIgnoreCase("200")) {
-                        et_address.setText(myObj1.optString("address"));
-                    }else{
+                        JSONArray arry = myObj1.getJSONArray("bank_address");
+                        bank_name=arry.getJSONObject(0).optString("bank_name");
+                        ifse_id=arry.getJSONObject(0).optString("bank_ifsc_code_id");
+                        et_address.setVisibility(View.VISIBLE);
+                        et_address.setEnabled(false);
+                        et_address.setTextColor(Color.BLACK);
+                        et_address.setText(arry.getJSONObject(0).optString("address"));
+                    } else {
                         Toast.makeText(this, myObj1.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
                     break;

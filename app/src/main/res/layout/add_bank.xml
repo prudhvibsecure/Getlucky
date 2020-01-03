@@ -70,6 +70,7 @@
                     android:id="@+id/tv_acno"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLength="12"
                     android:inputType="number" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -90,6 +91,7 @@
                     android:id="@+id/tv_accno"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLength="12"
                     android:inputType="numberPassword" />
 
             </com.google.android.material.textfield.TextInputLayout>
