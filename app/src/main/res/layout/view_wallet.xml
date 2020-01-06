@@ -60,19 +60,7 @@
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/history_wl"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="8dp"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:layout_gravity="center"
-                            android:text="@string/history"
-                            android:background="@drawable/tobcccc_border"
-                            android:textColor="@color/black"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -91,17 +79,37 @@
                     android:layout_margin="5dp"
                     android:orientation="vertical">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:weightSum="2"
+                    android:orientation="horizontal">
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:gravity="center"
+                        android:gravity="left|center"
                         android:padding="8dp"
+                        android:layout_weight="1"
                         android:text="Wallet"
                         android:textAllCaps="true"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="16sp"
                         android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/history_w2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:text="@string/history"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
                     <TableRow
                         android:layout_width="match_parent"
@@ -194,18 +202,38 @@
                     android:layout_margin="5dp"
                     android:orientation="vertical">
 
-                    <TextView
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:weightSum="2"
+                    android:orientation="horizontal">
+
+                <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:gravity="center"
+                        android:gravity="left|center"
+                    android:layout_weight="1"
                         android:padding="8dp"
                         android:text="Business Wallet"
                         android:textAllCaps="true"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="16sp"
                         android:textStyle="bold" />
-
+                    <TextView
+                        android:id="@+id/history_wl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:text="@string/history"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">

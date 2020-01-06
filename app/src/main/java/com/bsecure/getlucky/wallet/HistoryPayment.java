@@ -66,13 +66,19 @@ public class HistoryPayment extends AppCompatActivity {
         wv_history.getSettings().setBuiltInZoomControls(true);
 
         wv_history.getSettings().setDisplayZoomControls(false);
-
         try {
-            wv_history.loadUrl(Constants.PATH + "history?customer_id=" + ayArray.getJSONObject(0).optString("customer_id"));
+            String case_studey = getIntent().getStringExtra("case");
+            if (case_studey.equalsIgnoreCase("2")) {
+
+                wv_history.loadUrl(Constants.PATH + "history?customer_id=" + ayArray.getJSONObject(0).optString("customer_id"));
+
+            } else {
+                wv_history.loadUrl(Constants.PATH + "history/customer?customer_id=" + ayArray.getJSONObject(0).optString("customer_id"));
+
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         wv_history.clearFormData();
 
         wv_history.clearCache(true);
