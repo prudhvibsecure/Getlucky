@@ -137,7 +137,7 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
                         wallet_amt = oob.optString("wallet_amount");
                         total_amt.setText("₹ " + oob.optString("wallet_amount"));
                         total_amt_b.setText("₹ " + oob.optString("business_wallet_amount"));
-                        total_amt_clr.setText("* ₹ " + oob.optString("wallet_subject_to_clearance_amount") + " is subject to clearnce");
+                        total_amt_clr.setText("* ₹ " + oob.optString("wallet_subject_to_clearance_amount") + " is subject to clearance");
                     }
                     break;
                 case 102:

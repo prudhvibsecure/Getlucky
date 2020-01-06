@@ -347,6 +347,7 @@ public class ViewBankList extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onRowClicked(List<AccountModel> matchesList, int pos, CheckBox ck_vv) {
         mPostion = pos;
+        transfer();
     }
 
     private void getInactiveDiloag(final String store_id, final String status) {
