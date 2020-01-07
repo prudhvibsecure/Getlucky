@@ -56,7 +56,7 @@ public class OperatorLogin extends AppCompatActivity implements RequestHandler {
                 Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
                 return;
             }
-            String password = ((EditText) findViewById(R.id.password_u)).getText().toString().trim();
+            String password = ((EditText) findViewById(R.id.password_u)).getText().toString();
             if (password.length() == 0) {
                 Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
                 return;

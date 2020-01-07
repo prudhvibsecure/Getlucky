@@ -312,6 +312,7 @@ public class HomeFragment extends ParentFragment implements  IItemHandler,Google
                         mSwipeRefreshLayout.setEnabled(true);
                         laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
                         laView.findViewById(R.id.no_data).setVisibility(View.GONE);
+                        laView.findViewById(R.id.add_cashbak).setVisibility(View.VISIBLE);
                         JSONArray jsonarray2 = object1.getJSONArray("store_details");
                         if (jsonarray2.length() > 0) {
                             for (int i = 0; i < jsonarray2.length(); i++) {
@@ -360,6 +361,7 @@ public class HomeFragment extends ParentFragment implements  IItemHandler,Google
                             mSwipeRefreshLayout.setEnabled(true);
                             laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
                             laView.findViewById(R.id.no_data).setVisibility(View.VISIBLE);
+                            laView.findViewById(R.id.add_cashbak).setVisibility(View.GONE);
                             ((TextView) laView.findViewById(R.id.no_data)).setText(object1.optString("statusdescription"));
                         } else {
                             loading_btm.setVisibility(View.GONE);

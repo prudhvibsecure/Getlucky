@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -45,7 +46,6 @@ public class HistoryPayment extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        wv_history.setVerticalScrollBarEnabled(true);
 
         wv_history.getSettings().setJavaScriptEnabled(true);
 
@@ -55,17 +55,19 @@ public class HistoryPayment extends AppCompatActivity {
 
         wv_history.setWebChromeClient(new WebChromeClient());
 
+        wv_history.getSettings().setUseWideViewPort(true);
+
+        wv_history.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        wv_history.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
         wv_history.getSettings().setLoadWithOverviewMode(true);
+        wv_history.getSettings().setPluginState(WebSettings.PluginState.ON);
 
-        wv_history.getSettings().setUseWideViewPort(false);
+        wv_history.getSettings().setSaveFormData(false);
+        wv_history.getSettings().setSavePassword(false);
 
-        wv_history.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+        wv_history.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+        wv_history.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 
-        wv_history.getSettings().setSupportZoom(true);
-
-        wv_history.getSettings().setBuiltInZoomControls(true);
-
-        wv_history.getSettings().setDisplayZoomControls(false);
         try {
             String case_studey = getIntent().getStringExtra("case");
             if (case_studey.equalsIgnoreCase("2")) {

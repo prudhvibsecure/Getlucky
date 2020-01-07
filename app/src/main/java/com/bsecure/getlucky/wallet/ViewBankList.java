@@ -192,7 +192,7 @@ public class ViewBankList extends AppCompatActivity implements View.OnClickListe
             case R.id.trs_wallet:
                 try {
 
-                    if (bankListModelList.size() > 1) {
+                    if (bankListModelList.size()>=1) {
                         if (mPostion == -1) {
                             return;
                         }
@@ -346,8 +346,12 @@ public class ViewBankList extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onRowClicked(List<AccountModel> matchesList, int pos, CheckBox ck_vv) {
-        mPostion = pos;
-        transfer();
+
+        if (ck_vv.isChecked()) {
+            mPostion = pos;
+        }else{
+            mPostion=-1;
+        }
     }
 
     private void getInactiveDiloag(final String store_id, final String status) {

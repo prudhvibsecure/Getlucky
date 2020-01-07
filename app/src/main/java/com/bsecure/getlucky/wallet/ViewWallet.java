@@ -152,6 +152,7 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
                             @Override
                             public void onClick(View view) {
                                 getWallet();
+                                tv_amount_b.setText("");
                                 custom_alert_cash.dismiss();
                             }
                         });
