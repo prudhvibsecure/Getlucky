@@ -5,35 +5,41 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bsecure.getlucky.R;
-import com.bsecure.getlucky.models.OperatorModel;
 import com.bsecure.getlucky.models.StoreListModel;
+import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 
 import org.json.JSONArray;
 
 import java.util.HashMap;
 import java.util.List;
 
-public class OperatorListCashbackAdapter extends RecyclerView.Adapter<OperatorListCashbackAdapter.ContactViewHolder> {
+public class RecommendStoreAdapter extends RecyclerView.Adapter<RecommendStoreAdapter.ContactViewHolder> {
 
     JSONArray array = new JSONArray();
     private Context context = null;
     private View.OnClickListener onClickListener;
-    private OperatorListAdapterListener listener;
+    private StoreAdapterListener listener;
     private final LayoutInflater layoutInflater;
-    private List<OperatorModel> matchesList;
+    private List<StoreListModel> matchesList;
     private SparseBooleanArray selectedItems;
     private SparseBooleanArray animationItemsIndex;
     private static int currentSelectedIndex = -1;
     private HashMap<Integer, Boolean> isChecked = new HashMap<>();
+    public static final int ITEM_TYPE_RECYCLER_WIDTH = 1000;
+    public static final int ITEM_TYPE_ACTION_WIDTH = 1001;
+    public static final int ITEM_TYPE_ACTION_WIDTH_NO_SPRING = 1002;
+    public static final int ITEM_TYPE_NO_SWIPE = 1003;
+    private ItemTouchHelperExtension mItemTouchHelperExtension;
 
-    public OperatorListCashbackAdapter(List<OperatorModel> list, Context context, OperatorListAdapterListener listener) {
+    public RecommendStoreAdapter(List<StoreListModel> list, Context context, StoreAdapterListener listener) {
         this.context = context;
         this.listener = listener;
         this.matchesList = list;
@@ -42,8 +48,8 @@ public class OperatorListCashbackAdapter extends RecyclerView.Adapter<OperatorLi
         animationItemsIndex = new SparseBooleanArray();
     }
 
-    public int getSelectedItemCount() {
-        return selectedItems.size();
+    public void setItemTouchHelperExtension(ItemTouchHelperExtension itemTouchHelperExtension) {
+        mItemTouchHelperExtension = itemTouchHelperExtension;
     }
 
     public void setOnClickListener(View.OnClickListener onClickListener) {
@@ -57,14 +63,14 @@ public class OperatorListCashbackAdapter extends RecyclerView.Adapter<OperatorLi
         notifyItemRangeRemoved(0, size);
     }
 
-    public void addItems(List<OperatorModel> List) {
+    public void addItems(List<StoreListModel> List) {
         matchesList.addAll(List);
         notifyDataSetChanged();
     }
 
     public void addLoading() {
 
-        matchesList.add(new OperatorModel());
+        matchesList.add(new StoreListModel());
         notifyItemInserted(matchesList.size() - 1);
     }
 
@@ -91,29 +97,19 @@ public class OperatorListCashbackAdapter extends RecyclerView.Adapter<OperatorLi
     public void onBindViewHolder(final ContactViewHolder contactViewHolder, final int position) {
 
         try {
-            final OperatorModel mycontactlist = matchesList.get(position);
-            contactViewHolder.op_name.setText(mycontactlist.getOperator_name());
-            contactViewHolder.op_name_ur.setText(mycontactlist.getUsername());
-            contactViewHolder.op_name_ps.setText(mycontactlist.getPassword());
+            final StoreListModel mycontactlist = matchesList.get(position);
+            contactViewHolder.store_name.setText(mycontactlist.getStore_name());
 
-            applyClickEvents(contactViewHolder, matchesList, position);
+            //applyEvents(contactViewHolder, matchesList, position);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
 
-    public long getItemId(int position) {
-        return position;
-    }
-
-    private void applyClickEvents(ContactViewHolder contactViewHolder, final List<OperatorModel> matchesList, final int position) {
-        contactViewHolder.mViewContent.setOnClickListener(new View.OnClickListener() {
+    private void applyClickEvents(ContactViewHolder contactViewHolder, final List<StoreListModel> matchesList, final int position) {
+        contactViewHolder.cashback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
@@ -128,33 +124,40 @@ public class OperatorListCashbackAdapter extends RecyclerView.Adapter<OperatorLi
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.operator_item_row, parent, false);
-        ContactViewHolder myHoder = new ContactViewHolder(view);
-        return myHoder;
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.cash_back_item_store, parent, false);
+        return new ContactViewHolder(itemView);
+    }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     public class ContactViewHolder extends RecyclerView.ViewHolder {
 
-        protected TextView op_name;
-        protected TextView op_name_ur;
-        protected TextView op_name_ps;
-
+        public TextView store_name;
+        public Button cashback;
+        ImageView store_image;
         CardView mViewContent;
+
+
         public ContactViewHolder(View v) {
             super(v);
 
-            op_name = (TextView) v.findViewById(R.id.op_name);
-            op_name_ur = (TextView) v.findViewById(R.id.op_name_ur);
-            op_name_ps = (TextView) v.findViewById(R.id.op_name_ps);
-            mViewContent =  v.findViewById(R.id.ad_opclcik);
-
+            store_name = (TextView) v.findViewById(R.id.ss_name);
+            cashback = (Button) v.findViewById(R.id.csh_bk);
+            cashback.setVisibility(View.GONE);
+            store_image = (ImageView) v.findViewById(R.id.ss_image);
+            store_image.setVisibility(View.GONE);
+            mViewContent = v.findViewById(R.id.ii_cs_tm);
 
         }
     }
 
-    public interface OperatorListAdapterListener {
+    public interface StoreAdapterListener {
 
-        void onRowClicked(List<OperatorModel> matchesList, int pos);
+        void onRowClicked(List<StoreListModel> matchesList, int pos);
     }
+
 }

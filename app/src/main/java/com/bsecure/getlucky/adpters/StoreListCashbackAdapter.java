@@ -6,6 +6,7 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -115,7 +116,7 @@ public class StoreListCashbackAdapter extends RecyclerView.Adapter<StoreListCash
 
 
     private void applyClickEvents(ContactViewHolder contactViewHolder, final List<StoreListModel> matchesList, final int position) {
-        contactViewHolder.mViewContent.setOnClickListener(new View.OnClickListener() {
+        contactViewHolder.cashback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
@@ -143,6 +144,7 @@ public class StoreListCashbackAdapter extends RecyclerView.Adapter<StoreListCash
     public class ContactViewHolder extends RecyclerView.ViewHolder {
 
         public TextView store_name;
+        public Button cashback;
         ImageView store_image;
         CardView mViewContent;
 
@@ -151,6 +153,7 @@ public class StoreListCashbackAdapter extends RecyclerView.Adapter<StoreListCash
             super(v);
 
             store_name = (TextView) v.findViewById(R.id.ss_name);
+            cashback = (Button) v.findViewById(R.id.csh_bk);
 
             store_image = (ImageView) v.findViewById(R.id.ss_image);
             mViewContent = v.findViewById(R.id.ii_cs_tm);

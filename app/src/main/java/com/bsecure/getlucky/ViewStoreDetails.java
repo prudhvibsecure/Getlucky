@@ -247,6 +247,12 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
         ((EditText) editDiloag.findViewById(R.id.add_sr)).setText(df.format(store_refer_percent));
         ((EditText) editDiloag.findViewById(R.id.add_admin)).setText(df.format(admin_percent));
         ((EditText) editDiloag.findViewById(R.id.add_to)).setText(df.format(total_percent));
+        ((EditText) editDiloag.findViewById(R.id.add_min)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((EditText) editDiloag.findViewById(R.id.add_min)).setText("");
+            }
+        });
         ((EditText) editDiloag.findViewById(R.id.add_min)).setText(offerList.get(pos).getMin_amount());
         if (TextUtils.isEmpty(offerList.get(pos).getMax_amount())||offerList.get(pos).getMax_amount().equalsIgnoreCase("0")) {
             ((EditText) editDiloag.findViewById(R.id.add_max)).setText("");

@@ -71,7 +71,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 
-public class HomeFragment extends ParentFragment implements  IItemHandler,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RequestHandler, StoreListAdapter.StoreAdapterListener {
+public class HomeFragment extends ParentFragment implements IItemHandler, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RequestHandler, StoreListAdapter.StoreAdapterListener {
 
     private GetLucky getLucky;
     private String pin_code, area = "", city = "", country = "", phone, category_ids = "", state = "", loacal_area;
@@ -81,7 +81,7 @@ public class HomeFragment extends ParentFragment implements  IItemHandler,Google
     private FusedLocationProviderClient mFusedLocationClient;
     private EditText serach;
     private RecyclerView mRecyclerView;
-    private StoreListAdapter adapter;
+    private StoreListAdapter adapter = null;
     private SwipeRefreshLayout mSwipeRefreshLayout = null;
 
     private FusedLocationProviderClient fusedLocationClient;
@@ -98,6 +98,7 @@ public class HomeFragment extends ParentFragment implements  IItemHandler,Google
     private int count_page = 0;
     List<StoreListModel> storeListModelList = new ArrayList<>();
     LinearLayout loading_btm;
+    String session_data;
 
     public HomeFragment() {
 
@@ -129,8 +130,8 @@ public class HomeFragment extends ParentFragment implements  IItemHandler,Google
             category_ids = category_ids.replaceFirst(",", "");
             JSONObject object = new JSONObject();
             object.put("category_ids", category_ids.trim());
-            HTTPPostTask task=new HTTPPostTask(getActivity(),this);
-            task.userRequest("",100,Constants.PATH + "get_keywords",object.toString());
+            HTTPPostTask task = new HTTPPostTask(getActivity(), this);
+            task.userRequest("", 100, Constants.PATH + "get_keywords", object.toString());
 //            MethodResquest ms = new MethodResquest(getActivity(), this, Constants.PATH + "get_keywords", object.toString(), 100);
 //            ms.dismissProgress(getActivity());
         } catch (Exception e) {
@@ -154,25 +155,27 @@ public class HomeFragment extends ParentFragment implements  IItemHandler,Google
                 if (isNetworkAvailable()) {
                     storeListModelList = new ArrayList<>();
                     count_page = 0;
+                    loading_btm.setVisibility(View.GONE);
                     searchStore(count_page);
                 }
             }
         });
-        String session_data = AppPreferences.getInstance(getActivity()).getFromStore("userData");
+        session_data = AppPreferences.getInstance(getActivity()).getFromStore("userData");
         if (session_data != null && !TextUtils.isEmpty(session_data)) {
             try {
                 JSONArray ayArray = new JSONArray(session_data);
-                String cs_no=ayArray.getJSONObject(0).optString("customer_number");
-                if (cs_no.equalsIgnoreCase("2")){
-                    laView.findViewById(R.id.add_cashbak).setVisibility(View.VISIBLE);
-                }else{
+                //  String cs_no = ayArray.getJSONObject(0).optString("customer_number");
+                String cs_no = AppPreferences.getInstance(getActivity()).getFromStore("customer_number");
+                if (TextUtils.isEmpty(cs_no)) {
                     laView.findViewById(R.id.add_cashbak).setVisibility(View.GONE);
+                } else {
+                    laView.findViewById(R.id.add_cashbak).setVisibility(View.VISIBLE);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-        }else{
+        } else {
             laView.findViewById(R.id.add_cashbak).setVisibility(View.GONE);
         }
         laView.findViewById(R.id.add_cashbak).setOnClickListener(new View.OnClickListener() {
@@ -191,12 +194,12 @@ public class HomeFragment extends ParentFragment implements  IItemHandler,Google
 
             @Override
             public void onRefresh() {
-                recycScollListener.resetValue();
                 count_page = 0;
+                recycScollListener.resetValue();
                 if (isNetworkAvailable()) {
                     storeListModelList = new ArrayList<>();
                     searchStore(count_page);
-                    adapter.notifyDataSetChanged();
+                    loading_btm.setVisibility(View.GONE);
                 } else {
                     mSwipeRefreshLayout.setRefreshing(false);
                     mSwipeRefreshLayout.setEnabled(true);
@@ -214,9 +217,11 @@ public class HomeFragment extends ParentFragment implements  IItemHandler,Google
             public void onLoadMoreData(int currentPage) {
                 try {
                     if (isNetworkAvailable()) {
-                        count_page = currentPage;
-                        loading_btm.setVisibility(View.VISIBLE);
-                        searchStore(currentPage);
+                        if (storeListModelList.size() > 10) {
+                            count_page = currentPage;
+                            loading_btm.setVisibility(View.VISIBLE);
+                            searchStore(currentPage);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -256,9 +261,13 @@ public class HomeFragment extends ParentFragment implements  IItemHandler,Google
                         recycScollListener.resetValue();
                         count_page = 0;
                         storeListModelList = new ArrayList<>();
-                        adapter.clear();
-                        searchStore(count_page);
-                        adapter.notifyDataSetChanged();
+                        if (adapter != null) {
+                            adapter.clear();
+                            adapter.notifyDataSetChanged();
+                            searchStore(count_page);
+                        }
+
+
                     } else {
                         Toast.makeText(getActivity(), "Sorry-No Network Found", Toast.LENGTH_SHORT).show();
                     }
@@ -312,7 +321,16 @@ public class HomeFragment extends ParentFragment implements  IItemHandler,Google
                         mSwipeRefreshLayout.setEnabled(true);
                         laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
                         laView.findViewById(R.id.no_data).setVisibility(View.GONE);
-                        laView.findViewById(R.id.add_cashbak).setVisibility(View.VISIBLE);
+                        if (session_data != null && !TextUtils.isEmpty(session_data)) {
+                            String cs_no = AppPreferences.getInstance(getActivity()).getFromStore("customer_number");
+                            if (TextUtils.isEmpty(cs_no)) {
+                                laView.findViewById(R.id.add_cashbak).setVisibility(View.GONE);
+                            } else {
+                                laView.findViewById(R.id.add_cashbak).setVisibility(View.VISIBLE);
+                            }
+                        } else {
+                            laView.findViewById(R.id.add_cashbak).setVisibility(View.GONE);
+                        }
                         JSONArray jsonarray2 = object1.getJSONArray("store_details");
                         if (jsonarray2.length() > 0) {
                             for (int i = 0; i < jsonarray2.length(); i++) {
@@ -342,21 +360,25 @@ public class HomeFragment extends ParentFragment implements  IItemHandler,Google
                             if (count_page == 0) {
                                 mRecyclerView.removeAllViews();
                                 adapter.clear();
+                                count_page = 0;
                                 mSwipeRefreshLayout.setRefreshing(false);
                                 mSwipeRefreshLayout.setEnabled(true);
                                 laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
                                 laView.findViewById(R.id.no_data).setVisibility(View.VISIBLE);
+                                count_page = 0;
                             } else {
                                 loading_btm.setVisibility(View.GONE);
+                                count_page = 0;
                             }
 
                         }
                     } else {
                         if (count_page == 0) {
                             mRecyclerView.removeAllViews();
-                            if (adapter!=null) {
+                            if (adapter != null) {
                                 adapter.clear();
                             }
+                            count_page = 0;
                             mSwipeRefreshLayout.setRefreshing(false);
                             mSwipeRefreshLayout.setEnabled(true);
                             laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
@@ -364,6 +386,7 @@ public class HomeFragment extends ParentFragment implements  IItemHandler,Google
                             laView.findViewById(R.id.add_cashbak).setVisibility(View.GONE);
                             ((TextView) laView.findViewById(R.id.no_data)).setText(object1.optString("statusdescription"));
                         } else {
+                            count_page = 0;
                             loading_btm.setVisibility(View.GONE);
                         }
                     }
@@ -435,7 +458,7 @@ public class HomeFragment extends ParentFragment implements  IItemHandler,Google
     @Override
     public void onFinish(Object results, int requestId) {
         try {
-            switch (requestId){
+            switch (requestId) {
                 case 100:
 
                     JSONObject object = new JSONObject(results.toString());
@@ -447,8 +470,8 @@ public class HomeFragment extends ParentFragment implements  IItemHandler,Google
                     }
                     searchStore(count_page);
                     break;
-                    default:
-                        break;
+                default:
+                    break;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -623,6 +646,7 @@ public class HomeFragment extends ParentFragment implements  IItemHandler,Google
         if (!TextUtils.isEmpty(area)) {
             String k_area = AppPreferences.getInstance(getActivity()).getFromStore("larea");
             if (k_area.startsWith(area)) {
+                count_page = 0;
                 return;
             } else {
                 count_page = 0;
@@ -640,7 +664,7 @@ public class HomeFragment extends ParentFragment implements  IItemHandler,Google
     private boolean isNetworkAvailable() {
 
         try {
-            ConnectivityManager manager = (ConnectivityManager) getContext()
+            ConnectivityManager manager = (ConnectivityManager) getLucky
                     .getSystemService(Context.CONNECTIVITY_SERVICE);
 
             if (manager == null) {

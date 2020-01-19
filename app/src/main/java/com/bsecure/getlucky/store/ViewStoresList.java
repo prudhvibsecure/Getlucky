@@ -11,8 +11,10 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,7 +73,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
 
         mRecyclerView = findViewById(R.id.view_store_rec);
         mRecyclerView.setHasFixedSize(true);
-        linearLayoutManager= new LinearLayoutManager(this);
+        linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swip_refresh);
@@ -161,8 +163,6 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
 
-
-
     }
 
 
@@ -240,6 +240,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                         findViewById(R.id.no_data).setVisibility(View.GONE);
                         JSONArray jsonarray2 = object1.getJSONArray("store_details");
                         if (jsonarray2.length() > 0) {
+                            AppPreferences.getInstance(this).addToStore("customer_number","2",true);
                             for (int i = 0; i < jsonarray2.length(); i++) {
                                 JSONObject jsonobject = jsonarray2.getJSONObject(i);
                                 StoreListModel storeListModel = new StoreListModel();
@@ -267,31 +268,36 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                             mRecyclerView.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
                         } else {
-                            findViewById(R.id.spin_kit).setVisibility(View.GONE);
-                            findViewById(R.id.id_add_store).setVisibility(View.GONE);
-                            findViewById(R.id.no_data).setVisibility(View.VISIBLE);
                             Intent store = new Intent(this, AddStore.class);
                             startActivity(store);
                             overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                             finish();
+                            AppPreferences.getInstance(this).addToStore("customer_number","",true);
+                            findViewById(R.id.spin_kit).setVisibility(View.GONE);
+                            findViewById(R.id.id_add_store).setVisibility(View.GONE);
+                            findViewById(R.id.no_data).setVisibility(View.VISIBLE);
+
                         }
                     } else {
+
                         mSwipeRefreshLayout.setRefreshing(false);
                         mSwipeRefreshLayout.setEnabled(true);
-                        findViewById(R.id.spin_kit).setVisibility(View.GONE);
-                        findViewById(R.id.no_data).setVisibility(View.VISIBLE);
-                        findViewById(R.id.id_add_store).setVisibility(View.GONE);
                         ((TextView) findViewById(R.id.no_data)).setText(object1.optString("statusdescription"));
                         Intent store = new Intent(this, AddStore.class);
                         startActivity(store);
                         overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                         finish();
+                        findViewById(R.id.spin_kit).setVisibility(View.GONE);
+                        findViewById(R.id.no_data).setVisibility(View.VISIBLE);
+                        findViewById(R.id.id_add_store).setVisibility(View.GONE);
+                        AppPreferences.getInstance(this).addToStore("customer_number","",true);
+
                     }
                     break;
                 case 102:
                     JSONObject deletObj = new JSONObject(response.toString());
                     if (deletObj.optString("statuscode").equalsIgnoreCase("200")) {
-                      redirectClass();
+                        redirectClass();
                         Toast.makeText(this, deletObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this, deletObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
@@ -381,13 +387,13 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                     Toast.makeText(ViewStoresList.this, "Please Fill Required Field", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                previewOffer(matchesList, pos, offer,"0");
+                previewOffer(matchesList, pos, offer, "0");
             }
         });
 
     }
 
-    private void previewOffer(List<StoreListModel> soresList, int pos, String offer,String condition) {
+    private void previewOffer(List<StoreListModel> soresList, int pos, String offer, String condition) {
 
         final Dialog previewDiloag = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
         previewDiloag.setContentView(R.layout.preview_sp_offer);
@@ -402,7 +408,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
             ((TextView) previewDiloag.findViewById(R.id.tv_offer_1)).setVisibility(View.VISIBLE);
             ((TextView) previewDiloag.findViewById(R.id.tv_offer_12)).setVisibility(View.GONE);
             ((TextView) previewDiloag.findViewById(R.id.tv_offer_1)).setText(offer);
-        }else{
+        } else {
             ((TextView) previewDiloag.findViewById(R.id.tv_offer_1)).setVisibility(View.GONE);
             ((TextView) previewDiloag.findViewById(R.id.tv_offer_12)).setVisibility(View.VISIBLE);
             ((TextView) previewDiloag.findViewById(R.id.tv_offer_12)).setText(offer);
@@ -445,7 +451,6 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
     public void onRowClickedOffer(final List<StoreListModel> matchesList, final int pos) {
         add_Offer = new Dialog(this, R.style.Theme_MaterialComponents_DialogWhenLarge);
         add_Offer.setContentView(R.layout.add_m_offer);
-
         add_Offer.show();
         add_Offer.findViewById(R.id.iv_back).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -493,6 +498,40 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                 addOfferCal(matchesList, pos);
             }
         });
+        //((EditText) add_Offer.findViewById(R.id.add_min)).setFocusable(true);
+        ((LinearLayout) add_Offer.findViewById(R.id.k_ii)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((EditText) add_Offer.findViewById(R.id.add_min)).requestFocus();
+             //   ((EditText) add_Offer.findViewById(R.id.add_min)).setFocusable(false);
+             //   ((EditText) add_Offer.findViewById(R.id.add_min)).setCursorVisible(true);
+                ((EditText) add_Offer.findViewById(R.id.add_min)).setText("");
+            }
+        });
+
+        ((EditText) add_Offer.findViewById(R.id.add_min)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((EditText) add_Offer.findViewById(R.id.add_min)).requestFocus();
+              //  ((EditText) add_Offer.findViewById(R.id.add_min)).setFocusable(false);
+              //  ((EditText) add_Offer.findViewById(R.id.add_min)).setText("");
+                ((EditText) add_Offer.findViewById(R.id.add_min)).setCursorVisible(true);
+            }
+        });
+        ((EditText) add_Offer.findViewById(R.id.add_min)).setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus)
+            {
+                if (hasFocus==true)
+                {
+                    if (((EditText) add_Offer.findViewById(R.id.add_min)).getText().toString().compareTo("1")==0)
+                    {
+                        ((EditText) add_Offer.findViewById(R.id.add_min)).setText("");
+                    }
+                }
+            }
+        });
         add_Offer.findViewById(R.id.bt_preview).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -502,7 +541,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                     return;
                 }
                 String add_to = ((EditText) add_Offer.findViewById(R.id.add_to)).getText().toString();
-                previewOffer(matchesList, pos, offer + "% Cashback On All Purchase","1");
+                previewOffer(matchesList, pos, offer + "% Cashback On All Purchase", "1");
             }
         });
 
@@ -510,8 +549,8 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onRowClickedOperators(List<StoreListModel> matchesList, int pos) {
-        Intent store_operator=new Intent(this, OperatorsList.class);
-        store_operator.putExtra("store_id",matchesList.get(pos).getStore_id());
+        Intent store_operator = new Intent(this, OperatorsList.class);
+        store_operator.putExtra("store_id", matchesList.get(pos).getStore_id());
         startActivity(store_operator);
 
     }
@@ -520,21 +559,21 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
     private void addOfferCal(List<StoreListModel> matchesList, int pos) {
 
         String offer = ((EditText) add_Offer.findViewById(R.id.add_co)).getText().toString().trim();
-        if (offer.length() == 0||offer.equalsIgnoreCase("0")) {
+        if (offer.length() == 0 || offer.equalsIgnoreCase("0")) {
             Toast.makeText(ViewStoresList.this, "Please Fill Required Field", Toast.LENGTH_SHORT).show();
             return;
         }
 
         String add_min = ((EditText) add_Offer.findViewById(R.id.add_min)).getText().toString().trim();
-        if (add_min.length() == 0 || add_min.equalsIgnoreCase("0")||add_min.startsWith("0")) {
+        if (add_min.length() == 0 || add_min.equalsIgnoreCase("0") || add_min.startsWith("0")) {
             ((EditText) add_Offer.findViewById(R.id.add_min)).setText("1");
             return;
         }
         String add_max = ((EditText) add_Offer.findViewById(R.id.add_max)).getText().toString().trim();
-        if (add_max.length()>0) {
+        if (add_max.length() > 0) {
             min = Double.parseDouble(add_min);
             max = Double.parseDouble(add_max);
-            if (Double.compare(min, max)> 0) {
+            if (Double.compare(min, max) > 0) {
                 Toast.makeText(this, "Maximum Amount Must Be Greater Than Minimum Amount", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -637,6 +676,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
             e.printStackTrace();
         }
     }
+
     @Override
     public void swipeToEdit(int pos, List<StoreListModel> storeListModelList) {
 
@@ -652,8 +692,9 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
 
 
     }
-    public  void
-    redirectClass(){
+
+    public void
+    redirectClass() {
         Intent in = new Intent(this, ViewStoresList.class);
         in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(in);

@@ -12,7 +12,7 @@ public abstract class RecyclerOnScrollListener extends RecyclerView.OnScrollList
     // after the last load
     private boolean loading = true; // True if we are still waiting for the last
     // set of data to load.
-    private int visibleThreshold = 2; // The minimum amount of items to have
+    private int visibleThreshold = 5; // The minimum amount of items to have
     // below your current scroll position
     // before loading more.
     int firstVisibleItem, visibleItemCount, totalItemCount;

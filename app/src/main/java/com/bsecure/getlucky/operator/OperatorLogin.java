@@ -9,8 +9,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bsecure.getlucky.Login;
-import com.bsecure.getlucky.OtpScreen;
 import com.bsecure.getlucky.R;
 import com.bsecure.getlucky.cashback.AddCashback;
 import com.bsecure.getlucky.common.AppPreferences;
@@ -20,9 +18,6 @@ import com.bsecure.getlucky.volleyhttp.MethodResquest;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class OperatorLogin extends AppCompatActivity implements RequestHandler {
 
@@ -57,7 +52,17 @@ public class OperatorLogin extends AppCompatActivity implements RequestHandler {
                 return;
             }
             String password = ((EditText) findViewById(R.id.password_u)).getText().toString();
+
             if (password.length() == 0) {
+                Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (password.contains(" ")) {
+                Toast.makeText(this, "Spaces Not Allowed", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            password=password.replaceAll("\\s+", "");
+            if (password.length() == 1 && password.length() >= 16) {
                 Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
                 return;
             }

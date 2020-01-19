@@ -413,6 +413,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
@@ -490,6 +491,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                     if (myObj.optString("statuscode").equalsIgnoreCase("200")) {
                         Toast.makeText(this, myObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                         sendBroadcast(new Intent("com.store_refrsh"));
+                        AppPreferences.getInstance(this).addToStore("customer_number",myObj.optString("customer_number"),true);
                         this.finish();
                     }
                     break;

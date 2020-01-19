@@ -294,6 +294,8 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
             nav_Menu.findItem(R.id.nav_bar_code).setVisible(true);
             nav_Menu.findItem(R.id.nav_operator).setVisible(false);
             nav_Menu.findItem(R.id.nav_wallet).setVisible(true);
+            nav_Menu.findItem(R.id.nav_referlist).setVisible(true);
+            nav_Menu.findItem(R.id.nav_restore).setVisible(true);
         } else {
             nav_Menu.findItem(R.id.nav_profile).setVisible(false);
             nav_Menu.findItem(R.id.nav_login).setVisible(true);
@@ -302,6 +304,8 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
             nav_Menu.findItem(R.id.nav_view_store).setVisible(false);
             nav_Menu.findItem(R.id.nav_bar_code).setVisible(false);
             nav_Menu.findItem(R.id.nav_wallet).setVisible(false);
+            nav_Menu.findItem(R.id.nav_referlist).setVisible(false);
+            nav_Menu.findItem(R.id.nav_restore).setVisible(false);
         }
         return true;
     }
@@ -354,6 +358,18 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
                 Intent nav_wallet = new Intent(this, ViewWallet.class);
                 startActivity(nav_wallet);
+                overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
+                break;
+            case R.id.nav_referlist:
+
+                Intent nav_referlist = new Intent(this, ReferList.class);
+                startActivity(nav_referlist);
+                overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
+                break;
+            case R.id.nav_restore:
+
+                Intent nav_restore = new Intent(this, RecommendStoreList.class);
+                startActivity(nav_restore);
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
         }

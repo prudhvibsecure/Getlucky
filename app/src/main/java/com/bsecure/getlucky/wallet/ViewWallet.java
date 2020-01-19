@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -30,13 +32,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
+
 public class ViewWallet extends AppCompatActivity implements RequestHandler, View.OnClickListener {
     JSONArray ayArray;
     String wallet_amt = "", customer_number, payment_type;
     TextView total_amt, total_amt_b, total_amt_clr, history_wl, history_w2;
     TextInputEditText tv_wamt, tv_amount_b;
     private IntentFilter filter;
-
+    private static DecimalFormat df = new DecimalFormat("0.00");
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,9 +50,41 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
         filter.setPriority(1);
         total_amt_b = findViewById(R.id.total_amt_b);
         tv_amount_b = findViewById(R.id.tv_amount_b);
+        tv_amount_b.addTextChangedListener(new TextWatcher() {
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                String text = arg0.toString();
+                if (text.contains(".") && text.substring(text.indexOf(".") + 1).length() > 2) {
+                    tv_amount_b.setText(text.substring(0, text.length() - 1));
+                    tv_amount_b.setSelection(tv_amount_b.getText().length());
+                }
+            }
+
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+            }
+
+            public void afterTextChanged(Editable arg0) {
+            }
+        });
         total_amt = findViewById(R.id.total_amt);
         total_amt_clr = findViewById(R.id.total_amt_clr);
         tv_wamt = findViewById(R.id.tv_amount);
+        tv_wamt.addTextChangedListener(new TextWatcher() {
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                String text = arg0.toString();
+                if (text.contains(".") && text.substring(text.indexOf(".") + 1).length() > 2) {
+                    tv_wamt.setText(text.substring(0, text.length() - 1));
+                    tv_wamt.setSelection(tv_wamt.getText().length());
+                }
+            }
+
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+            }
+
+            public void afterTextChanged(Editable arg0) {
+            }
+        });
         history_wl = findViewById(R.id.history_wl);
         history_w2 = findViewById(R.id.history_w2);
         history_wl.setOnClickListener(this);
@@ -68,18 +104,20 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
                 ImageView profile = (ImageView) findViewById(R.id.tv_profileicon);
                 Glide.with(this).load(ayArray.getJSONObject(0).optString("profile_image")).into(profile);
                 ((TextView) findViewById(R.id.name_n)).setText(ayArray.getJSONObject(0).optString("name"));
-                customer_number = ayArray.getJSONObject(0).optString("customer_number");
+              //  customer_number = ayArray.getJSONObject(0).optString("customer_number");
+                customer_number =AppPreferences.getInstance(this).getFromStore("customer_number");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
         }
-        if (customer_number.equalsIgnoreCase("2")) {
-            findViewById(R.id.v1_wall).setVisibility(View.VISIBLE);
-            findViewById(R.id.v1_wall2).setVisibility(View.VISIBLE);
-        } else {
+        if (TextUtils.isEmpty(customer_number)) {
             findViewById(R.id.v1_wall).setVisibility(View.VISIBLE);
             findViewById(R.id.v1_wall2).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.v1_wall).setVisibility(View.VISIBLE);
+            findViewById(R.id.v1_wall2).setVisibility(View.VISIBLE);
+
         }
         findViewById(R.id.tv_transfer).setOnClickListener(this);
         findViewById(R.id.tv_recharge_b).setOnClickListener(this);
@@ -179,11 +217,13 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
         switch (view.getId()) {
             case R.id.tv_transfer:
                 String amt = tv_wamt.getText().toString().trim();
+
                 if (amt.length() == 0) {
                     Toast.makeText(this, "Please Enter Amount", Toast.LENGTH_SHORT).show();
                     tv_wamt.requestFocus();
                     return;
                 }
+
                 float w_amount = Float.parseFloat(wallet_amt);
                 float amount = Float.parseFloat(amt);
                 if (amount > w_amount) {

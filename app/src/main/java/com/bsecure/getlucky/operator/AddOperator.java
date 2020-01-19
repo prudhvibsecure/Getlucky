@@ -78,12 +78,16 @@ public class AddOperator extends AppCompatActivity implements RequestHandler {
                 Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
                 return;
             }
-            String password = ((EditText) findViewById(R.id.password_u1)).getText().toString().trim();
+            String password = ((EditText) findViewById(R.id.password_u1)).getText().toString();
             if (password.length() == 0) {
                 Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (password.length() >= 16) {
+            if (password.contains(" ")) {
+                Toast.makeText(this, "Spaces Not Allowed", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (password.length() == 1 && password.length() >= 16) {
                 Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
                 return;
             }

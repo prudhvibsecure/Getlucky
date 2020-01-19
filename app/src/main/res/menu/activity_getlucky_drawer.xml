@@ -48,6 +48,18 @@
             android:icon="@mipmap/ic_wallet"
             android:title="Wallet" />
     </group>
+    <group android:id="@+id/m8">
+        <item
+            android:id="@+id/nav_referlist"
+            android:icon="@mipmap/referral_sc"
+            android:title="Referred List" />
+    </group>
+    <group android:id="@+id/m9">
+        <item
+            android:id="@+id/nav_restore"
+            android:icon="@mipmap/ic_view_store"
+            android:title="Recommend Store" />
+    </group>
 
 
 </menu>
