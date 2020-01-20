@@ -82,7 +82,7 @@ public class AddPin extends AppCompatActivity {
             return;
         }
         if (otpone.length() <=3) {
-            Toast.makeText(AddPin.this, "Enter your 4 Digits Pin", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(AddPin.this, "Enter your 4 Digits Pin", Toast.LENGTH_SHORT).show();
             return;
         }
         AppPreferences.getInstance(AddPin.this).addToStore("pin_view", otpone, true);

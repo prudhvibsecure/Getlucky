@@ -38,7 +38,8 @@ public class ViewStoresListCash extends AppCompatActivity implements View.OnClic
 
     private IntentFilter filter;
     LinearLayoutManager linearLayoutManager;
-
+    String session_data;
+    JSONArray ayArray;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,10 +48,11 @@ public class ViewStoresListCash extends AppCompatActivity implements View.OnClic
         filter = new IntentFilter("com.store_refrsh");
         filter.setPriority(1);
         findViewById(R.id.id_add_store).setOnClickListener(this);
+        findViewById(R.id.id_add_store).setVisibility(View.GONE);
 
         mRecyclerView = findViewById(R.id.view_store_rec);
         mRecyclerView.setHasFixedSize(true);
-        linearLayoutManager= new LinearLayoutManager(this);
+        linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swip_refresh);
@@ -95,8 +97,9 @@ public class ViewStoresListCash extends AppCompatActivity implements View.OnClic
 
     private void viewStorsList() {
         try {
-            String session_data = AppPreferences.getInstance(this).getFromStore("userData");
-            JSONArray ayArray = new JSONArray(session_data);
+            session_data= AppPreferences.getInstance(this).getFromStore("userData");
+            ayArray = new JSONArray(session_data);
+            AppPreferences.getInstance(this).addToStore("operator_name", ayArray.getJSONObject(0).optString("name"), true);
             JSONObject object = new JSONObject();
             object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
             MethodResquest req = new MethodResquest(this, this, Constants.PATH + "view_stores", object.toString(), 101);
@@ -203,19 +206,21 @@ public class ViewStoresListCash extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onRowClicked(List<StoreListModel> matchesList, int pos) {
-//        String data = AppPreferences.getInstance(this).getFromStore("userData");
-//        if (data != null && !TextUtils.isEmpty(data)) {
-            Intent login = new Intent(this, OperatorsListCashBack.class);
-            login.putExtra("store_id", matchesList.get(pos).getStore_id());
-            login.putExtra("store_name", matchesList.get(pos).getStore_name());
-            //login.putExtra("store_ph",matchesList.get(pos).getp());
-            startActivity(login);
-            overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
-//        } else {
-//            Intent login = new Intent(this, Login.class);
-//            startActivity(login);
-//            overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
-//        }
+
+       /* Intent login = new Intent(this, OperatorsListCashBack.class);
+        login.putExtra("store_id", matchesList.get(pos).getStore_id());
+        login.putExtra("store_name", matchesList.get(pos).getStore_name());
+        startActivity(login);
+        overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);*/
+        AppPreferences.getInstance(this).addToStore("store_name", matchesList.get(pos).getStore_name(), true);
+
+        AppPreferences.getInstance(this).addToStore("username", "", true);
+        AppPreferences.getInstance(this).addToStore("store_id", matchesList.get(pos).getStore_id(), true);
+
+        Intent edit_store = new Intent(this, AddCashback.class);
+        startActivity(edit_store);
+        overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
+
     }
 
 }

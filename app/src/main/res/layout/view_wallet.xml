@@ -82,7 +82,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
                     android:weightSum="2"
                     android:orientation="horizontal">
                     <TextView
@@ -103,7 +102,7 @@
                         android:layout_height="wrap_content"
                         android:padding="8dp"
                         android:layout_weight="1"
-                        android:gravity="center"
+                        android:gravity="center|end"
                         android:layout_gravity="center"
                         android:text="@string/history"
                         android:textColor="@color/black"
@@ -205,7 +204,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
                     android:weightSum="2"
                     android:orientation="horizontal">
 
@@ -227,7 +225,7 @@
                         android:layout_height="wrap_content"
                         android:padding="8dp"
                         android:layout_weight="1"
-                        android:gravity="center"
+                        android:gravity="center|end"
                         android:layout_gravity="center"
                         android:text="@string/history"
                         android:textColor="@color/black"

@@ -20,7 +20,7 @@
             android:drawablePadding="5dp"
             android:padding="10dp"
             android:singleLine="true"
-            android:text="Address Fetching..."
+            android:text="Fetching Address..."
             android:textColor="@color/colorPrimaryDark"
             android:textSize="12sp" />
 

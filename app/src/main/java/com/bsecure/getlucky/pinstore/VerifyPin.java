@@ -94,6 +94,7 @@ public class VerifyPin extends AppCompatActivity {
         } else {
             if (otpone.length() >= 4) {
                 Toast.makeText(VerifyPin.this, "Invalid Pin", Toast.LENGTH_SHORT).show();
+                pin_et.setText("");
             }
         }
     }

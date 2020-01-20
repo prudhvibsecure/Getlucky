@@ -61,28 +61,6 @@ public class OtpScreen extends AppCompatActivity implements RequestHandler {
                 keyboard.showSoftInput(pin_et, 0);
             }
         }, 50);
-       /* pin_et.addTextChangedListener(new TextWatcher() {
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Integer textlength1 = pin_et.getText().length();
-
-                if (textlength1 >= 4) {
-                   // makeAddPinRequest();
-
-                }else {
-
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-        });
-*/
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,10 +68,13 @@ public class OtpScreen extends AppCompatActivity implements RequestHandler {
                 otpone = pin_et.getText().toString();
 
                 if (TextUtils.isEmpty(otpone)) {
+                    Toast.makeText(OtpScreen.this, "Please Enter Verification Code", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (otpone.length() < 4) {
                     Toast.makeText(OtpScreen.this, "OTP Must be 4 Digits", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                // String otp = otpone+otptwo+otpthree+otpfour;
                 verifyOtp(otpone);
             }
         });
@@ -168,7 +149,7 @@ public class OtpScreen extends AppCompatActivity implements RequestHandler {
                             in.putExtra("phone", phone);
                             in.putExtra("otpone", otpone);
                             startActivity(in);
-                            overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
+                            overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                             finish();
                             return;
 
@@ -179,13 +160,13 @@ public class OtpScreen extends AppCompatActivity implements RequestHandler {
                             Intent in = new Intent(OtpScreen.this, VerifyPin.class);
                             in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(in);
-                            overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
+                            overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                             finish();
                         } else {
                             Intent in = new Intent(OtpScreen.this, AddPin.class);
                             in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(in);
-                            overridePendingTransition(R.anim.fade_in_anim,R.anim.fade_out_anim);
+                            overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                             finish();
                         }
 

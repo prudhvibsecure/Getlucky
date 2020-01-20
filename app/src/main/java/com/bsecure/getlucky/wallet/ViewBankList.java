@@ -192,7 +192,7 @@ public class ViewBankList extends AppCompatActivity implements View.OnClickListe
             case R.id.trs_wallet:
                 try {
 
-                    if (bankListModelList.size()>=1) {
+                    if (bankListModelList.size()>1) {
                         if (mPostion == -1) {
                             return;
                         }
