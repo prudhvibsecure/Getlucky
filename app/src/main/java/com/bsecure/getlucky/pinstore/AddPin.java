@@ -86,8 +86,9 @@ public class AddPin extends AppCompatActivity {
             return;
         }
         AppPreferences.getInstance(AddPin.this).addToStore("pin_view", otpone, true);
+        AppPreferences.getInstance(AddPin.this).addToStore("first_time", "0", true);
         Intent in = new Intent(AddPin.this, GetLucky.class);
-        in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(in);
         overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
         finish();

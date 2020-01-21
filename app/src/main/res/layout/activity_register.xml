@@ -99,6 +99,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/square"
             android:layout_marginLeft="20dp"
+            android:singleLine="true"
             android:padding="10dp" />
 
     </LinearLayout>

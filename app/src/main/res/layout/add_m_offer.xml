@@ -214,6 +214,7 @@
                     android:cursorVisible="false"
                     android:editable="false"
                     android:ems="6"
+                    android:enabled="false"
                     android:gravity="left"
                     android:inputType="number|numberDecimal"
                     android:padding="10dp"
@@ -265,6 +266,7 @@
                     android:gravity="left"
                     android:inputType="number|numberDecimal"
                     android:padding="10dp"
+                    android:enabled="false"
                     android:textColor="@color/black"
                     android:textColorHint="@color/text_hint_color" />
 
@@ -315,7 +317,7 @@
                     android:inputType="number|numberDecimal"
                     android:padding="10dp"
                     android:textColor="@color/black"
-
+                    android:enabled="false"
                     android:textColorHint="@color/text_hint_color" />
 
                 <TextView
@@ -364,6 +366,7 @@
                     android:inputType="number|numberDecimal"
                     android:padding="10dp"
                     android:textColor="@color/black"
+                    android:enabled="false"
                     android:textColorHint="@color/text_hint_color" />
 
                 <TextView

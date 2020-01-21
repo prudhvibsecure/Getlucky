@@ -139,7 +139,7 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
     public void requestStarted() {
 
     }
-
+    String refercode;
     @Override
     public void requestCompleted(JSONObject response, int requestType) {
 
@@ -257,8 +257,12 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
                 Toast.makeText(this, "Please Select Terms & Conditions", Toast.LENGTH_SHORT).show();
                 return;
             }
-            et_refer.setText(AppPreferences.getInstance(this).getFromStore("refer"));
-            String refercode=et_refer.getText().toString();
+
+            if (AppPreferences.getInstance(this).getFromStore("refer").length()>0) {
+                et_refer.setText(AppPreferences.getInstance(this).getFromStore("refer").length());
+            }else {
+                refercode = et_refer.getText().toString();
+            }
             if (refercode.length()==0||refercode==null){
                 refercode="";
 
