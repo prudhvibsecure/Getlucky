@@ -2,7 +2,9 @@ package com.bsecure.getlucky.cashback;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -42,9 +44,28 @@ public class AddCashback extends AppCompatActivity implements RequestHandler {
                 alertGet();
             }
         });
+        ((EditText) findViewById(R.id.add_amount)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+               if( charSequence.length()>0){
+                   add_amount=charSequence.toString();
+               }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         ((TextView) findViewById(R.id.store_nm)).setText(AppPreferences.getInstance(this).getFromStore("store_name"));
         ((TextView) findViewById(R.id.operator_nm)).setText(AppPreferences.getInstance(this).getFromStore("operator_name"));
-        ((TextView) findViewById(R.id.operator_nm)).setText("Note : Cashback is applicable for purchase amount of ₹" + add_amount + "or less");
+        ((TextView) findViewById(R.id.fv)).setText("Note : Cashback is applicable for purchase amount of ₹ " + add_amount + " or less");
     }
 
     private void alertGet() {
