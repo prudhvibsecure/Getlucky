@@ -29,6 +29,7 @@ import com.bsecure.getlucky.operator.OperatorLogin;
 import com.bsecure.getlucky.store.AddStore;
 import com.bsecure.getlucky.store.ViewStoresList;
 import com.bsecure.getlucky.utils.TraceUtils;
+import com.bsecure.getlucky.utils.Utils;
 import com.bsecure.getlucky.wallet.ViewWallet;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -43,6 +44,7 @@ import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.Stack;
 
@@ -116,6 +118,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
             @Override
             public void onClick(View v) {
                 supportInvalidateOptionsMenu();
+                Utils.hideKeyboard(GetLucky.this);
                 onKeyDown(4, null);
 
             }
@@ -167,6 +170,10 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
                         getShareRefer();
                     }
                 });
+                String cs_no = AppPreferences.getInstance(this).getFromStore("customer_number");
+                if (TextUtils.isEmpty(cs_no)) {
+                    AppPreferences.getInstance(this).addToStore("customer_number", ayArray.getJSONObject(0).optString("customer_number"), true);
+                }
                 AppPreferences.getInstance(this).addToStore("customer_id", ayArray.getJSONObject(0).optString("customer_id"), true);
                 ((TextView) header.findViewById(R.id.refer_code)).setText("Referral Code - " + ayArray.getJSONObject(0).optString("customer_referral_code"));
             } catch (JSONException e) {
@@ -219,7 +226,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
                     // Open links with this app on Android
                     .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
                     // Open links with com.example.ios on iOS
-                    .setIosParameters(new DynamicLink.IosParameters.Builder("com.aaria.farmer")
+                    .setIosParameters(new DynamicLink.IosParameters.Builder(BuildConfig.APPLICATION_ID)
                             .setAppStoreId("1482252408")
                             .setMinimumVersion("1.0")
                             .build())
@@ -317,60 +324,76 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
         //int id = item.getItemId();
         switch (item.getItemId()) {
             case R.id.nav_login:
+                Utils.hideKeyboard(GetLucky.this);
                 Intent login = new Intent(this, Login.class);
                 startActivity(login);
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
             case R.id.nav_profile:
-
+                Utils.hideKeyboard(GetLucky.this);
                 Intent prof = new Intent(this, ProfilePage.class);
                 startActivity(prof);
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
             case R.id.nav_store:
-
+                Utils.hideKeyboard(GetLucky.this);
                 Intent store = new Intent(this, AddStore.class);
                 startActivity(store);
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
 
             case R.id.nav_view_store:
-
+                Utils.hideKeyboard(GetLucky.this);
                 Intent nav_view_store = new Intent(this, ViewStoresList.class);
                 startActivity(nav_view_store);
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
             case R.id.nav_bar_code:
-
+                Utils.hideKeyboard(GetLucky.this);
                 Intent code = new Intent(this, Mybarcode.class);
                 startActivity(code);
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
 
             case R.id.nav_operator:
-
+                Utils.hideKeyboard(GetLucky.this);
                 Intent op_log = new Intent(this, OperatorLogin.class);
                 startActivity(op_log);
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
 
             case R.id.nav_wallet:
-
+                Utils.hideKeyboard(GetLucky.this);
                 Intent nav_wallet = new Intent(this, ViewWallet.class);
                 startActivity(nav_wallet);
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
             case R.id.nav_referlist:
-
+                Utils.hideKeyboard(GetLucky.this);
                 Intent nav_referlist = new Intent(this, ReferList.class);
                 startActivity(nav_referlist);
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
             case R.id.nav_restore:
-
+                Utils.hideKeyboard(GetLucky.this);
                 Intent nav_restore = new Intent(this, RecommendStoreList.class);
                 startActivity(nav_restore);
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
+                break;
+
+            case R.id.nav_shareapp:
+                Utils.hideKeyboard(GetLucky.this);
+                try {
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "GetLucky");
+                    String shareMessage = "\nLet me recommend you this application\n\n";
+                    shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n";
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                    startActivity(Intent.createChooser(shareIntent, "choose one"));
+                } catch (Exception e) {
+                    //e.toString();
+                }
                 break;
         }
 

@@ -242,7 +242,7 @@ public class Register extends AppCompatActivity implements RequestHandler, View.
                 Toast.makeText(this, "Please Enter Name", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (name.contains(" ")) {
+            if (name.startsWith(" ")||name.contains(" ")) {
                 Toast.makeText(this, "Spaces Not Allowed", Toast.LENGTH_SHORT).show();
                 return;
             }

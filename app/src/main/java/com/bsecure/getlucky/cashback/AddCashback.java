@@ -16,13 +16,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bsecure.getlucky.R;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.interfaces.RequestHandler;
+import com.bsecure.getlucky.utils.Utils;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 
 import org.json.JSONObject;
 
 public class AddCashback extends AppCompatActivity implements RequestHandler {
-    String add_amount = "", add_cust_code = "";
+    String add_amount = "", add_cust_code = "",add_bll_no;
     Dialog custom_alert_cash;
 
     @Override
@@ -32,7 +33,7 @@ public class AddCashback extends AppCompatActivity implements RequestHandler {
         findViewById(R.id.bacl_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Utils.hideKeyboard(AddCashback.this);
                 overridePendingTransition(R.anim.fade_out_anim, R.anim.fade_in_anim);
                 finish();
             }
@@ -55,6 +56,7 @@ public class AddCashback extends AppCompatActivity implements RequestHandler {
 
                if( charSequence.length()>0){
                    add_amount=charSequence.toString();
+                   ((TextView) findViewById(R.id.fv)).setText("Note : Cashback is applicable for purchase amount of ₹ " + add_amount + " or less");
                }
             }
 
@@ -65,7 +67,7 @@ public class AddCashback extends AppCompatActivity implements RequestHandler {
         });
         ((TextView) findViewById(R.id.store_nm)).setText(AppPreferences.getInstance(this).getFromStore("store_name"));
         ((TextView) findViewById(R.id.operator_nm)).setText(AppPreferences.getInstance(this).getFromStore("operator_name"));
-        ((TextView) findViewById(R.id.fv)).setText("Note : Cashback is applicable for purchase amount of ₹ " + add_amount + " or less");
+        ((TextView) findViewById(R.id.fv)).setText("Note : Cashback is applicable for purchase amount of ₹ " + "0" + " or less");
     }
 
     private void alertGet() {
@@ -80,6 +82,11 @@ public class AddCashback extends AppCompatActivity implements RequestHandler {
             return;
         }
         if (add_cust_code.contains(" ")) {
+            Toast.makeText(this, "Spaces Not Allowed", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        add_bll_no = ((EditText) findViewById(R.id.add_bll_no)).getText().toString();
+        if (add_bll_no.contains(" ")||add_bll_no.startsWith(" ")) {
             Toast.makeText(this, "Spaces Not Allowed", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -109,11 +116,7 @@ public class AddCashback extends AppCompatActivity implements RequestHandler {
 
             String user_nm = AppPreferences.getInstance(this).getFromStore("username");
             JSONObject object = new JSONObject();
-            String add_bll_no = ((EditText) findViewById(R.id.add_bll_no)).getText().toString().trim();
-            if (add_bll_no.contains(" ")) {
-                Toast.makeText(this, "Spaces Not Allowed", Toast.LENGTH_SHORT).show();
-                return;
-            }
+
             object.put("store_id", AppPreferences.getInstance(this).getFromStore("store_id"));
             object.put("customer_id", AppPreferences.getInstance(this).getFromStore("customer_id"));
             object.put("amount", add_amount);

@@ -91,7 +91,7 @@
                     android:id="@+id/tv_accno"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLength="12"
+                    android:maxLength="20"
                     android:inputType="numberPassword" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -126,13 +126,16 @@
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusTopEnd="8dp"
                 app:boxCornerRadiusTopStart="8dp"
+                android:id="@+id/spy_et"
                 app:boxStrokeErrorColor="@color/red">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tv_address"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textCapCharacters"
+                    android:layout_height="150dp"
+                    android:gravity="top|left"
+                    android:layout_gravity="top|left"
+                    android:inputType="textLongMessage|textMultiLine"
                     android:maxLines="5"/>
 
             </com.google.android.material.textfield.TextInputLayout>

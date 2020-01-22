@@ -149,9 +149,10 @@ public class ReferlistAdapter extends RecyclerView.Adapter<ReferlistAdapter.Cont
             super(v);
 
             store_name = (TextView) v.findViewById(R.id.ss_name);
-            cashback = (TextView) v.findViewById(R.id.csh_refer);
-
+            cashback = (TextView) v.findViewById(R.id.csh_bk);
+            cashback.setVisibility(View.GONE);
             store_image = (ImageView) v.findViewById(R.id.ss_image);
+            store_image.setVisibility(View.GONE);
             mViewContent = v.findViewById(R.id.ii_cs_tm);
 
         }

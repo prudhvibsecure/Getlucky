@@ -1,5 +1,6 @@
 package com.bsecure.getlucky.utils;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -12,6 +13,8 @@ import android.net.NetworkInfo;
 import android.os.Environment;
 import android.provider.Settings.Secure;
 import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
@@ -37,7 +40,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class Utils {
 
     private static Dialog dialog = null;
-    private static  Context context;
+    private static Context context;
     private String networkType = "mobile";
 
     public static String urlEncode(String sUrl) {
@@ -53,6 +56,7 @@ public class Utils {
         }
         return (urlOK);
     }
+
     public static String getMimeType(String url) {
         String type = null;
         String extension = MimeTypeMap.getFileExtensionFromUrl(url);
@@ -61,6 +65,7 @@ public class Utils {
         }
         return type;
     }
+
     public static String getDeviceDateTime(String dtFormat) {
 
         Calendar c = Calendar.getInstance();
@@ -76,6 +81,7 @@ public class Utils {
         return format.format(date);
 
     }
+
     public static String getDate(long timeStamp) {
 
         try {
@@ -86,6 +92,7 @@ public class Utils {
             return "date";
         }
     }
+
     public static Bitmap decodeBitmapFromFile(String filePath, int reqWidth, int reqHeight) {
 
         // First decode with inJustDecodeBounds=true to check dimensions
@@ -128,14 +135,10 @@ public class Utils {
     }
 
 
-
     public static String getDeviceId(Context context) {
         String deviceId = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
         return deviceId;
     }
-
-
-
 
 
     public static DisplayMetrics getDisplayMetrics(Context context) {
@@ -144,7 +147,7 @@ public class Utils {
     }
 
 
-    public  boolean isNetworkAvailable() {
+    public boolean isNetworkAvailable() {
 
         ConnectivityManager manager = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -165,67 +168,78 @@ public class Utils {
 
     }
 
-/*
-        code not updated.......
-    public static void encrypt() throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
-        // Here you read the cleartext.
-        FileInputStream fis = new FileInputStream("data/allimages");
-        // This stream write the encrypted text. This stream will be wrapped by another stream.
-        FileOutputStream fos = new FileOutputStream("data/encrypted");
+    /*
+            code not updated.......
+        public static void encrypt() throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
+            // Here you read the cleartext.
+            FileInputStream fis = new FileInputStream("data/allimages");
+            // This stream write the encrypted text. This stream will be wrapped by another stream.
+            FileOutputStream fos = new FileOutputStream("data/encrypted");
 
-        // Length is 16 byte
-        SecretKeySpec sks = new SecretKeySpec("MyDifficultPassw".getBytes(), "AES");
-        // Create cipher
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.ENCRYPT_MODE, sks);
-        // Wrap the output stream
-        CipherOutputStream cos = new CipherOutputStream(fos, cipher);
-        // Write bytes
-        int b;
-        byte[] d = new byte[8];
-        while((b = fis.read(d)) != -1) {
-            cos.write(d, 0, b);
+            // Length is 16 byte
+            SecretKeySpec sks = new SecretKeySpec("MyDifficultPassw".getBytes(), "AES");
+            // Create cipher
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.ENCRYPT_MODE, sks);
+            // Wrap the output stream
+            CipherOutputStream cos = new CipherOutputStream(fos, cipher);
+            // Write bytes
+            int b;
+            byte[] d = new byte[8];
+            while((b = fis.read(d)) != -1) {
+                cos.write(d, 0, b);
+            }
+            // Flush and close streams.
+            cos.flush();
+            cos.close();
+            fis.close();
         }
-        // Flush and close streams.
-        cos.flush();
-        cos.close();
-        fis.close();
+        public static void decrypt() throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
+            FileInputStream fis = new FileInputStream("data/encrypted");
+
+            FileOutputStream fos = new FileOutputStream("data/decrypted");
+            SecretKeySpec sks = new SecretKeySpec("MyDifficultPassw".getBytes(), "AES");
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.DECRYPT_MODE, sks);
+            CipherInputStream cis = new CipherInputStream(fis, cipher);
+            int b;
+            byte[] d = new byte[8];
+            while((b = cis.read(d)) != -1) {
+                fos.write(d, 0, b);
+            }
+            fos.flush();
+            fos.close();
+            cis.close();
+        }
+    */
+    public static void openListDialogView(final TextView tv_location, String tittle,
+                                          final ArrayList<String> list_data, Context context) {
+
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
+        builderSingle.setTitle(tittle);
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, list_data);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String strName = arrayAdapter.getItem(which);
+                tv_location.setText(strName);
+
+            }
+        });
+        builderSingle.show();
+
     }
-    public static void decrypt() throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
-        FileInputStream fis = new FileInputStream("data/encrypted");
 
-        FileOutputStream fos = new FileOutputStream("data/decrypted");
-        SecretKeySpec sks = new SecretKeySpec("MyDifficultPassw".getBytes(), "AES");
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.DECRYPT_MODE, sks);
-        CipherInputStream cis = new CipherInputStream(fis, cipher);
-        int b;
-        byte[] d = new byte[8];
-        while((b = cis.read(d)) != -1) {
-            fos.write(d, 0, b);
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
         }
-        fos.flush();
-        fos.close();
-        cis.close();
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
-*/
-public static void openListDialogView(final TextView tv_location, String tittle,
-                               final ArrayList<String> list_data,Context context) {
-
-    AlertDialog.Builder builderSingle = new AlertDialog.Builder(context );
-    builderSingle.setTitle(tittle);
-    final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, list_data);
-    arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-    builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            String strName = arrayAdapter.getItem(which);
-            tv_location.setText(strName);
-
-        }
-    });
-    builderSingle.show();
-
-}
 }

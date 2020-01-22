@@ -144,6 +144,10 @@ public class RecommendStoreList extends AppCompatActivity implements RequestHand
                                 StoreListModel storeListModel = new StoreListModel();
                                 storeListModel.setStore_name(jsonobject.optString("store_name"));
                                 storeListModel.setStore_id(jsonobject.optString("store_id"));
+                                storeListModel.setArea(jsonobject.optString("area"));
+                                storeListModel.setState(jsonobject.optString("state"));
+                                storeListModel.setCity(jsonobject.optString("city"));
+                                storeListModel.setCountry(jsonobject.optString("country"));
                                 storeListModelList.add(storeListModel);
                             }
                             adapter = new RecommendStoreAdapter(storeListModelList, this, this);

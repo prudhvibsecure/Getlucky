@@ -83,11 +83,11 @@ public class AddOperator extends AppCompatActivity implements RequestHandler {
                 Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (password.contains(" ")) {
+            if (password.startsWith(" ") || password.contains(" ")) {
                 Toast.makeText(this, "Spaces Not Allowed", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (password.length() == 1 && password.length() >= 16) {
+            if (password.length() == 1 && password.length() > 16) {
                 Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
                 return;
             }

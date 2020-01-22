@@ -99,6 +99,7 @@ public class RecommendStoreAdapter extends RecyclerView.Adapter<RecommendStoreAd
         try {
             final StoreListModel mycontactlist = matchesList.get(position);
             contactViewHolder.store_name.setText(mycontactlist.getStore_name());
+            contactViewHolder.ss_location.setText(mycontactlist.getArea()+","+mycontactlist.getCity()+","+mycontactlist.getCountry());
 
             //applyEvents(contactViewHolder, matchesList, position);
         } catch (Exception e) {
@@ -136,7 +137,7 @@ public class RecommendStoreAdapter extends RecyclerView.Adapter<RecommendStoreAd
 
     public class ContactViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView store_name;
+        public TextView store_name,ss_location;
         public Button cashback;
         ImageView store_image;
         CardView mViewContent;
@@ -146,6 +147,7 @@ public class RecommendStoreAdapter extends RecyclerView.Adapter<RecommendStoreAd
             super(v);
 
             store_name = (TextView) v.findViewById(R.id.ss_name);
+            ss_location = (TextView) v.findViewById(R.id.ss_location);
             cashback = (Button) v.findViewById(R.id.csh_bk);
             cashback.setVisibility(View.GONE);
             store_image = (ImageView) v.findViewById(R.id.ss_image);

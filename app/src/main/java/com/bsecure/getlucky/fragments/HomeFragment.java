@@ -1,8 +1,10 @@
 package com.bsecure.getlucky.fragments;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Geocoder;
 import android.location.Location;
@@ -49,6 +51,7 @@ import com.bsecure.getlucky.models.StoreListModel;
 import com.bsecure.getlucky.network.CheckNetwork;
 import com.bsecure.getlucky.services.GetAddressIntentService;
 import com.bsecure.getlucky.store.ViewStoresList;
+import com.bsecure.getlucky.utils.Utils;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.HTTPPostTask;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
@@ -100,6 +103,8 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
     LinearLayout loading_btm;
     String session_data;
 
+    IntentFilter mFilter;
+
     public HomeFragment() {
 
     }
@@ -146,17 +151,22 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
                              Bundle savedInstanceState) {
 
         laView = inflater.inflate(R.layout.activity_home_pg, container, false);
+        mFilter = new IntentFilter("com.store_refrsh");
         serach = laView.findViewById(R.id.keyword);
         loading_btm = laView.findViewById(R.id.loading_btm);
         mRecyclerView = laView.findViewById(R.id.mrecycler);
         laView.findViewById(R.id.search).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                laView.findViewById(R.id.search).setEnabled(false);
                 if (isNetworkAvailable()) {
                     storeListModelList = new ArrayList<>();
                     count_page = 0;
                     loading_btm.setVisibility(View.GONE);
-                    searchStore(count_page);
+                    laView.findViewById(R.id.spin_kit).setVisibility(View.VISIBLE);
+                    adapter.notifyDataSetChanged();
+                    searchStore(count_page, 2);
+
                 }
             }
         });
@@ -181,6 +191,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
         laView.findViewById(R.id.add_cashbak).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Utils.hideKeyboard(getActivity());
                 Intent in = new Intent(getActivity(), ViewStoresListCash.class);
                 startActivity(in);
                 getActivity().overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
@@ -198,7 +209,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
                 recycScollListener.resetValue();
                 if (isNetworkAvailable()) {
                     storeListModelList = new ArrayList<>();
-                    searchStore(count_page);
+                    searchStore(count_page, 1);
                     loading_btm.setVisibility(View.GONE);
                 } else {
                     mSwipeRefreshLayout.setRefreshing(false);
@@ -220,7 +231,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
                         if (storeListModelList.size() > 10) {
                             count_page = currentPage;
                             loading_btm.setVisibility(View.VISIBLE);
-                            searchStore(currentPage);
+                            searchStore(currentPage, 1);
                         }
                     }
                 } catch (Exception e) {
@@ -264,7 +275,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
                         if (adapter != null) {
                             adapter.clear();
                             adapter.notifyDataSetChanged();
-                            searchStore(count_page);
+                            searchStore(count_page, 2);
                         }
 
 
@@ -284,6 +295,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
 
     }
 
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -302,6 +314,17 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
     }
 
     @Override
+    public void onDestroy() {
+
+        try {
+            getActivity().unregisterReceiver(mBroadcastReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        super.onDestroy();
+    }
+
+    @Override
     public void requestStarted() {
 
     }
@@ -316,6 +339,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
                 case 101:
 
                     JSONObject object1 = new JSONObject(response.toString());
+                    laView.findViewById(R.id.search).setEnabled(true);
                     if (object1.optString("statuscode").equalsIgnoreCase("200")) {
                         mSwipeRefreshLayout.setRefreshing(false);
                         mSwipeRefreshLayout.setEnabled(true);
@@ -358,6 +382,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
                             mRecyclerView.setAdapter(adapter);
                         } else {
                             if (count_page == 0) {
+                                Utils.hideKeyboard(getActivity());
                                 mRecyclerView.removeAllViews();
                                 adapter.clear();
                                 count_page = 0;
@@ -374,6 +399,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
                         }
                     } else {
                         if (count_page == 0) {
+                            Utils.hideKeyboard(getActivity());
                             mRecyclerView.removeAllViews();
                             if (adapter != null) {
                                 adapter.clear();
@@ -400,7 +426,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
 
     }
 
-    private void searchStore(int pageno) {
+    private void searchStore(int pageno, int reqId) {
         try {
             JSONObject object = new JSONObject();
             if (area == null)
@@ -416,7 +442,9 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
             object.put("search_key", key);
             object.put("pageno", pageno);
             MethodResquest req = new MethodResquest(getActivity(), this, Constants.PATH + "search_store", object.toString(), 101);
-            req.dismissProgress(getActivity());
+            if (reqId == 1) {
+                req.dismissProgress(getActivity());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -468,7 +496,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
                         AppPreferences.getInstance(getActivity()).addToStore("keywords_new", array.toString(), true);
 
                     }
-                    searchStore(count_page);
+                    searchStore(count_page, 1);
                     break;
                 default:
                     break;
@@ -553,6 +581,11 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
     public void onResume() {
 
         startLocationUpdates();
+        try {
+            getActivity().registerReceiver(mBroadcastReceiver, mFilter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         super.onResume();
     }
 
@@ -690,4 +723,15 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
 
     }
 
+    BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (adapter != null) {
+                adapter.clear();
+                adapter.notifyDataSetChanged();
+                searchStore(0, 1);
+            }
+        }
+    };
 }

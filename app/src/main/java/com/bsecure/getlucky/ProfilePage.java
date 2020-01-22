@@ -129,6 +129,7 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
                         .start(ProfilePage.this);
                 break;
             case R.id.bacl_btn:
+                Utils.hideKeyboard(this);
                 overridePendingTransition(R.anim.fade_out_anim,R.anim.fade_in_anim);
                 finish();
                 break;
@@ -260,6 +261,7 @@ public class ProfilePage extends AppCompatActivity implements View.OnClickListen
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
 //        if (requestCode == 1001 && resultCode == RESULT_OK) {
 

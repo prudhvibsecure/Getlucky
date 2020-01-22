@@ -32,6 +32,7 @@ import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.services.AddressService;
 import com.bsecure.getlucky.store.AddCategoryKeysSearch;
 import com.bsecure.getlucky.store.AddStoreKeysSearch;
+import com.bsecure.getlucky.utils.Utils;
 import com.bsecure.getlucky.volleyhttp.AttachmentUpload;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
@@ -90,6 +91,8 @@ public class AddBankAccount extends AppCompatActivity implements View.OnClickLis
                     if (text.length() == 11) {
                         serachIFSC(text.toString());
                     }
+                }else{
+                    findViewById(R.id.spy_et).setVisibility(View.GONE);
                 }
             }
 
@@ -116,6 +119,7 @@ public class AddBankAccount extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.bacl_btn:
+                Utils.hideKeyboard(this);
                 finish();
                 break;
             case R.id.submit_bank:
@@ -205,6 +209,7 @@ public class AddBankAccount extends AppCompatActivity implements View.OnClickLis
                 case 101:
                     JSONObject myObj1 = new JSONObject(response.toString());
                     if (myObj1.optString("statuscode").equalsIgnoreCase("200")) {
+                        findViewById(R.id.spy_et).setVisibility(View.VISIBLE);
                         JSONArray arry = myObj1.getJSONArray("bank_address");
                         bank_name=arry.getJSONObject(0).optString("bank_name");
                         ifse_id=arry.getJSONObject(0).optString("bank_ifsc_code_id");
