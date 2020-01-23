@@ -165,7 +165,9 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
                     loading_btm.setVisibility(View.GONE);
                     laView.findViewById(R.id.spin_kit).setVisibility(View.VISIBLE);
                     adapter.notifyDataSetChanged();
-                    searchStore(count_page, 2);
+                    if (serach.length()>0) {
+                        searchStore(count_page, 2);
+                    }
 
                 }
             }
