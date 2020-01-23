@@ -17,6 +17,7 @@ import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.models.StoreListModel;
 import com.bsecure.getlucky.store.AddStore;
+import com.bsecure.getlucky.utils.Utils;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 
@@ -38,7 +39,6 @@ public class ReferList extends AppCompatActivity implements RequestHandler,Refer
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_store_list);
         findViewById(R.id.id_add_store).setVisibility(View.GONE);
-
         mRecyclerView = findViewById(R.id.view_store_rec);
         mRecyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(this);
@@ -58,6 +58,7 @@ public class ReferList extends AppCompatActivity implements RequestHandler,Refer
 
             }
         });
+
         findViewById(R.id.bacl_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

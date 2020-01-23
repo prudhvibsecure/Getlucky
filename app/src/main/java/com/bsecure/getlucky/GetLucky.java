@@ -118,7 +118,6 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
             @Override
             public void onClick(View v) {
                 supportInvalidateOptionsMenu();
-                Utils.hideKeyboard(GetLucky.this);
                 onKeyDown(4, null);
 
             }
@@ -336,53 +335,53 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
             case R.id.nav_store:
-                Utils.hideKeyboard(GetLucky.this);
+               // Utils.hideKeyboard(GetLucky.this);
                 Intent store = new Intent(this, AddStore.class);
                 startActivity(store);
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
 
             case R.id.nav_view_store:
-                Utils.hideKeyboard(GetLucky.this);
+                //Utils.hideKeyboard(GetLucky.this);
                 Intent nav_view_store = new Intent(this, ViewStoresList.class);
                 startActivity(nav_view_store);
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
             case R.id.nav_bar_code:
-                Utils.hideKeyboard(GetLucky.this);
+                //Utils.hideKeyboard(GetLucky.this);
                 Intent code = new Intent(this, Mybarcode.class);
                 startActivity(code);
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
 
             case R.id.nav_operator:
-                Utils.hideKeyboard(GetLucky.this);
+               // Utils.hideKeyboard(GetLucky.this);
                 Intent op_log = new Intent(this, OperatorLogin.class);
                 startActivity(op_log);
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
 
             case R.id.nav_wallet:
-                Utils.hideKeyboard(GetLucky.this);
+                //Utils.hideKeyboard(GetLucky.this);
                 Intent nav_wallet = new Intent(this, ViewWallet.class);
                 startActivity(nav_wallet);
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
             case R.id.nav_referlist:
-                Utils.hideKeyboard(GetLucky.this);
+                //Utils.hideKeyboard(GetLucky.this);
                 Intent nav_referlist = new Intent(this, ReferList.class);
                 startActivity(nav_referlist);
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
             case R.id.nav_restore:
-                Utils.hideKeyboard(GetLucky.this);
+               // Utils.hideKeyboard(GetLucky.this);
                 Intent nav_restore = new Intent(this, RecommendStoreList.class);
                 startActivity(nav_restore);
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
 
             case R.id.nav_shareapp:
-                Utils.hideKeyboard(GetLucky.this);
+               // Utils.hideKeyboard(GetLucky.this);
                 try {
                     Intent shareIntent = new Intent(Intent.ACTION_SEND);
                     shareIntent.setType("text/plain");
