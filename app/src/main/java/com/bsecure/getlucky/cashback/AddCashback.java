@@ -98,6 +98,7 @@ public class AddCashback extends AppCompatActivity implements RequestHandler {
         custom_alert_cash.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                custom_alert_cash.dismiss();
                 addCashBack();
 
             }
@@ -124,7 +125,6 @@ public class AddCashback extends AppCompatActivity implements RequestHandler {
             object.put("bill_no", add_bll_no);
             object.put("username", user_nm);
             MethodResquest req = new MethodResquest(this, this, Constants.PATH + "cash_back/cash_back", object.toString(), 101);
-            req.dismissProgress(this);
         } catch (Exception e) {
             e.printStackTrace();
         }

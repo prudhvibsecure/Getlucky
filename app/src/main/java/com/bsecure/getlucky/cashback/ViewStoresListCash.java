@@ -21,6 +21,7 @@ import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.models.StoreListModel;
 import com.bsecure.getlucky.operator.OperatorsListCashBack;
 import com.bsecure.getlucky.store.AddStore;
+import com.bsecure.getlucky.utils.Utils;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 
@@ -115,6 +116,7 @@ public class ViewStoresListCash extends AppCompatActivity implements View.OnClic
         switch (view.getId()) {
 
             case R.id.bacl_btn:
+                Utils.hideKeyboard(this);
                 overridePendingTransition(R.anim.fade_out_anim, R.anim.fade_in_anim);
                 finish();
                 break;
@@ -141,7 +143,7 @@ public class ViewStoresListCash extends AppCompatActivity implements View.OnClic
 
             switch (requestType) {
                 case 101:
-
+                    Utils.hideKeyboard(this);
                     JSONObject object1 = new JSONObject(response.toString());
                     if (object1.optString("statuscode").equalsIgnoreCase("200")) {
                         storeListModelList = new ArrayList<>();
@@ -169,6 +171,7 @@ public class ViewStoresListCash extends AppCompatActivity implements View.OnClic
                             mRecyclerView.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
                         } else {
+                            Utils.hideKeyboard(this);
                             findViewById(R.id.spin_kit).setVisibility(View.GONE);
                             findViewById(R.id.id_add_store).setVisibility(View.GONE);
                             findViewById(R.id.no_data).setVisibility(View.VISIBLE);
@@ -178,6 +181,7 @@ public class ViewStoresListCash extends AppCompatActivity implements View.OnClic
                             finish();
                         }
                     } else {
+                        Utils.hideKeyboard(this);
                         mSwipeRefreshLayout.setRefreshing(false);
                         mSwipeRefreshLayout.setEnabled(true);
                         findViewById(R.id.spin_kit).setVisibility(View.GONE);

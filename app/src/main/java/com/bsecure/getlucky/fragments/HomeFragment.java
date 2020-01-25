@@ -103,7 +103,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
     LinearLayout loading_btm;
     String session_data;
 
-    IntentFilter mFilter;
+    IntentFilter mFilter,mFilter1;
 
     public HomeFragment() {
 
@@ -152,6 +152,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
 
         laView = inflater.inflate(R.layout.activity_home_pg, container, false);
         mFilter = new IntentFilter("com.store_refrsh");
+        mFilter1 = new IntentFilter("myfreshevent");
         serach = laView.findViewById(R.id.keyword);
         loading_btm = laView.findViewById(R.id.loading_btm);
         mRecyclerView = laView.findViewById(R.id.mrecycler);
@@ -163,9 +164,10 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
                     storeListModelList = new ArrayList<>();
                     count_page = 0;
                     loading_btm.setVisibility(View.GONE);
-                    laView.findViewById(R.id.spin_kit).setVisibility(View.VISIBLE);
-                    adapter.notifyDataSetChanged();
+
+                    //adapter.notifyDataSetChanged();
                     if (serach.length()>0) {
+                        laView.findViewById(R.id.spin_kit).setVisibility(View.VISIBLE);
                         searchStore(count_page, 2);
                     }
 
@@ -193,7 +195,6 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
         laView.findViewById(R.id.add_cashbak).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Utils.hideKeyboard(getActivity());
                 Intent in = new Intent(getActivity(), ViewStoresListCash.class);
                 startActivity(in);
                 getActivity().overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
@@ -319,7 +320,9 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
     public void onDestroy() {
 
         try {
+
             getActivity().unregisterReceiver(mBroadcastReceiver);
+            getActivity().unregisterReceiver(mBroadcastReceiver1);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -585,6 +588,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
         startLocationUpdates();
         try {
             getActivity().registerReceiver(mBroadcastReceiver, mFilter);
+            getActivity().registerReceiver(mBroadcastReceiver1, mFilter1);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -733,6 +737,18 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
                 adapter.clear();
                 adapter.notifyDataSetChanged();
                 searchStore(0, 1);
+            }
+        }
+    };
+    BroadcastReceiver mBroadcastReceiver1 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (serach.length()>0) {
+                count_page = 0;
+                serach.setText("");
+            }else{
+                getLucky.onBackPressed();
             }
         }
     };

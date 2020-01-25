@@ -208,6 +208,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
     @Override
     protected void onResume() {
         try {
+
             getprofileData();
         } catch (Exception e) {
             e.printStackTrace();
@@ -548,6 +549,9 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
                     trans.commit();
 
+                    return true;
+                }else{
+                   sendBroadcast(new Intent("myfreshevent"));
                     return true;
                 }
                 //return false;

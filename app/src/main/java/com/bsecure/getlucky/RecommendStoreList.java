@@ -23,6 +23,7 @@ import com.bsecure.getlucky.models.StoreListModel;
 import com.bsecure.getlucky.store.AddStore;
 import com.bsecure.getlucky.store.EditStore;
 import com.bsecure.getlucky.store.ViewStoresList;
+import com.bsecure.getlucky.utils.Utils;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 
@@ -154,6 +155,7 @@ public class RecommendStoreList extends AppCompatActivity implements RequestHand
                             mRecyclerView.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
                         } else {
+                            Utils.hideKeyboard(this);
                             Intent store = new Intent(this, AddRecomendStore.class);
                             startActivity(store);
                             overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
@@ -164,7 +166,7 @@ public class RecommendStoreList extends AppCompatActivity implements RequestHand
 
                         }
                     } else {
-
+                        Utils.hideKeyboard(this);
                         mSwipeRefreshLayout.setRefreshing(false);
                         mSwipeRefreshLayout.setEnabled(true);
                         findViewById(R.id.spin_kit).setVisibility(View.GONE);

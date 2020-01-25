@@ -120,7 +120,7 @@ public class ReferList extends AppCompatActivity implements RequestHandler,Refer
 
                         }
                     } else {
-
+                        Utils.hideKeyboard(this);
                         mSwipeRefreshLayout.setRefreshing(false);
                         mSwipeRefreshLayout.setEnabled(true);
                         findViewById(R.id.spin_kit).setVisibility(View.GONE);

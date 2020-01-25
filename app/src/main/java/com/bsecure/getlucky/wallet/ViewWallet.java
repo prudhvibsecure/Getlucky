@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bsecure.getlucky.R;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.interfaces.RequestHandler;
+import com.bsecure.getlucky.utils.Utils;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 import com.bumptech.glide.Glide;
@@ -92,6 +93,7 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
         findViewById(R.id.bacl_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Utils.hideKeyboard(ViewWallet.this);
                 overridePendingTransition(R.anim.fade_out_anim, R.anim.fade_in_anim);
                 finish();
             }
@@ -111,7 +113,7 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
             }
 
         }
-        if (TextUtils.isEmpty(customer_number)) {
+        if (TextUtils.isEmpty(customer_number)||customer_number.equalsIgnoreCase("1")) {
             findViewById(R.id.v1_wall).setVisibility(View.VISIBLE);
             findViewById(R.id.v1_wall2).setVisibility(View.GONE);
         } else {
@@ -217,6 +219,10 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
         switch (view.getId()) {
             case R.id.tv_transfer:
                 String amt = tv_wamt.getText().toString().trim();
+                if (amt.startsWith(".")){
+                    tv_wamt.requestFocus();
+                    return;
+                }
 
                 if (amt.length() == 0) {
                     Toast.makeText(this, "Please Enter Amount", Toast.LENGTH_SHORT).show();
@@ -282,6 +288,10 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
                 break;
             case R.id.tv_recharge_b:
                 String bamt = tv_amount_b.getText().toString().trim();
+                if (bamt.startsWith(".")){
+                    tv_amount_b.requestFocus();
+                    return;
+                }
                 if (bamt.length() == 0) {
                     Toast.makeText(this, "Please Enter Amount", Toast.LENGTH_SHORT).show();
                     tv_amount_b.requestFocus();
