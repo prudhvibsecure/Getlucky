@@ -298,7 +298,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
             nav_Menu.findItem(R.id.nav_login).setVisible(false);
             nav_Menu.findItem(R.id.nav_store).setVisible(false);
             nav_Menu.findItem(R.id.nav_view_store).setVisible(true);
-            nav_Menu.findItem(R.id.nav_bar_code).setVisible(true);
+            //nav_Menu.findItem(R.id.nav_bar_code).setVisible(true);
             nav_Menu.findItem(R.id.nav_operator).setVisible(false);
             nav_Menu.findItem(R.id.nav_wallet).setVisible(true);
             nav_Menu.findItem(R.id.nav_referlist).setVisible(true);
@@ -309,7 +309,7 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
             nav_Menu.findItem(R.id.nav_operator).setVisible(true);
             nav_Menu.findItem(R.id.nav_store).setVisible(false);
             nav_Menu.findItem(R.id.nav_view_store).setVisible(false);
-            nav_Menu.findItem(R.id.nav_bar_code).setVisible(false);
+            //nav_Menu.findItem(R.id.nav_bar_code).setVisible(false);
             nav_Menu.findItem(R.id.nav_wallet).setVisible(false);
             nav_Menu.findItem(R.id.nav_referlist).setVisible(false);
             nav_Menu.findItem(R.id.nav_restore).setVisible(false);
@@ -349,12 +349,12 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
                 startActivity(nav_view_store);
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
-            case R.id.nav_bar_code:
+            //case R.id.nav_bar_code:
                 //Utils.hideKeyboard(GetLucky.this);
-                Intent code = new Intent(this, Mybarcode.class);
+                /*Intent code = new Intent(this, Mybarcode.class);
                 startActivity(code);
-                overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
-                break;
+                overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);*/
+             //   break;
 
             case R.id.nav_operator:
                // Utils.hideKeyboard(GetLucky.this);
@@ -384,17 +384,9 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
             case R.id.nav_shareapp:
                // Utils.hideKeyboard(GetLucky.this);
-                try {
-                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                    shareIntent.setType("text/plain");
-                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "GetLucky");
-                    String shareMessage = "\nLet me recommend you this application\n\n";
-                    shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n";
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-                    startActivity(Intent.createChooser(shareIntent, "choose one"));
-                } catch (Exception e) {
-                    //e.toString();
-                }
+                Intent code = new Intent(this, Mybarcode.class);
+                startActivity(code);
+                overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
         }
 

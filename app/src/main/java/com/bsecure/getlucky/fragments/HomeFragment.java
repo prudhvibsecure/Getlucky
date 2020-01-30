@@ -363,6 +363,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
                         }
                         JSONArray jsonarray2 = object1.getJSONArray("store_details");
                         if (jsonarray2.length() > 0) {
+
                             for (int i = 0; i < jsonarray2.length(); i++) {
                                 JSONObject jsonobject = jsonarray2.getJSONObject(i);
                                 StoreListModel storeListModel = new StoreListModel();
@@ -693,12 +694,12 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
             } else {
                 count_page = 0;
                 AppPreferences.getInstance(getActivity()).addToStore("first_time", "0", true);
-                new Tooltip.Builder(laView.findViewById(R.id.location), R.style.Tooltip)
-                        .setDismissOnClick(true)
-                        .setGravity(Gravity.RIGHT)
-                        .setText(currentAdd)
-                        .setCancelable(true)
-                        .show();
+//                new Tooltip.Builder(laView.findViewById(R.id.location), R.style.Tooltip)
+//                        .setDismissOnClick(true)
+//                        .setGravity(Gravity.RIGHT)
+//                        .setText(currentAdd)
+//                        .setCancelable(true)
+//                        .show();
             }
         }
     }

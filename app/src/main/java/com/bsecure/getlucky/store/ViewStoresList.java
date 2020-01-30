@@ -265,6 +265,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                                 storeListModel.setStore_referral_code(jsonobject.optString("store_referral_code"));
                                 storeListModelList.add(storeListModel);
                             }
+
                             adapter = new StoreListOwnerAdapter(storeListModelList, this, this);
                             mRecyclerView.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
@@ -273,7 +274,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                             startActivity(store);
                             overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                             finish();
-                            AppPreferences.getInstance(this).addToStore("customer_number","",true);
+                            AppPreferences.getInstance(this).addToStore("customer_number","1",true);
                             findViewById(R.id.spin_kit).setVisibility(View.GONE);
                             findViewById(R.id.id_add_store).setVisibility(View.GONE);
                             findViewById(R.id.no_data).setVisibility(View.VISIBLE);
@@ -298,13 +299,13 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                 case 102:
                     JSONObject deletObj = new JSONObject(response.toString());
                     if (deletObj.optString("statuscode").equalsIgnoreCase("200")) {
-                        redirectClass();
                         Toast.makeText(this, deletObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                         adapter.notifyDataSetChanged();
                         if(storeListModelList.size() == 0)
                         {
                             AppPreferences.getInstance(this).addToStore("customer_number","1",true);
                         }
+                        redirectClass();
                     } else {
                         Toast.makeText(this, deletObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }

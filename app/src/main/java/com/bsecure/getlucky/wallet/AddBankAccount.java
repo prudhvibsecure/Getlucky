@@ -12,6 +12,9 @@ import android.os.ResultReceiver;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -76,7 +79,47 @@ public class AddBankAccount extends AppCompatActivity implements View.OnClickLis
         findViewById(R.id.submit_bank).setOnClickListener(this);
         et_acname = findViewById(R.id.tv_name);
         et_acnum = findViewById(R.id.tv_acno);
+        et_acnum.setLongClickable(false);
+
+        et_acnum.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public void onDestroyActionMode(ActionMode mode) {
+            }
+
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
+            }
+        });
+
         et_accnnum = findViewById(R.id.tv_accno);
+        et_accnnum.setLongClickable(false);
+
+        et_accnnum.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public void onDestroyActionMode(ActionMode mode) {
+            }
+
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
+            }
+        });
+
         et_ifsc = findViewById(R.id.tv_ifsc);
         et_ifsc.addTextChangedListener(new TextWatcher() {
             @Override

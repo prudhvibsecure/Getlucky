@@ -51,7 +51,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
+       <!-- <TextView
             android:id="@+id/editprofile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,14 +61,14 @@
             android:text="MY SCAN CODE"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold" />-->
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/pf_image"
             android:layout_width="@dimen/_60sdp"
             android:layout_height="@dimen/_60sdp"
             android:layout_gravity="center"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:src="@mipmap/profile_image" />
 
         <TextView
@@ -113,9 +113,19 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+
             </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/share"
+            android:layout_height="wrap_content"
+            android:layout_width="120dp"
+            android:background="@drawable/gradient"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:text="Share"/>
 
 
     </LinearLayout>

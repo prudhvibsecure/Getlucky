@@ -244,7 +244,7 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
                     return;
                 }
 
-                if (amt.length() == 0) {
+                if (amt.length() == 0 || amt.equals("0")) {
                     Toast.makeText(this, "Please Enter Amount", Toast.LENGTH_SHORT).show();
                     tv_wamt.requestFocus();
                     return;
@@ -325,7 +325,7 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
                     tv_amount_b.requestFocus();
                     return;
                 }
-                if (bamt.length() == 0) {
+                if (bamt.length() == 0 || bamt.equals("0")) {
                     Toast.makeText(this, "Please Enter Amount", Toast.LENGTH_SHORT).show();
                     tv_amount_b.requestFocus();
                     return;

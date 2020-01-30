@@ -102,7 +102,7 @@ public class ReferlistAdapter extends RecyclerView.Adapter<ReferlistAdapter.Cont
         try {
             final StoreListModel mycontactlist = matchesList.get(position);
             contactViewHolder.store_name.setText(mycontactlist.getStore_name());
-
+            contactViewHolder.ss_location.setText(mycontactlist.getStore_referral_code());
             //applyEvents(contactViewHolder, matchesList, position);
         } catch (Exception e) {
             e.printStackTrace();
@@ -139,7 +139,7 @@ public class ReferlistAdapter extends RecyclerView.Adapter<ReferlistAdapter.Cont
 
     public class ContactViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView store_name;
+        public TextView store_name, ss_location;
         public TextView cashback;
         ImageView store_image;
         CardView mViewContent;
@@ -149,6 +149,8 @@ public class ReferlistAdapter extends RecyclerView.Adapter<ReferlistAdapter.Cont
             super(v);
 
             store_name = (TextView) v.findViewById(R.id.ss_name);
+            ss_location = v.findViewById(R.id.ss_location);
+            ss_location.setVisibility(View.VISIBLE);
             cashback = (TextView) v.findViewById(R.id.csh_bk);
             cashback.setVisibility(View.GONE);
             store_image = (ImageView) v.findViewById(R.id.ss_image);

@@ -13,24 +13,36 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bsecure.getlucky.R;
+import com.bsecure.getlucky.adpters.OfferPercentageAdapter;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.utils.Utils;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class AddCashback extends AppCompatActivity implements RequestHandler {
     String add_amount = "", add_cust_code = "",add_bll_no;
     Dialog custom_alert_cash;
+    RecyclerView list;
+    OfferPercentageAdapter adapter;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_cashback);
+
+        list = findViewById(R.id.offer);
+
+        getOffers();
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -49,7 +61,7 @@ public class AddCashback extends AppCompatActivity implements RequestHandler {
                 alertGet();
             }
         });
-        ((EditText) findViewById(R.id.add_amount)).addTextChangedListener(new TextWatcher() {
+        /*((EditText) findViewById(R.id.add_amount)).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -68,10 +80,23 @@ public class AddCashback extends AppCompatActivity implements RequestHandler {
             public void afterTextChanged(Editable editable) {
 
             }
-        });
+        });*/
         ((TextView) findViewById(R.id.store_nm)).setText(AppPreferences.getInstance(this).getFromStore("store_name"));
         ((TextView) findViewById(R.id.operator_nm)).setText(AppPreferences.getInstance(this).getFromStore("operator_name"));
-        ((TextView) findViewById(R.id.fv)).setText("Note : Cashback is applicable for purchase amount of \n ₹ " + "0" + " or less");
+        ((TextView) findViewById(R.id.fv)).setText("Note : Cashback is applicable for purchase amount of");
+    }
+
+    private void getOffers() {
+
+        try {
+
+            JSONObject object = new JSONObject();
+            object.put("store_id", AppPreferences.getInstance(this).getFromStore("store_id"));
+            object.put("customer_id", AppPreferences.getInstance(this).getFromStore("customer_id"));
+            MethodResquest req = new MethodResquest(this, this, Constants.PATH + "cashback_limits", object.toString(), 111);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void alertGet() {
@@ -155,6 +180,22 @@ public class AddCashback extends AppCompatActivity implements RequestHandler {
                         custom_alert_cash.dismiss();
                     } else {
                         Toast.makeText(this, object.optString("statusdescription"), Toast.LENGTH_LONG).show();
+                    }
+                    break;
+
+                case 111:
+                    JSONObject object1 = new JSONObject(response.toString());
+                    if (object1.optString("statuscode").equalsIgnoreCase("200")) {
+                        JSONArray data = object1.getJSONArray("cash_limits");
+                        adapter = new OfferPercentageAdapter(this, data);
+                        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+                        list.setLayoutManager(layoutManager);
+                        list.setItemAnimator(new DefaultItemAnimator());
+                        list.setAdapter(adapter);
+                    }
+                    else
+                    {
+                        Toast.makeText(this, "no data", Toast.LENGTH_SHORT).show();
                     }
                     break;
             }

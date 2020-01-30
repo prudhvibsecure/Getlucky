@@ -1,5 +1,6 @@
 package com.bsecure.getlucky.barcode;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.os.Environment;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bsecure.getlucky.BuildConfig;
 import com.bsecure.getlucky.R;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bumptech.glide.Glide;
@@ -29,6 +32,7 @@ public class Mybarcode extends AppCompatActivity {
 
     private ImageView post_image,pf_image;
     String savePath = Environment.getExternalStorageDirectory().toString() + "/GetLucky/QRCode/";
+    Button share;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +60,25 @@ public class Mybarcode extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        share = findViewById(R.id.share);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                try {
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "GetLucky");
+                    String shareMessage = "\nLet me recommend you this application\n\n";
+                    shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n";
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                    startActivity(Intent.createChooser(shareIntent, "choose one"));
+                } catch (Exception e) {
+                    //e.toString();
+                }
+
+            }
+        });
 
     }
 

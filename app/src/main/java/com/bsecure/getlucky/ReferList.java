@@ -111,6 +111,7 @@ public class ReferList extends AppCompatActivity implements RequestHandler,Refer
                                 JSONObject jsonobject = jsonarray2.getJSONObject(i);
                                 StoreListModel storeListModel = new StoreListModel();
                                 storeListModel.setStore_name(jsonobject.optString("name"));
+                                storeListModel.setStore_referral_code(jsonobject.optString("customer_referral_code"));
                                 storeListModelList.add(storeListModel);
                             }
                             adapter = new ReferlistAdapter(storeListModelList, this, this);
