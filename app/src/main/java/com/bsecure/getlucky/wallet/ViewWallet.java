@@ -1,5 +1,6 @@
 package com.bsecure.getlucky.wallet;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,6 +13,8 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,9 +38,11 @@ import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 
+import afu.org.checkerframework.checker.javari.qual.ThisMutable;
+
 public class ViewWallet extends AppCompatActivity implements RequestHandler, View.OnClickListener {
     JSONArray ayArray;
-    String wallet_amt = "", customer_number, payment_type;
+    String wallet_amt = "", bwallet_amt, customer_number, payment_type;
     TextView total_amt, total_amt_b, total_amt_clr, history_wl, history_w2;
     TextInputEditText tv_wamt, tv_amount_b;
     private IntentFilter filter;
@@ -47,6 +52,7 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_wallet);
 
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         filter = new IntentFilter("com.addbank_refrsh2");
         filter.setPriority(1);
         total_amt_b = findViewById(R.id.total_amt_b);
@@ -123,7 +129,7 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
         }
         findViewById(R.id.tv_transfer).setOnClickListener(this);
         findViewById(R.id.tv_recharge_b).setOnClickListener(this);
-        findViewById(R.id.tv_transfer_b).setOnClickListener(this);
+        //findViewById(R.id.tv_transfer_b).setOnClickListener(this);
         getWallet();
     }
 
@@ -177,6 +183,7 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
                         wallet_amt = oob.optString("wallet_amount");
                         total_amt.setText("₹ " + oob.optString("wallet_amount"));
                         total_amt_b.setText("₹ " + oob.optString("business_wallet_amount"));
+                        bwallet_amt = oob.optString("business_wallet_amount");
                         total_amt_clr.setText("* ₹ " + oob.optString("wallet_subject_to_clearance_amount") + " is subject to clearance");
                     }
                     break;
@@ -197,6 +204,19 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
                             }
                         });
                     }
+                    break;
+
+                case 200:
+
+                    JSONObject obj = new JSONObject(response.toString());
+                    if(obj.optString("statuscode").equalsIgnoreCase("200"))
+                    {
+                        Toast.makeText(this, obj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                        tv_wamt.setText("");
+                        tv_wamt.setHint("Amount");
+                        getWallet();
+                    }
+
                     break;
                 default:
                     break;
@@ -273,6 +293,19 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
                         mDialog.dismiss();
                     }
                 });
+
+                mDialog.findViewById(R.id.net_bv).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        payment_type = "Business Wallet";
+                        //Toast.makeText(ViewWallet.this, "Coming Soon", Toast.LENGTH_SHORT).show();
+                        // addBanks();
+                        // redirectClass();
+                        transferToBv();
+                        mDialog.dismiss();
+                    }
+                });
+
                 break;
             case R.id.history_wl:
                 Intent mp_hist = new Intent(this, HistoryPayment.class);
@@ -297,7 +330,7 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
                     tv_amount_b.requestFocus();
                     return;
                 }
-                float bw_amount = Float.parseFloat(wallet_amt);
+                float bw_amount = Float.parseFloat(bwallet_amt);
                 float bamount = Float.parseFloat(bamt);
                 if (bamount > bw_amount) {
                     Toast.makeText(this, "Insufficient Funds", Toast.LENGTH_SHORT).show();
@@ -308,6 +341,18 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
                 break;
         }
 
+    }
+
+    private void transferToBv() {
+
+        try {
+            JSONObject object = new JSONObject();
+            object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
+            object.put("amount", tv_wamt.getText().toString().trim());
+            new MethodResquest(this, this, Constants.PATH + "wallet_to_business_wallet", object.toString(), 200);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void redirectClass() {
@@ -333,4 +378,6 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
             e.printStackTrace();
         }
     }
+
+
 }

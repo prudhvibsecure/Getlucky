@@ -5,7 +5,7 @@ public class StoreListModel {
             status,categories_array,
             keywords_array,store_id,store_name,
             address,area,special_offer,offer,store_image,
-            store_phone_number,city,state,country,pin_code,categories,keywords,lucky_offer_description;
+            store_phone_number,city,state,country,pin_code,categories,keywords,lucky_offer_description, store_referral_code;
 
     public String getLucky_offer_description() {
         return lucky_offer_description;
@@ -165,5 +165,13 @@ public class StoreListModel {
 
     public void setOffer(String offer) {
         this.offer = offer;
+    }
+
+    public String getStore_referral_code() {
+        return store_referral_code;
+    }
+
+    public void setStore_referral_code(String store_referral_code) {
+        this.store_referral_code = store_referral_code;
     }
 }

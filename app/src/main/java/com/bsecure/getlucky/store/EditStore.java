@@ -80,9 +80,9 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
         findViewById(R.id.submit).setVisibility(View.GONE);
         findViewById(R.id.submit_edit).setVisibility(View.VISIBLE);
         findViewById(R.id.submit_edit).setOnClickListener(this);
-        autoCompleteView = findViewById(R.id.location1);
-        et_location = findViewById(R.id.location);
-        et_location.setOnClickListener(this);
+        //autoCompleteView = findViewById(R.id.location1);
+        //et_location = findViewById(R.id.location);
+        //et_location.setOnClickListener(this);
         findViewById(R.id.banner).setOnClickListener(this);
         poster = findViewById(R.id.post_image);
         et_storenm = findViewById(R.id.st_name);
@@ -98,8 +98,8 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), Constants.key);
         }
-        autoCompleteView.setThreshold(1);
-        autoCompleteView.addTextChangedListener(new TextWatcher() {
+        //autoCompleteView.setThreshold(1);
+       /* autoCompleteView.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -116,7 +116,7 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
             public void afterTextChanged(Editable s) {
                 // TODO Auto-generated method stub
             }
-        });
+        });*/
         Places.initialize(getApplicationContext(), "AIzaSyCvdgdoCZc4bkufNsTKmaKGRw3egMIn_cs");
 
         Intent storeDataEdit = getIntent();
@@ -132,7 +132,7 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
             if (poaste_img.length()>0){
                 poaste_img="";
             }
-            et_location.setText(storeDataEdit.getStringExtra("area")+","+storeDataEdit.getStringExtra("city")+","+storeDataEdit.getStringExtra("pin_code")+","+storeDataEdit.getStringExtra("state")+","+storeDataEdit.getStringExtra("country"));
+            //et_location.setText(storeDataEdit.getStringExtra("area")+","+storeDataEdit.getStringExtra("city")+","+storeDataEdit.getStringExtra("pin_code")+","+storeDataEdit.getStringExtra("state")+","+storeDataEdit.getStringExtra("country"));
             String path = Constants.PATH + "assets/upload/avatar/" + storeDataEdit.getStringExtra("store_image");
             Glide.with(this).load(path).into(poster);
 
@@ -279,8 +279,8 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
             object.put("area", area);
             object.put("city", city);
             object.put("state", state);
-            object.put("country", country);
-            object.put("pin_code", pin_code);
+            object.put("country", "India");
+           // object.put("pin_code", pin_code);
             object.put("store_phone_number", mobile);
             object.put("categories", st_cat);
             object.put("categories_id", ids);

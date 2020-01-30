@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +31,9 @@ public class AddCashback extends AppCompatActivity implements RequestHandler {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_cashback);
+
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         findViewById(R.id.bacl_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,7 +60,7 @@ public class AddCashback extends AppCompatActivity implements RequestHandler {
 
                if( charSequence.length()>0){
                    add_amount=charSequence.toString();
-                   ((TextView) findViewById(R.id.fv)).setText("Note : Cashback is applicable for purchase amount of ₹ " + add_amount + " or less");
+                   ((TextView) findViewById(R.id.fv)).setText("Note : Cashback is applicable for purchase amount of \n₹ " + add_amount + " or less");
                }
             }
 
@@ -67,7 +71,7 @@ public class AddCashback extends AppCompatActivity implements RequestHandler {
         });
         ((TextView) findViewById(R.id.store_nm)).setText(AppPreferences.getInstance(this).getFromStore("store_name"));
         ((TextView) findViewById(R.id.operator_nm)).setText(AppPreferences.getInstance(this).getFromStore("operator_name"));
-        ((TextView) findViewById(R.id.fv)).setText("Note : Cashback is applicable for purchase amount of ₹ " + "0" + " or less");
+        ((TextView) findViewById(R.id.fv)).setText("Note : Cashback is applicable for purchase amount of \n ₹ " + "0" + " or less");
     }
 
     private void alertGet() {

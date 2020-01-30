@@ -262,6 +262,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                                 storeListModel.setKeywords_array(jsonobject.optString("keywords_array"));
                                 storeListModel.setStatus(jsonobject.optString("status"));
                                 storeListModel.setCustom_keywords(jsonobject.optString("custom_keywords"));
+                                storeListModel.setStore_referral_code(jsonobject.optString("store_referral_code"));
                                 storeListModelList.add(storeListModel);
                             }
                             adapter = new StoreListOwnerAdapter(storeListModelList, this, this);
@@ -299,6 +300,11 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                     if (deletObj.optString("statuscode").equalsIgnoreCase("200")) {
                         redirectClass();
                         Toast.makeText(this, deletObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                        adapter.notifyDataSetChanged();
+                        if(storeListModelList.size() == 0)
+                        {
+                            AppPreferences.getInstance(this).addToStore("customer_number","1",true);
+                        }
                     } else {
                         Toast.makeText(this, deletObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
@@ -350,6 +356,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
             login.putExtra("store_add1", matchesList.get(pos).getArea() + "," + matchesList.get(pos).getCity() + "," + matchesList.get(pos).getState());
             login.putExtra("store_ph", matchesList.get(pos).getStore_phone_number());
             login.putExtra("store_id", matchesList.get(pos).getStore_id());
+            login.putExtra("store_code",matchesList.get(pos).getStore_referral_code());
             login.putExtra("type", "1");
             //login.putExtra("store_ph",matchesList.get(pos).getp());
             startActivity(login);
@@ -523,7 +530,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onFocusChange(View v, boolean hasFocus)
             {
-                if (hasFocus==true)
+                if (hasFocus)
                 {
                     if (((EditText) add_Offer.findViewById(R.id.add_min)).getText().toString().compareTo("1")==0)
                     {
@@ -542,6 +549,19 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
                 }
                 String add_to = ((EditText) add_Offer.findViewById(R.id.add_to)).getText().toString();
                 previewOffer(matchesList, pos, offer + "% Cashback On All Purchase", "1");
+            }
+        });
+
+        ((EditText) add_Offer.findViewById(R.id.add_max)).setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus)
+            {
+                if (hasFocus)
+                {
+                    ((EditText) add_Offer.findViewById(R.id.add_max)).setHint("");
+                    //((EditText) add_Offer.findViewById(R.id.add_max)).setText("");
+                }
             }
         });
 

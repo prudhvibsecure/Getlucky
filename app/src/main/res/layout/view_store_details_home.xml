@@ -91,6 +91,17 @@
                 android:textStyle="normal" />
 
             <TextView
+                android:id="@+id/store_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:padding="5dp"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_10sdp"
+                android:textStyle="normal" />
+
+            <TextView
                 android:id="@+id/store_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

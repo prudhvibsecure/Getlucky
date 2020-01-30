@@ -153,23 +153,38 @@ public class ViewStoresListCash extends AppCompatActivity implements View.OnClic
                         findViewById(R.id.no_data).setVisibility(View.GONE);
                         JSONArray jsonarray2 = object1.getJSONArray("store_details");
                         if (jsonarray2.length() > 0) {
-                            for (int i = 0; i < jsonarray2.length(); i++) {
-                                JSONObject jsonobject = jsonarray2.getJSONObject(i);
-                                StoreListModel storeListModel = new StoreListModel();
-                                storeListModel.setStore_id(jsonobject.optString("store_id"));
-                                storeListModel.setStore_name(jsonobject.optString("store_name"));
-                                storeListModel.setAddress(jsonobject.optString("address"));
-                                storeListModel.setArea(jsonobject.optString("area"));
-                                storeListModel.setCity(jsonobject.optString("city"));
-                                storeListModel.setCountry(jsonobject.optString("country"));
-                                storeListModel.setPin_code(jsonobject.optString("pin_code"));
-                                storeListModel.setState(jsonobject.optString("state"));
-                                storeListModel.setStore_image(jsonobject.optString("store_image"));
-                                storeListModelList.add(storeListModel);
+
+                            if(jsonarray2.length() == 1)
+                            {
+                                AppPreferences.getInstance(this).addToStore("store_name", jsonarray2.getJSONObject(0).optString("store_name"), true);
+
+                                AppPreferences.getInstance(this).addToStore("username", "", true);
+                                AppPreferences.getInstance(this).addToStore("store_id", jsonarray2.getJSONObject(0).optString("store_id"), true);
+
+                                Intent edit_store = new Intent(this, AddCashback.class);
+                                startActivity(edit_store);
+                                overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                             }
-                            adapter = new StoreListCashbackAdapter(storeListModelList, this, this);
-                            mRecyclerView.setAdapter(adapter);
-                            adapter.notifyDataSetChanged();
+                            else {
+
+                                for (int i = 0; i < jsonarray2.length(); i++) {
+                                    JSONObject jsonobject = jsonarray2.getJSONObject(i);
+                                    StoreListModel storeListModel = new StoreListModel();
+                                    storeListModel.setStore_id(jsonobject.optString("store_id"));
+                                    storeListModel.setStore_name(jsonobject.optString("store_name"));
+                                    storeListModel.setAddress(jsonobject.optString("address"));
+                                    storeListModel.setArea(jsonobject.optString("area"));
+                                    storeListModel.setCity(jsonobject.optString("city"));
+                                    storeListModel.setCountry(jsonobject.optString("country"));
+                                    storeListModel.setPin_code(jsonobject.optString("pin_code"));
+                                    storeListModel.setState(jsonobject.optString("state"));
+                                    storeListModel.setStore_image(jsonobject.optString("store_image"));
+                                    storeListModelList.add(storeListModel);
+                                }
+                                adapter = new StoreListCashbackAdapter(storeListModelList, this, this);
+                                mRecyclerView.setAdapter(adapter);
+                                adapter.notifyDataSetChanged();
+                            }
                         } else {
                             Utils.hideKeyboard(this);
                             findViewById(R.id.spin_kit).setVisibility(View.GONE);

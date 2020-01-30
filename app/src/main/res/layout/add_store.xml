@@ -194,7 +194,41 @@
                 android:padding="10dp"
                 android:textColor="@color/black"
                 android:windowSoftInputMode="stateAlwaysVisible" />
-            <androidx.appcompat.widget.AppCompatEditText
+
+            <AutoCompleteTextView
+                android:id="@+id/state"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/square"
+                android:layout_below="@+id/cust_key"
+                android:layout_marginTop="20dp"
+                android:padding="10dp"
+                android:hint="State"
+                />
+
+            <AutoCompleteTextView
+                android:id="@+id/district"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/square"
+                android:layout_below="@+id/state"
+                android:layout_marginTop="20dp"
+                android:padding="10dp"
+                android:hint="District"
+                />
+
+            <AutoCompleteTextView
+                android:id="@+id/area"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/square"
+                android:layout_below="@+id/district"
+                android:layout_marginTop="20dp"
+                android:padding="10dp"
+                android:hint="Area"
+                />
+
+            <!--<androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -203,7 +237,6 @@
                 android:background="@drawable/square"
                 android:clickable="true"
                 android:drawableRight="@mipmap/tracker"
-                android:editable="false"
                 android:focusable="false"
                 android:hint="Location"
                 android:padding="10dp"
@@ -219,13 +252,13 @@
                 android:singleLine="true"
                 android:textColor="@android:color/black"
                 android:hint="Location"
-                android:padding="10dp" />
+                android:padding="10dp" />-->
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/mobile_no"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/location1"
+                android:layout_below="@+id/area"
                 android:layout_marginTop="20dp"
                 android:maxLength="10"
                 android:background="@drawable/square"

@@ -201,7 +201,8 @@ public class AddBankAccount extends AppCompatActivity implements View.OnClickLis
                     if (myObj.optString("statuscode").equalsIgnoreCase("200")) {
                         Toast.makeText(this, myObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                         sendBroadcast(new Intent("com.addbank_refrsh"));
-                        this.finish();
+                        startActivity(new Intent(this,ViewBankList.class));
+                        //this.finish();
                     }else{
                         Toast.makeText(this, myObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }

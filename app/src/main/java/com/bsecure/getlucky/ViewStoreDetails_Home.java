@@ -33,7 +33,7 @@ import java.util.List;
 public class ViewStoreDetails_Home extends AppCompatActivity implements View.OnClickListener, RequestHandler, SpecialOfferAdapter.SpecialOfferListListener, OfferAdapter.OfferListListener {
 
     ImageView store_img, view_on_map;
-    TextView tv_store_name, store_address, tv_spoffer, tv_offers;
+    TextView tv_store_name, store_address, tv_spoffer, tv_offers, store_code;
     RecyclerView sp_offer_vv, offer_vv;
     private SpecialOfferAdapter specialOfferAdapter;
     private OfferAdapter offerAdapter;
@@ -49,6 +49,7 @@ public class ViewStoreDetails_Home extends AppCompatActivity implements View.OnC
         store_img = findViewById(R.id.post_image);
         tv_store_name = findViewById(R.id.store_name);
         store_address = findViewById(R.id.store_address);
+        store_code = findViewById(R.id.store_code);
 
         tv_spoffer = findViewById(R.id.tv_spoffer);
         tv_spoffer.setOnClickListener(this);
@@ -66,6 +67,7 @@ public class ViewStoreDetails_Home extends AppCompatActivity implements View.OnC
 
         tv_store_name.setText(getIntent().getStringExtra("store_name"));
         store_address.setText(getIntent().getStringExtra("store_add"));
+        store_code.setText("Store Code:\t"+getIntent().getStringExtra("store_code"));
         if (!TextUtils.isEmpty(getIntent().getStringExtra("store_image"))) {
             Glide.with(this).load(Constants.PATH + "assets/upload/avatar/" + getIntent().getStringExtra("store_image")).into(store_img);
         }
@@ -150,6 +152,8 @@ public class ViewStoreDetails_Home extends AppCompatActivity implements View.OnC
                     JSONObject object = new JSONObject(response.toString());
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
                         JSONArray jsonarray2 = object.getJSONArray("store_details");
+                        //JSONObject sobj = jsonarray2.getJSONObject(0);
+                        store_code.setText("Store Code:\t" + jsonarray2.getJSONObject(0).optString("store_referral_code"));
                         JSONArray jsonarray3 = object.getJSONArray("special_offers_details");
                         if (jsonarray3.length() > 0) {
                             for (int i = 0; i < jsonarray3.length(); i++) {

@@ -67,6 +67,36 @@
                 android:padding="10dp"
                 android:textColorHint="#fff"
                 android:textStyle="bold" />
+
+           <TextView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:text="OR"
+               android:textColor="@color/colorPrimaryDark"
+               android:textSize="18sp"
+               android:textStyle="bold"
+               android:gravity="center"
+               android:layout_marginTop="20dp"/>
+
+            <ImageView
+                android:id="@+id/qr"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:src="@drawable/qrcode"
+                android:layout_marginTop="40dp"/>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SCAN QR CODE"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginTop="40dp"/>
+
         </LinearLayout>
+
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>

@@ -3,6 +3,7 @@ package com.bsecure.getlucky;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -38,6 +39,8 @@ public class ReferList extends AppCompatActivity implements RequestHandler,Refer
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_store_list);
+
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         findViewById(R.id.id_add_store).setVisibility(View.GONE);
         mRecyclerView = findViewById(R.id.view_store_rec);
         mRecyclerView.setHasFixedSize(true);

@@ -58,4 +58,18 @@
         android:text="Google Pay"
         android:textSize="@dimen/_14sdp" />
 
+    <TextView
+        android:id="@+id/net_bv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="@color/black"
+        android:drawableStart="@drawable/wallet"
+        android:drawablePadding="10dp"
+        android:layout_margin="2dp"
+        android:gravity="left|center"
+        android:padding="10dp"
+        android:text="Business Wallet"
+        android:textSize="@dimen/_14sdp" />
+
 </LinearLayout>

@@ -180,7 +180,8 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
                 JSONArray ayArray = new JSONArray(session_data);
                 //  String cs_no = ayArray.getJSONObject(0).optString("customer_number");
                 String cs_no = AppPreferences.getInstance(getActivity()).getFromStore("customer_number");
-                if (TextUtils.isEmpty(cs_no)) {
+
+                if (cs_no.equals("1")) {
                     laView.findViewById(R.id.add_cashbak).setVisibility(View.GONE);
                 } else {
                     laView.findViewById(R.id.add_cashbak).setVisibility(View.VISIBLE);
@@ -352,7 +353,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
                         laView.findViewById(R.id.no_data).setVisibility(View.GONE);
                         if (session_data != null && !TextUtils.isEmpty(session_data)) {
                             String cs_no = AppPreferences.getInstance(getActivity()).getFromStore("customer_number");
-                            if (TextUtils.isEmpty(cs_no)) {
+                            if (cs_no.equals("1")) {
                                 laView.findViewById(R.id.add_cashbak).setVisibility(View.GONE);
                             } else {
                                 laView.findViewById(R.id.add_cashbak).setVisibility(View.VISIBLE);
@@ -379,6 +380,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
                                 storeListModel.setLucky_offer_description(jsonobject.optString("lucky_offer_description"));
                                 storeListModel.setStore_image(jsonobject.optString("store_image"));
                                 storeListModel.setStore_phone_number(jsonobject.optString("store_phone_number"));
+                                storeListModel.setStore_referral_code(jsonobject.optString("store_referral_code"));
                                 storeListModelList.add(storeListModel);
                             }
                             storeListModelList = new ArrayList<>(new LinkedHashSet<StoreListModel>(storeListModelList));
@@ -477,6 +479,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
             login.putExtra("store_offer", matchesList.get(pos).getOffer());
             login.putExtra("store_ph", matchesList.get(pos).getStore_phone_number());
             login.putExtra("type", "0");
+            login.putExtra("store_code",matchesList.get(pos).getStore_referral_code());
             //login.putExtra("store_ph",matchesList.get(pos).getp());
             startActivity(login);
             getActivity().overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);

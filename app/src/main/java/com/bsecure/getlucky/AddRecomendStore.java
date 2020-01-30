@@ -1,17 +1,23 @@
 package com.bsecure.getlucky;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import com.bsecure.getlucky.barcode.ScanActivity;
 import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.utils.Utils;
@@ -26,10 +32,15 @@ import java.util.Date;
 
 public class AddRecomendStore extends AppCompatActivity implements RequestHandler {
 
+    ImageView qr;
+    public static EditText tv_code;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_qrcode);
+
+        qr = findViewById(R.id.qr);
+        tv_code = findViewById(R.id.tv_code);
 
         Button add = findViewById(R.id.submit_bank);
         add.setOnClickListener(new View.OnClickListener() {
@@ -43,6 +54,22 @@ public class AddRecomendStore extends AppCompatActivity implements RequestHandle
             public void onClick(View view) {
                 Utils.hideKeyboard(AddRecomendStore.this);
                 finish();
+            }
+        });
+
+        qr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (ContextCompat.checkSelfPermission(AddRecomendStore.this, Manifest.permission.CAMERA)
+                        == PackageManager.PERMISSION_DENIED)
+                {
+                    ActivityCompat.requestPermissions(AddRecomendStore.this, new String[] {Manifest.permission.CAMERA}, 11);
+                }
+                else
+                {
+                    startActivity(new Intent(AddRecomendStore.this, ScanActivity.class));
+                }
+
             }
         });
     }

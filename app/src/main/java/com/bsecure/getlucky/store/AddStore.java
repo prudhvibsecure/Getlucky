@@ -1,5 +1,6 @@
 package com.bsecure.getlucky.store;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Geocoder;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +18,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,11 +33,14 @@ import com.bsecure.getlucky.common.AppPreferences;
 import com.bsecure.getlucky.interfaces.IFileUploadCallback;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.models.ChipsItem;
+import com.bsecure.getlucky.models.StoreListModel;
 import com.bsecure.getlucky.services.AddressService;
 import com.bsecure.getlucky.volleyhttp.AttachmentUpload;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 import com.bsecure.getlucky.volleyhttp.MethodResquest_GET;
+import com.bsecure.getlucky.wallet.ViewBankList;
+import com.bsecure.getlucky.wallet.ViewWallet;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -53,6 +60,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -70,23 +78,29 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
     private EditText et_storenm, et_location, et_keywords, et_mobile, et_cat;
     int AUTOCOMPLETE_REQUEST_CODE = 1;
     private ImageView poster, i_keys, i_category;
-    private AutoCompleteTextView autoCompleteView;
+    private AutoCompleteTextView autoCompleteView, et_state, et_diatrict, et_area;
+
     private Uri mImageUri;
     private ArrayList<String> list = null;
     private String cat_lstwords, ids = "";
-    private String status = "1";
+    private String status = "1", payment_type;
     private ContactsCompletionView cust_key;
     private ArrayList<String> custom_keys_list = new ArrayList<>();
+    Dialog add_Offer;
+    double temp_percent = 0, refer_percent = 0, store_refer_percent = 0, admin_percent = 0, total_percent = 0, offer_percent = 0;
+    private static DecimalFormat df = new DecimalFormat("0.00");
+    double min = 0, max = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_store);
+
         findViewById(R.id.bacl_btn).setOnClickListener(this);
         findViewById(R.id.submit).setOnClickListener(this);
-        autoCompleteView = findViewById(R.id.location1);
-        et_location = findViewById(R.id.location);
-        et_location.setOnClickListener(this);
+        //autoCompleteView = findViewById(R.id.location1);
+        //et_location = findViewById(R.id.location);
+        //et_location.setOnClickListener(this);
         findViewById(R.id.banner).setOnClickListener(this);
         poster = findViewById(R.id.post_image);
         et_storenm = findViewById(R.id.st_name);
@@ -95,6 +109,11 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
         cust_key = findViewById(R.id.cust_key);
         i_keys = findViewById(R.id.i_keys);
         i_keys.setOnClickListener(this);
+
+        et_state = findViewById(R.id.state);
+        et_area = findViewById(R.id.district);
+        et_area = findViewById(R.id.area);
+
 
         i_category = findViewById(R.id.i_category);
         i_category.setOnClickListener(this);
@@ -138,8 +157,8 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                     }
                 });
 
-        autoCompleteView.setThreshold(1);
-        autoCompleteView.addTextChangedListener(new TextWatcher() {
+        //autoCompleteView.setThreshold(1);
+       /* autoCompleteView.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -157,7 +176,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
             public void afterTextChanged(Editable s) {
                 // TODO Auto-generated method stub
             }
-        });
+        });*/
         cust_key.setThreshold(1);
         Places.initialize(getApplicationContext(), "AIzaSyCvdgdoCZc4bkufNsTKmaKGRw3egMIn_cs");
 
@@ -271,11 +290,11 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
 //            Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
 //            return;
 //        }
-        String location = et_location.getText().toString().trim();
-        if (location.length() == 0) {
+        //String location = et_location.getText().toString().trim();
+       /* if (location.length() == 0) {
             Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
             return;
-        }
+        }*/
         String mobile = et_mobile.getText().toString().trim();
         if (mobile.length() == 0) {
             Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
@@ -304,8 +323,8 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
             object.put("area", area);
             object.put("city", city);
             object.put("state", state);
-            object.put("country", country);
-            object.put("pin_code", pin_code);
+            object.put("country", "india");
+            //object.put("pin_code", pin_code);
             object.put("store_phone_number", mobile);
             object.put("categories", st_cat);
             object.put("categories_id", ids);
@@ -399,7 +418,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
             if (area == null) {
                 area = "unknown area";
             }
-            et_location.setText(area + "," + city + "," + pin_code + "," + state + "," + country);
+            //et_location.setText(area + "," + city + "," + pin_code + "," + state + "," + country);
             //((TextView) findViewById(R.id.user_location_add)).setText(mAddressOutput);
             // displayAddressOutput();
 
@@ -491,8 +510,10 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                     if (myObj.optString("statuscode").equalsIgnoreCase("200")) {
                         Toast.makeText(this, myObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                         sendBroadcast(new Intent("com.store_refrsh"));
-                        AppPreferences.getInstance(this).addToStore("customer_number",myObj.optString("customer_number"),true);
-                        this.finish();
+                        AppPreferences.getInstance(this).addToStore("customer_number","2",true);
+                        String sid = myObj.optString("store_id");
+                        goToOffer(sid);
+                        //this.finish();
                     }
                     break;
                 case 101:
@@ -522,12 +543,185 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                         AppPreferences.getInstance(this).addToStore("keywords", array1.toString(), true);
                     }
                     break;
+
+                case 110:
+
+                    JSONObject object1 = new JSONObject(response.toString());
+                    if(object1.optString("statuscode").equalsIgnoreCase("200"))
+                    {
+                        final Dialog mDialog = new Dialog(this, R.style.Theme_MaterialComponents_Light_BottomSheetDialog);
+                        mDialog.setContentView(R.layout.paymetoption);
+                        mDialog.show();
+
+                        mDialog.findViewById(R.id.net_bank).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                payment_type = "Net Banking";
+                                Toast.makeText(AddStore.this, "Coming Soon", Toast.LENGTH_SHORT).show();
+                                AddStore.this.finish();
+                                //redirectClass();
+                                //AppPreferences.getInstance(getApplicationContext()).addToStore("amount", "", true);
+                                //AppPreferences.getInstance(getApplicationContext()).addToStore("p_type", payment_type, true);
+                                mDialog.dismiss();
+                                //addBanks();
+                            }
+                        });
+                        mDialog.findViewById(R.id.net_gp).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                payment_type = "google pay";
+                                Toast.makeText(AddStore.this, "Coming Soon", Toast.LENGTH_SHORT).show();
+                                AddStore.this.finish();
+                                //addBanks();
+                                // mDialog.dismiss();
+                                //redirectClass();
+                                mDialog.dismiss();
+                            }
+                        });
+                        mDialog.findViewById(R.id.net_paytim).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                payment_type = "paytm";
+                                Toast.makeText(AddStore.this, "Coming Soon", Toast.LENGTH_SHORT).show();
+                                AddStore.this.finish();
+                                // addBanks();
+                                // redirectClass();
+                                mDialog.dismiss();
+                            }
+                        });
+
+                        mDialog.findViewById(R.id.net_bv).setVisibility(View.GONE);
+
+                    }
+
+                    break;
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    private void goToOffer(final String sid) {
+
+        add_Offer = new Dialog(this, R.style.Theme_MaterialComponents_DialogWhenLarge);
+        add_Offer.setContentView(R.layout.add_m_offer);
+        add_Offer.show();
+        add_Offer.findViewById(R.id.skip).setVisibility(View.VISIBLE);
+        add_Offer.findViewById(R.id.iv_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                add_Offer.dismiss();
+            }
+        });
+        ((EditText) add_Offer.findViewById(R.id.add_co)).addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence offer, int start,
+                                      int before, int count) {
+                if (offer.length() != 0) {
+                    offer_percent = Double.parseDouble(String.valueOf(offer));
+
+                    temp_percent = offer_percent * 0.4;
+
+                    refer_percent = temp_percent * (0.5);
+
+                    store_refer_percent = temp_percent * (0.25);
+
+                    admin_percent = temp_percent * (0.25);
+
+                    total_percent = offer_percent + refer_percent + store_refer_percent + admin_percent;
+                    ((EditText) add_Offer.findViewById(R.id.add_cr)).setText(df.format(refer_percent));
+                    ((EditText) add_Offer.findViewById(R.id.add_sr)).setText(df.format(store_refer_percent));
+                    ((EditText) add_Offer.findViewById(R.id.add_admin)).setText(df.format(admin_percent));
+                    ((EditText) add_Offer.findViewById(R.id.add_to)).setText(df.format(total_percent));
+                }
+            }
+        });
+        add_Offer.findViewById(R.id.bt_add).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                addOfferCal(sid);
+            }
+        });
+        //((EditText) add_Offer.findViewById(R.id.add_min)).setFocusable(true);
+        ((LinearLayout) add_Offer.findViewById(R.id.k_ii)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((EditText) add_Offer.findViewById(R.id.add_min)).requestFocus();
+                //   ((EditText) add_Offer.findViewById(R.id.add_min)).setFocusable(false);
+                //   ((EditText) add_Offer.findViewById(R.id.add_min)).setCursorVisible(true);
+                ((EditText) add_Offer.findViewById(R.id.add_min)).setText("");
+            }
+        });
+
+        ((EditText) add_Offer.findViewById(R.id.add_min)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((EditText) add_Offer.findViewById(R.id.add_min)).requestFocus();
+                //  ((EditText) add_Offer.findViewById(R.id.add_min)).setFocusable(false);
+                //  ((EditText) add_Offer.findViewById(R.id.add_min)).setText("");
+                ((EditText) add_Offer.findViewById(R.id.add_min)).setCursorVisible(true);
+            }
+        });
+        ((EditText) add_Offer.findViewById(R.id.add_min)).setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus)
+            {
+                if (hasFocus)
+                {
+                    if (((EditText) add_Offer.findViewById(R.id.add_min)).getText().toString().compareTo("1")==0)
+                    {
+                        ((EditText) add_Offer.findViewById(R.id.add_min)).setText("");
+                    }
+                }
+            }
+        });
+        add_Offer.findViewById(R.id.bt_preview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String offer = ((EditText) add_Offer.findViewById(R.id.add_co)).getText().toString().trim();
+                if (offer.length() == 0) {
+                    Toast.makeText(AddStore.this, "Please Fill Required Field", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                String add_to = ((EditText) add_Offer.findViewById(R.id.add_to)).getText().toString();
+                previewOffer(offer + "% Cashback On All Purchase", "1");
+            }
+        });
+
+        ((EditText) add_Offer.findViewById(R.id.add_max)).setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus)
+            {
+                if (hasFocus)
+                {
+                    ((EditText) add_Offer.findViewById(R.id.add_max)).setHint("");
+                    //((EditText) add_Offer.findViewById(R.id.add_max)).setText("");
+                }
+            }
+        });
+
+
+        add_Offer.findViewById(R.id.skip).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddStore.this.finish();
+            }
+        });
     }
 
     @Override
@@ -553,5 +747,91 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
 //        });
 //        builderSingle.show();
 //    }
+
+    private void addOfferCal(String sid) {
+
+        String offer = ((EditText) add_Offer.findViewById(R.id.add_co)).getText().toString().trim();
+        if (offer.length() == 0 || offer.equalsIgnoreCase("0")) {
+            Toast.makeText(this, "Please Fill Required Field", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String add_min = ((EditText) add_Offer.findViewById(R.id.add_min)).getText().toString().trim();
+        if (add_min.length() == 0 || add_min.equalsIgnoreCase("0") || add_min.startsWith("0")) {
+            ((EditText) add_Offer.findViewById(R.id.add_min)).setText("1");
+            return;
+        }
+        String add_max = ((EditText) add_Offer.findViewById(R.id.add_max)).getText().toString().trim();
+        if (add_max.length() > 0) {
+            min = Double.parseDouble(add_min);
+            max = Double.parseDouble(add_max);
+            if (Double.compare(min, max) > 0) {
+                Toast.makeText(this, "Maximum Amount Must Be Greater Than Minimum Amount", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        try {
+            String session_data = AppPreferences.getInstance(this).getFromStore("userData");
+            JSONArray ayArray = new JSONArray(session_data);
+            JSONObject object = new JSONObject();
+            object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
+            object.put("store_id", sid);
+            object.put("offer_percent", offer_percent);
+            object.put("min_amount", add_min);
+            object.put("max_amount", add_max);
+            object.put("refer_percent", refer_percent);
+            object.put("store_refer_percent", store_refer_percent);
+            object.put("admin_percent", admin_percent);
+            object.put("total_percent", total_percent);
+            //object.put("status", matchesList.get(pos).getStatus());
+            new MethodResquest(this, this, Constants.PATH + "add_offers", object.toString(), 110);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void previewOffer(String offer, String condition) {
+
+        final Dialog previewDiloag = new Dialog(this, R.style.Theme_MaterialComponents_BottomSheetDialog);
+        previewDiloag.setContentView(R.layout.preview_sp_offer);
+
+        String store_name = et_storenm.getText().toString().trim();
+        String loc = et_location.getText().toString();
+
+        ((TextView) previewDiloag.findViewById(R.id.store_name_1)).setText(store_name);
+        ((TextView) previewDiloag.findViewById(R.id.tv_address_1)).setText(loc);
+        if (condition.equalsIgnoreCase("0")) {
+            ((TextView) previewDiloag.findViewById(R.id.tv_offer_1)).setVisibility(View.VISIBLE);
+            ((TextView) previewDiloag.findViewById(R.id.tv_offer_12)).setVisibility(View.GONE);
+            ((TextView) previewDiloag.findViewById(R.id.tv_offer_1)).setText(offer);
+        } else {
+            ((TextView) previewDiloag.findViewById(R.id.tv_offer_1)).setVisibility(View.GONE);
+            ((TextView) previewDiloag.findViewById(R.id.tv_offer_12)).setVisibility(View.VISIBLE);
+            ((TextView) previewDiloag.findViewById(R.id.tv_offer_12)).setText(offer);
+        }
+        String image = poaste_img;
+        ImageView iv_image = (ImageView) previewDiloag.findViewById(R.id.store_image_1);
+
+        if (!TextUtils.isEmpty(image) && image != null) {
+            Glide.with(this).load(Constants.PATH + "assets/upload/avatar/" + poaste_img).into(iv_image);
+        }
+        previewDiloag.findViewById(R.id.kk_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                previewDiloag.dismiss();
+            }
+        });
+        previewDiloag.show();
+    }
+
+    private void redirectClass() {
+        Intent mp_hist = new Intent(this, ViewBankList.class);
+        mp_hist.putExtra("payment_type", payment_type);
+        mp_hist.putExtra("amount", "");
+        startActivity(mp_hist);
+        overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
+
+    }
 
 }
