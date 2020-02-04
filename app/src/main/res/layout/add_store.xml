@@ -46,61 +46,62 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-   <RelativeLayout
-       android:id="@+id/banner"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:orientation="horizontal"
-       android:background="@mipmap/add_store"
-       android:layout_below="@+id/appbarlayout">
-    <TextView
-        android:id="@+id/editprofile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_centerInParent="true"
-        android:text="Add Store Image (+)"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="20sp" />
 
-       <androidx.constraintlayout.widget.ConstraintLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content">
-
-           <ImageView
-               android:layout_width="match_parent"
-               android:layout_height="0dp"
-               android:id="@+id/post_image"
-               android:adjustViewBounds="true"
-               app:layout_constraintDimensionRatio="2:1"/>
-
-       </androidx.constraintlayout.widget.ConstraintLayout>
-   </RelativeLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"
-        android:layout_below="@+id/banner">
+        android:layout_below="@+id/appbarlayout">
     <androidx.cardview.widget.CardView
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-        android:layout_marginTop="-40dp"
+        android:layout_marginTop="0dp"
         android:layout_marginLeft="@dimen/_10sdp"
         android:layout_marginRight="@dimen/_10sdp"
         card_view:cardBackgroundColor="@color/white"
         card_view:cardCornerRadius="8dp"
         card_view:cardElevation="8dp">
 
+
         <RelativeLayout
             android:id="@+id/details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/editprofile"
+            android:layout_below="@+id/appbarlayout"
             android:layout_margin="30dp"
             android:background="@color/white">
+
+            <RelativeLayout
+                android:id="@+id/banner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@mipmap/add_store">
+                <TextView
+                    android:id="@+id/editprofile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_centerInParent="true"
+                    android:text="Add Store Image (+)"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="20sp" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:id="@+id/post_image"
+                        android:adjustViewBounds="true"
+                        app:layout_constraintDimensionRatio="2:1"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </RelativeLayout>
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/st_name"
@@ -110,7 +111,8 @@
                 android:background="@drawable/square"
                 android:hint="Store Name"
                 android:padding="10dp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:layout_below="@+id/banner"/>
 
 
             <LinearLayout
@@ -196,7 +198,7 @@
                 android:windowSoftInputMode="stateAlwaysVisible" />
 
             <AutoCompleteTextView
-                android:id="@+id/state"
+                android:id="@+id/et_state"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@drawable/square"
@@ -207,22 +209,22 @@
                 />
 
             <AutoCompleteTextView
-                android:id="@+id/district"
+                android:id="@+id/et_district"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@drawable/square"
-                android:layout_below="@+id/state"
+                android:layout_below="@+id/et_state"
                 android:layout_marginTop="20dp"
                 android:padding="10dp"
                 android:hint="District"
                 />
 
             <AutoCompleteTextView
-                android:id="@+id/area"
+                android:id="@+id/et_area"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@drawable/square"
-                android:layout_below="@+id/district"
+                android:layout_below="@+id/et_district"
                 android:layout_marginTop="20dp"
                 android:padding="10dp"
                 android:hint="Area"
@@ -258,7 +260,7 @@
                 android:id="@+id/mobile_no"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/area"
+                android:layout_below="@+id/et_area"
                 android:layout_marginTop="20dp"
                 android:maxLength="10"
                 android:background="@drawable/square"

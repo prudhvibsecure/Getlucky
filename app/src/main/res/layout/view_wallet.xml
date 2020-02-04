@@ -62,6 +62,36 @@
                             android:textStyle="bold" />
 
                         <LinearLayout
+                            android:id="@+id/add"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_gravity="center"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:id="@+id/add_money"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@mipmap/add"
+                                android:layout_gravity="center"
+                                />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="ADD"
+                                android:textColor="@color/gray"
+                                android:textStyle="bold"
+                                android:textSize="12sp"
+                                android:gravity="center"
+                                android:layout_gravity="center"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/pay"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -70,10 +100,9 @@
                             android:gravity="center">
 
                         <ImageView
-                            android:id="@+id/pay"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:src="@drawable/pay"
+                            android:src="@mipmap/pay"
                             android:layout_gravity="center"
                             />
 
@@ -89,33 +118,7 @@
 
                     </LinearLayout>
 
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:layout_gravity="center"
-                            android:gravity="center">
 
-                            <ImageView
-                                android:id="@+id/add_money"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:src="@drawable/addmoney"
-                                android:layout_gravity="center"
-                                />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="ADD"
-                                android:textColor="@color/gray"
-                                android:textStyle="bold"
-                                android:textSize="12sp"
-                                android:gravity="center"
-                                android:layout_gravity="center"/>
-
-                        </LinearLayout>
 
                     </LinearLayout>
                 </LinearLayout>

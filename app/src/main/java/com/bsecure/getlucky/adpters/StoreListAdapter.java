@@ -18,6 +18,7 @@ import com.bsecure.getlucky.models.StoreListModel;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bumptech.glide.Glide;
 
+import org.apache.commons.text.WordUtils;
 import org.json.JSONArray;
 
 import java.util.HashMap;
@@ -95,7 +96,8 @@ public class StoreListAdapter extends RecyclerView.Adapter<StoreListAdapter.Cont
 
         try {
             final StoreListModel mycontactlist = matchesList.get(position);
-            contactViewHolder.store_name.setText(mycontactlist.getStore_name());
+            String cname = WordUtils.capitalizeFully(mycontactlist.getStore_name());
+            contactViewHolder.store_name.setText(cname);
             if (TextUtils.isEmpty(mycontactlist.getOffer())) {
                 contactViewHolder.tv_offer.setVisibility(View.GONE);
             }else{

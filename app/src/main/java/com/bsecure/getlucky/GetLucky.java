@@ -303,6 +303,8 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
             nav_Menu.findItem(R.id.nav_wallet).setVisible(true);
             nav_Menu.findItem(R.id.nav_referlist).setVisible(true);
             nav_Menu.findItem(R.id.nav_restore).setVisible(true);
+            nav_Menu.findItem(R.id.nav_suggestions).setVisible(true);
+            nav_Menu.findItem(R.id.nav_logout).setVisible(true);
         } else {
             nav_Menu.findItem(R.id.nav_profile).setVisible(false);
             nav_Menu.findItem(R.id.nav_login).setVisible(true);
@@ -314,6 +316,8 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
             nav_Menu.findItem(R.id.nav_referlist).setVisible(false);
             nav_Menu.findItem(R.id.nav_restore).setVisible(false);
             nav_Menu.findItem(R.id.nav_shareapp).setVisible(false);
+            nav_Menu.findItem(R.id.nav_suggestions).setVisible(false);
+            nav_Menu.findItem(R.id.nav_logout).setVisible(false);
         }
         return true;
     }
@@ -387,6 +391,18 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
                 Intent code = new Intent(this, Mybarcode.class);
                 startActivity(code);
                 overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
+                break;
+
+            case R.id.nav_suggestions:
+                startActivity(new Intent(GetLucky.this, Feedback.class));
+                break;
+
+            case R.id.nav_logout:
+
+                AppPreferences.getInstance(this).addToStore("userData","",false);
+                AppPreferences.getInstance(this).addToStore("pin_view","",false);
+                startActivity(new Intent(this, Login.class));
+                GetLucky.this.finish();
                 break;
         }
 

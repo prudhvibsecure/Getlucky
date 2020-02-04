@@ -45,7 +45,6 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:inputType="textCapWords"
                 android:gravity="left"
                 android:text="Store Name"
                 android:textColor="@color/black"

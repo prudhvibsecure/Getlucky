@@ -63,23 +63,49 @@
             android:textSize="20sp"
             android:textStyle="bold" />-->
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/pf_image"
-            android:layout_width="@dimen/_60sdp"
-            android:layout_height="@dimen/_60sdp"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:src="@mipmap/profile_image" />
-
-        <TextView
-            android:id="@+id/name"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:padding="@dimen/_5sdp"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_16sdp" />
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:layout_marginTop="10dp"
+            >
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/pf_image"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_60sdp"
+                android:layout_gravity="center"
+                android:layout_marginTop="0dp"
+                android:src="@mipmap/profile_image" />
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="@dimen/_5sdp"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:layout_toRightOf="@+id/pf_image"/>
+
+            <TextView
+                android:id="@+id/code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="@dimen/_5sdp"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:layout_below="@+id/name"
+                android:layout_toRightOf="@+id/pf_image"/>
+
+
+        </RelativeLayout>
+
+
 
         <androidx.cardview.widget.CardView
             android:id="@+id/card"

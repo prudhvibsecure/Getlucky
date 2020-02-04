@@ -79,7 +79,6 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
                 bundle.putString("image", savePath);
                 bundle.putString("code", getIntent().getStringExtra("store_code"));
 
-
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 QRDialogFragment newFragment = QRDialogFragment.newInstance();
                 newFragment.setArguments(bundle);
@@ -101,11 +100,16 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
         findViewById(R.id.bacl_btn).setOnClickListener(this);
 
         tv_store_name.setText(getIntent().getStringExtra("store_name"));
-        store_address.setText(getIntent().getStringExtra("store_add"));
+        store_address.setText(getIntent().getStringExtra("store_address"));
         store_code.setText("Store Code:\t" + getIntent().getStringExtra("store_code"));
         if (!TextUtils.isEmpty(getIntent().getStringExtra("store_image"))) {
             Glide.with(this).load(Constants.PATH + "assets/upload/avatar/" + getIntent().getStringExtra("store_image")).into(store_img);
         }
+
+       /* if(getIntent().getStringExtra("store_id")!= null)
+        {
+            getStoreData();
+        }*/
 
         if (getIntent().getStringExtra("type").equalsIgnoreCase("1")) {
             getSpecialOffers();
@@ -222,6 +226,19 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
 
         getCode();
     }
+
+   /* private void getStoreData() {
+        try {
+
+            JSONObject object = new JSONObject();
+            // object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
+            object.put("store_id", getIntent().getStringExtra("store_id"));
+            new MethodResquest(this, this, Constants.PATH + "get_store", object.toString(), 500);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }*/
 
     private void editOfferDialog(final String offer_sp_id, String offer_description) {
 
@@ -595,10 +612,19 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
 
     private void getSpecialOffers() {
         try {
-            String session_data = AppPreferences.getInstance(this).getFromStore("userData");
-            JSONArray ayArray = new JSONArray(session_data);
+
             JSONObject object = new JSONObject();
-            object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
+            if(!AppPreferences.getInstance(this).getFromStore("operator_name").isEmpty())
+            {
+                object.put("customer_id", AppPreferences.getInstance(this).getFromStore("customer_id"));
+            }
+            else
+            {
+                String session_data = AppPreferences.getInstance(this).getFromStore("userData");
+                JSONArray ayArray = new JSONArray(session_data);
+                object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
+            }
+
             object.put("store_id", getIntent().getStringExtra("store_id"));
             new MethodResquest(this, this, Constants.PATH + "view_special_offers", object.toString(), 100);
         } catch (Exception e) {
@@ -609,10 +635,20 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
 
     private void getOffers() {
         try {
-            String session_data = AppPreferences.getInstance(this).getFromStore("userData");
-            JSONArray ayArray = new JSONArray(session_data);
+
             JSONObject object = new JSONObject();
-            object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
+
+            if(!AppPreferences.getInstance(this).getFromStore("operator_name").isEmpty())
+            {
+                object.put("customer_id", AppPreferences.getInstance(this).getFromStore("customer_id"));
+            }
+            else
+            {
+                String session_data = AppPreferences.getInstance(this).getFromStore("userData");
+                JSONArray ayArray = new JSONArray(session_data);
+                object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
+            }
+            //object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
             object.put("store_id", getIntent().getStringExtra("store_id"));
             new MethodResquest(this, this, Constants.PATH + "view_offers", object.toString(), 104);
         } catch (Exception e) {
@@ -882,6 +918,21 @@ public class ViewStoreDetails extends AppCompatActivity implements View.OnClickL
                         Toast.makeText(this, g1.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
                     break;
+
+               /* case 500:
+
+                    JSONObject objectt = new JSONObject(response.toString());
+                    if (objectt.optString("statuscode").equalsIgnoreCase("200")) {
+                        JSONArray jsonarray2 = objectt.getJSONArray("store_details");
+                        //JSONObject sobj = jsonarray2.getJSONObject(0);
+                        tv_store_name.setText(jsonarray2.getJSONObject(0).optString("store_name"));
+                        store_code.setText("Store Code:\t" + jsonarray2.getJSONObject(0).optString("store_referral_code"));
+                        store_address.setText(jsonarray2.getJSONObject(0).optString("area")+","+jsonarray2.getJSONObject(0).optString("city")+","+jsonarray2.getJSONObject(0).optString("state"));
+                        if (!TextUtils.isEmpty(jsonarray2.getJSONObject(0).optString("store_image"))) {
+                            Glide.with(this).load(Constants.PATH + "assets/upload/avatar/" + getIntent().getStringExtra("store_image")).into(store_img);
+                        }
+                    }
+                    break;*/
             }
         } catch (Exception e) {
             e.printStackTrace();

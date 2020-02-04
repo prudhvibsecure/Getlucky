@@ -23,7 +23,7 @@ public class Constants {
     * @ Rest api call
     *
     * */
-    public static final String PATH = "https://bsecuresoftechsolutions.com/get-lucky/";
+    public static final String PATH = "https://getlucky.in/api/";
     public static final String g_location="https://maps.googleapis.com/maps/api/place/autocomplete/json?input=(INPUT)&types(TYPE)&sensor=(SENSOR)&key=(KEY)";
     public static final String g_location_two="https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=%s&sensor=false&key=AIzaSyCvdgdoCZc4bkufNsTKmaKGRw3egMIn_cs";
 }

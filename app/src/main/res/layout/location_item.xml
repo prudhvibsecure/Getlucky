@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/mark"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/pin"
+            android:layout_marginTop="5dp"
+            />
+
+        <TextView
+            android:id="@+id/area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Area"
+            android:layout_toRightOf="@id/mark"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:layout_marginStart="10dp"/>
+
+        <TextView
+            android:id="@+id/city"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Area"
+            android:layout_toRightOf="@id/mark"
+            android:layout_below="@+id/area"
+            android:textSize="16sp"
+            android:textColor="@color/quantum_grey"
+            android:layout_marginStart="10dp"
+            android:maxLines="1"/>
+
+
+
+
+    </RelativeLayout>
+
+</LinearLayout>

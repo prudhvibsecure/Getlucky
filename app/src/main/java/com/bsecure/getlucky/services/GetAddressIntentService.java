@@ -94,8 +94,6 @@ public class GetAddressIntentService extends IntentService {
             addressDetails.append(address.getCountryName());
 
 
-
-
             sendResultsToReceiver(2,address.getSubLocality(),address.getPostalCode(),address.getLocality(),address.getCountryName(),address.getAdminArea(),addressDetails.toString());
         }
     }

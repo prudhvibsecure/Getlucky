@@ -102,6 +102,7 @@ public class OperatorLogin extends AppCompatActivity implements RequestHandler {
                         Toast.makeText(this, object.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                         Intent in = new Intent(OperatorLogin.this, AddCashback.class);
                         in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        //in.putExtra("oper", "1");
                         startActivity(in);
                         overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                         finishAffinity();

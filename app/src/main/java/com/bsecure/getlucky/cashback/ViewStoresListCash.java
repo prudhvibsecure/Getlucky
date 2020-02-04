@@ -237,6 +237,7 @@ public class ViewStoresListCash extends AppCompatActivity implements View.OnClic
         AppPreferences.getInstance(this).addToStore("store_id", matchesList.get(pos).getStore_id(), true);
 
         Intent edit_store = new Intent(this, AddCashback.class);
+        //edit_store.putExtra("oper", "0");
         startActivity(edit_store);
         overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
 

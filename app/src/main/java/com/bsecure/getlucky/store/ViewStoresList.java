@@ -353,7 +353,7 @@ public class ViewStoresList extends AppCompatActivity implements View.OnClickLis
             Intent login = new Intent(this, ViewStoreDetails.class);
             login.putExtra("store_name", matchesList.get(pos).getStore_name());
             login.putExtra("store_image", matchesList.get(pos).getStore_image());
-            login.putExtra("store_add", matchesList.get(pos).getArea() + "," + matchesList.get(pos).getCity() + "," + matchesList.get(pos).getState() + "," + matchesList.get(pos).getPin_code());
+            login.putExtra("store_add", matchesList.get(pos).getArea() + "," + matchesList.get(pos).getCity() + "," + matchesList.get(pos).getState());
             login.putExtra("store_add1", matchesList.get(pos).getArea() + "," + matchesList.get(pos).getCity() + "," + matchesList.get(pos).getState());
             login.putExtra("store_ph", matchesList.get(pos).getStore_phone_number());
             login.putExtra("store_id", matchesList.get(pos).getStore_id());

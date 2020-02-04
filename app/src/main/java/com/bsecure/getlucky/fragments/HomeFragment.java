@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.ConnectivityManager;
@@ -17,12 +18,10 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,7 +39,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.bsecure.getlucky.GetLucky;
 import com.bsecure.getlucky.Login;
 import com.bsecure.getlucky.R;
-import com.bsecure.getlucky.ViewStoreDetails;
 import com.bsecure.getlucky.ViewStoreDetails_Home;
 import com.bsecure.getlucky.adpters.StoreListAdapter;
 import com.bsecure.getlucky.cashback.ViewStoresListCash;
@@ -48,14 +47,12 @@ import com.bsecure.getlucky.helper.RecyclerOnScrollListener;
 import com.bsecure.getlucky.interfaces.IItemHandler;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.models.StoreListModel;
-import com.bsecure.getlucky.network.CheckNetwork;
+import com.bsecure.getlucky.network.GPSTracker;
 import com.bsecure.getlucky.services.GetAddressIntentService;
-import com.bsecure.getlucky.store.ViewStoresList;
 import com.bsecure.getlucky.utils.Utils;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.HTTPPostTask;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
-import com.bumptech.glide.Glide;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -63,7 +60,6 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.tooltip.Tooltip;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,9 +68,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 
 
-public class HomeFragment extends ParentFragment implements IItemHandler, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RequestHandler, StoreListAdapter.StoreAdapterListener {
+public class HomeFragment extends ParentFragment implements IItemHandler, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RequestHandler, StoreListAdapter.StoreAdapterListener{
 
     private GetLucky getLucky;
     private String pin_code, area = "", city = "", country = "", phone, category_ids = "", state = "", loacal_area;
@@ -87,11 +84,15 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
     private StoreListAdapter adapter = null;
     private SwipeRefreshLayout mSwipeRefreshLayout = null;
 
+    double lat, lang;
+
     private FusedLocationProviderClient fusedLocationClient;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 2;
 
     private LocationAddressResultReceiver addressResultReceiver;
+
+    private AddressReceiver receiver;
 
     private Location currentLocation;
 
@@ -102,6 +103,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
     List<StoreListModel> storeListModelList = new ArrayList<>();
     LinearLayout loading_btm;
     String session_data;
+    TextView loc;
 
     IntentFilter mFilter,mFilter1;
 
@@ -154,6 +156,27 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
         mFilter = new IntentFilter("com.store_refrsh");
         mFilter1 = new IntentFilter("myfreshevent");
         serach = laView.findViewById(R.id.keyword);
+        loc = laView.findViewById(R.id.location);
+        getAddress();
+
+        if(!isNetworkAvailable())
+        {
+            Toast.makeText(getLucky, "No Network Found", Toast.LENGTH_LONG).show();
+        }
+        loc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("rec", receiver);
+
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                LocationDialogue newFragment = LocationDialogue.newInstance();
+                newFragment.setArguments(bundle);
+                newFragment.show(ft, "slideshow");
+
+            }
+        });
         loading_btm = laView.findViewById(R.id.loading_btm);
         mRecyclerView = laView.findViewById(R.id.mrecycler);
         laView.findViewById(R.id.search).setOnClickListener(new View.OnClickListener() {
@@ -248,6 +271,8 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
         mRecyclerView.addOnScrollListener(recycScollListener);
 
         addressResultReceiver = new LocationAddressResultReceiver(new Handler());
+
+        receiver = new AddressReceiver(new Handler());
 
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
@@ -417,7 +442,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
                             mSwipeRefreshLayout.setEnabled(true);
                             laView.findViewById(R.id.spin_kit).setVisibility(View.GONE);
                             laView.findViewById(R.id.no_data).setVisibility(View.VISIBLE);
-                            laView.findViewById(R.id.add_cashbak).setVisibility(View.GONE);
+                            //laView.findViewById(R.id.add_cashbak).setVisibility(View.GONE);
                             ((TextView) laView.findViewById(R.id.no_data)).setText(object1.optString("statusdescription"));
                         } else {
                             count_page = 0;
@@ -475,7 +500,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
             login.putExtra("store_name", matchesList.get(pos).getStore_name());
             login.putExtra("store_id", matchesList.get(pos).getStore_id());
             login.putExtra("store_image", matchesList.get(pos).getStore_image());
-            login.putExtra("store_add", matchesList.get(pos).getArea() + "," + matchesList.get(pos).getCity() + "," + matchesList.get(pos).getState() + "," + matchesList.get(pos).getPin_code());
+            login.putExtra("store_add", matchesList.get(pos).getArea() + "," + matchesList.get(pos).getCity() + "," + matchesList.get(pos).getState());
             login.putExtra("store_add1", matchesList.get(pos).getArea() + "," + matchesList.get(pos).getCity() + "," + matchesList.get(pos).getState());
             login.putExtra("store_offer", matchesList.get(pos).getOffer());
             login.putExtra("store_ph", matchesList.get(pos).getStore_phone_number());
@@ -524,6 +549,10 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
     public void onProgressChange(int requestId, Long... values) {
 
     }
+
+
+
+
 
     public interface OnListFragmentInteractionListener {
 
@@ -624,7 +653,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
     @SuppressWarnings("MissingPermission")
     public void getAddress() {
 
-        if (!Geocoder.isPresent()) {
+        /*if (!Geocoder.isPresent()) {
             Toast.makeText(getActivity(),
                     "Can't find current address, ",
                     Toast.LENGTH_SHORT).show();
@@ -638,9 +667,80 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
             getContext().startService(intent);
         } catch (Exception e) {
             e.printStackTrace();
+        }*/
+
+        GPSTracker gpsTracker = new GPSTracker(getActivity());
+        if (gpsTracker.getIsGPSTrackingEnabled()) {
+
+            lat = gpsTracker.getLatitude();
+            lang = gpsTracker.getLongitude();
+
+            Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+            List<Address> addresses = null;
+
+            try {
+                addresses = geocoder.getFromLocation(lat, lang, 1);
+            } catch (Exception ioException) {
+                Log.e("", "Error in getting address for the location");
+            }
+
+            if (addresses == null || addresses.size()  == 0) {
+                String msg = "No address found for the location";
+
+            } else {
+                Address address = addresses.get(0);
+                StringBuffer addressDetails = new StringBuffer();
+
+
+                area = address.getSubLocality();
+                city = address.getLocality();
+                country = address.getCountryName();
+                state = address.getAdminArea();
+                showResults(area+","+city+","+state);
+
+                //saveLocation();
+            }
+        } else {
+            // can't get location
+            // GPS or Network is not enabled
+            // Ask user to enable GPS/network in settings
+            gpsTracker.showSettingsAlert();
         }
     }
 
+    private class AddressReceiver extends ResultReceiver {
+        AddressReceiver(Handler handler)
+        {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int code, Bundle data)
+        {
+            if(code == 1)
+            {
+                //Toast.makeText(getLucky, "test", Toast.LENGTH_SHORT).show();
+                getData(data.getString("area"), data.getString("city"), data.getString("state"));
+            }
+        }
+    }
+
+    private void getData(String area, String city, String state) {
+        String location = area + "," + city + ","+ state;
+        loc.setText(location);
+        JSONObject object = new JSONObject();
+        try {
+            object.put("area", area);
+            object.put("city", city);
+            object.put("state", state);
+            object.put("country", country);
+            object.put("search_key", "");
+            object.put("pageno", 0);
+            MethodResquest req = new MethodResquest(getActivity(), this, Constants.PATH + "search_store", object.toString(), 101);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     private class LocationAddressResultReceiver extends ResultReceiver {
         LocationAddressResultReceiver(Handler handler) {

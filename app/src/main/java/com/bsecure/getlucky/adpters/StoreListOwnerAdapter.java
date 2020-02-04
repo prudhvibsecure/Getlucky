@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.loopeer.itemtouchhelperextension.Extension;
 import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 
+import org.apache.commons.text.WordUtils;
 import org.json.JSONArray;
 
 import java.util.HashMap;
@@ -101,7 +102,8 @@ public class StoreListOwnerAdapter extends RecyclerView.Adapter<StoreListOwnerAd
 
         try {
             final StoreListModel mycontactlist = matchesList.get(position);
-            contactViewHolder.store_name.setText(mycontactlist.getStore_name());
+            String cname = WordUtils.capitalizeFully(mycontactlist.getStore_name());
+            contactViewHolder.store_name.setText(cname);
 
             contactViewHolder.tv_address.setText(mycontactlist.getArea() + "," + mycontactlist.getCity() + "," + mycontactlist.getState());
             if (!TextUtils.isEmpty(mycontactlist.getStore_image()) && mycontactlist.getStore_image() != null) {

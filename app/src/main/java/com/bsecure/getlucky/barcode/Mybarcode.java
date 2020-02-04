@@ -50,6 +50,7 @@ public class Mybarcode extends AppCompatActivity {
         try {
             JSONArray ayArray = new JSONArray(session_data);
             ((TextView) findViewById(R.id.name)).setText(ayArray.getJSONObject(0).optString("name"));
+            ((TextView) findViewById(R.id.code)).setText(ayArray.getJSONObject(0).optString("customer_referral_code"));
             Glide.with(this).load(ayArray.getJSONObject(0).optString("profile_image")).into(pf_image);
             String inputValue = ayArray.getJSONObject(0).optString("name") + "," +
                     ayArray.getJSONObject(0).optString("customer_referral_code");

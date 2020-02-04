@@ -44,7 +44,7 @@ public class OfferPercentageAdapter extends RecyclerView.Adapter<OfferPercentage
             JSONObject obj = array.getJSONObject(position);
             String amount = obj.optString("balanace_cash");
             String per = obj.optString("offer_percentage");
-            holder.text.setText("Rs\t" + amount + "\t or less for\t" + per + "% offer");
+            holder.text.setText("Rs\t" + amount + "\t or less for " + per + "% offer");
 
         } catch (JSONException e) {
             e.printStackTrace();

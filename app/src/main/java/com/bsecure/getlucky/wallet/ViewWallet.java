@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,11 +48,30 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
     TextInputEditText tv_wamt, tv_amount_b;
     private IntentFilter filter;
     private static DecimalFormat df = new DecimalFormat("0.00");
+    LinearLayout add, pay;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_wallet);
 
+        add = findViewById(R.id.add);
+        pay = findViewById(R.id.pay);
+
+        pay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ViewWallet.this,PayStore.class));
+            }
+        });
+
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(ViewWallet.this, StoreCharge.class);
+                in.putExtra("code","1");
+                startActivity(in);
+            }
+        });
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         filter = new IntentFilter("com.addbank_refrsh2");
         filter.setPriority(1);
@@ -122,9 +142,11 @@ public class ViewWallet extends AppCompatActivity implements RequestHandler, Vie
         if (TextUtils.isEmpty(customer_number)||customer_number.equalsIgnoreCase("1")) {
             findViewById(R.id.v1_wall).setVisibility(View.VISIBLE);
             findViewById(R.id.v1_wall2).setVisibility(View.GONE);
+            add.setVisibility(View.GONE);
         } else {
             findViewById(R.id.v1_wall).setVisibility(View.VISIBLE);
             findViewById(R.id.v1_wall2).setVisibility(View.VISIBLE);
+            add.setVisibility(View.VISIBLE);
 
         }
         findViewById(R.id.tv_transfer).setOnClickListener(this);

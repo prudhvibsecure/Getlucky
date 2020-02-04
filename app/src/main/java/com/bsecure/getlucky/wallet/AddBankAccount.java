@@ -193,7 +193,7 @@ public class AddBankAccount extends AppCompatActivity implements View.OnClickLis
             return;
         }
         if (!et_acnumer.matches(et_accnnume)) {
-            Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Account Number Did Not Match", Toast.LENGTH_SHORT).show();
             et_accnnum.requestFocus();
             return;
         }

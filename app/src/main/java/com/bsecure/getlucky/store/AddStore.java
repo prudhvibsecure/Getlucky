@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -39,6 +40,7 @@ import com.bsecure.getlucky.volleyhttp.AttachmentUpload;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 import com.bsecure.getlucky.volleyhttp.MethodResquest_GET;
+import com.bsecure.getlucky.wallet.StoreCharge;
 import com.bsecure.getlucky.wallet.ViewBankList;
 import com.bsecure.getlucky.wallet.ViewWallet;
 import com.bumptech.glide.Glide;
@@ -78,7 +80,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
     private EditText et_storenm, et_location, et_keywords, et_mobile, et_cat;
     int AUTOCOMPLETE_REQUEST_CODE = 1;
     private ImageView poster, i_keys, i_category;
-    private AutoCompleteTextView autoCompleteView, et_state, et_diatrict, et_area;
+    private AutoCompleteTextView autoCompleteView, et_state, et_district, et_area;
 
     private Uri mImageUri;
     private ArrayList<String> list = null;
@@ -90,6 +92,9 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
     double temp_percent = 0, refer_percent = 0, store_refer_percent = 0, admin_percent = 0, total_percent = 0, offer_percent = 0;
     private static DecimalFormat df = new DecimalFormat("0.00");
     double min = 0, max = 0;
+    ArrayList<String>statesList;
+    ArrayList<String>districtsList;
+    ArrayList<String>areasList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -110,9 +115,11 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
         i_keys = findViewById(R.id.i_keys);
         i_keys.setOnClickListener(this);
 
-        et_state = findViewById(R.id.state);
-        et_area = findViewById(R.id.district);
-        et_area = findViewById(R.id.area);
+        et_state = findViewById(R.id.et_state);
+        et_district = findViewById(R.id.et_district);
+        et_area = findViewById(R.id.et_area);
+
+        getStates();
 
 
         i_category = findViewById(R.id.i_category);
@@ -179,6 +186,44 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
         });*/
         cust_key.setThreshold(1);
         Places.initialize(getApplicationContext(), "AIzaSyCvdgdoCZc4bkufNsTKmaKGRw3egMIn_cs");
+
+    }
+
+    private void getAreas(String dist) {
+
+        try {
+            JSONObject object = new JSONObject();
+            object.put("city", dist);
+            MethodResquest ms = new MethodResquest(this, this, Constants.PATH + "get_areas", object.toString(), 500);
+            ms.dismissProgress(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getDistricts(String state) {
+
+        try {
+            JSONObject object = new JSONObject();
+            object.put("state", state);
+            MethodResquest ms = new MethodResquest(this, this, Constants.PATH + "get_cities", object.toString(), 400);
+            ms.dismissProgress(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getStates() {
+
+        try {
+
+            JSONObject object = new JSONObject();
+            object.put("post", "");
+            MethodResquest ms = new MethodResquest(this, this, Constants.PATH + "get_states", object.toString(), 300);
+            ms.dismissProgress(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -295,6 +340,27 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
             Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
             return;
         }*/
+
+        String state = et_state.getText().toString().trim();
+        if(state.length() == 0)
+        {
+            Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String district = et_district.getText().toString().trim();
+        if(district.length() == 0)
+        {
+            Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String area = et_area.getText().toString().trim();
+        if(area.length() == 0)
+        {
+            Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String mobile = et_mobile.getText().toString().trim();
         if (mobile.length() == 0) {
             Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
@@ -320,9 +386,9 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
             object.put("store_name", st_name);
             if (area == null)
                 area = "unknown road";
-            object.put("area", area);
-            object.put("city", city);
-            object.put("state", state);
+            object.put("area", et_area.getText().toString().trim());
+            object.put("city", et_district.getText().toString().trim());
+            object.put("state", et_state.getText().toString().trim());
             object.put("country", "india");
             //object.put("pin_code", pin_code);
             object.put("store_phone_number", mobile);
@@ -549,49 +615,89 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                     JSONObject object1 = new JSONObject(response.toString());
                     if(object1.optString("statuscode").equalsIgnoreCase("200"))
                     {
-                        final Dialog mDialog = new Dialog(this, R.style.Theme_MaterialComponents_Light_BottomSheetDialog);
-                        mDialog.setContentView(R.layout.paymetoption);
-                        mDialog.show();
+                        Intent in = new Intent(AddStore.this, StoreCharge.class);
+                        in.putExtra("code","0");
+                        startActivity(in);
+                    }
 
-                        mDialog.findViewById(R.id.net_bank).setOnClickListener(new View.OnClickListener() {
+                    break;
+
+                case 300:
+
+                    JSONObject sobject = new JSONObject(response.toString());
+                    if (sobject.optString("statuscode").equalsIgnoreCase("200")) {
+                        statesList = new ArrayList<>();
+                        JSONArray sarray = sobject.getJSONArray("locations");
+                        for(int i = 0;i<sarray.length();i++)
+                        {
+                            statesList.add(String.valueOf(sarray.get(i)));
+                        }
+                        ArrayAdapter sadapter = new ArrayAdapter(this, R.layout.single_item, statesList);
+                        et_state.setAdapter(sadapter);
+                        et_state.setThreshold(1);
+                        et_state.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
-                            public void onClick(View view) {
-                                payment_type = "Net Banking";
-                                Toast.makeText(AddStore.this, "Coming Soon", Toast.LENGTH_SHORT).show();
-                                AddStore.this.finish();
-                                //redirectClass();
-                                //AppPreferences.getInstance(getApplicationContext()).addToStore("amount", "", true);
-                                //AppPreferences.getInstance(getApplicationContext()).addToStore("p_type", payment_type, true);
-                                mDialog.dismiss();
-                                //addBanks();
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                TextView tv = (TextView) view;
+                                getDistricts(tv.getText().toString());
                             }
                         });
-                        mDialog.findViewById(R.id.net_gp).setOnClickListener(new View.OnClickListener() {
+                    }
+                    else
+                    {
+                        Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
+                    }
+
+                    break;
+
+                case 400:
+
+                    JSONObject dobject = new JSONObject(response.toString());
+                    if (dobject.optString("statuscode").equalsIgnoreCase("200")) {
+                        districtsList = new ArrayList<>();
+                        JSONArray darray = dobject.getJSONArray("locations");
+                        for(int i = 0;i<darray.length();i++)
+                        {
+                            districtsList.add(String.valueOf(darray.get(i)));
+                        }
+                        final ArrayAdapter dadapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, districtsList);
+                        et_district.setAdapter(dadapter);
+                        et_district.setThreshold(1);
+
+                        et_district.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
-                            public void onClick(View view) {
-                                payment_type = "google pay";
-                                Toast.makeText(AddStore.this, "Coming Soon", Toast.LENGTH_SHORT).show();
-                                AddStore.this.finish();
-                                //addBanks();
-                                // mDialog.dismiss();
-                                //redirectClass();
-                                mDialog.dismiss();
-                            }
-                        });
-                        mDialog.findViewById(R.id.net_paytim).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                payment_type = "paytm";
-                                Toast.makeText(AddStore.this, "Coming Soon", Toast.LENGTH_SHORT).show();
-                                AddStore.this.finish();
-                                // addBanks();
-                                // redirectClass();
-                                mDialog.dismiss();
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                TextView tv = (TextView) view;
+                                getAreas(tv.getText().toString());
                             }
                         });
 
-                        mDialog.findViewById(R.id.net_bv).setVisibility(View.GONE);
+                    }
+                    else
+                    {
+                        Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
+                    }
 
+                    break;
+
+                case 500:
+
+                    JSONObject aobject = new JSONObject(response.toString());
+                    if (aobject.optString("statuscode").equalsIgnoreCase("200")) {
+                        areasList = new ArrayList<>();
+                        JSONArray aarray = aobject.getJSONArray("locations");
+                        for(int i = 0;i<aarray.length();i++)
+                        {
+                            areasList.add(String.valueOf(aarray.get(i)));
+                        }
+                        ArrayAdapter aadapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, areasList);
+                        et_area.setAdapter(aadapter);
+                        et_area.setThreshold(1);
+
+                    }
+                    else
+                    {
+                        Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
                     }
 
                     break;
@@ -602,6 +708,8 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
         }
 
     }
+
+
 
     private void goToOffer(final String sid) {
 
