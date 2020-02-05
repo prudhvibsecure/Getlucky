@@ -216,6 +216,7 @@
                 android:layout_below="@+id/et_state"
                 android:layout_marginTop="20dp"
                 android:padding="10dp"
+                android:enabled="true"
                 android:hint="District"
                 />
 
@@ -227,6 +228,7 @@
                 android:layout_below="@+id/et_district"
                 android:layout_marginTop="20dp"
                 android:padding="10dp"
+                android:enabled="true"
                 android:hint="Area"
                 />
 
@@ -235,7 +237,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/et_area"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/text"

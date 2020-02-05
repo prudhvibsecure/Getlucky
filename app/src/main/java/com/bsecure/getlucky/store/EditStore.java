@@ -2,6 +2,7 @@ package com.bsecure.getlucky.store;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
@@ -17,6 +18,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -42,6 +45,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -59,6 +63,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -76,10 +81,17 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
     ArrayList<String>statesList;
     ArrayList<String>districtsList;
     ArrayList<String>areasList;
+
+    RelativeLayout deepl;
+    TextView deep;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_store);
+
+        deepl = findViewById(R.id.deepl);
+        deep = findViewById(R.id.deep);
 
         findViewById(R.id.bacl_btn).setOnClickListener(this);
         findViewById(R.id.submit).setVisibility(View.GONE);
@@ -110,6 +122,37 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
 
         getStates();
 
+        deep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+                Intent intent = new Autocomplete.IntentBuilder(
+                        AutocompleteActivityMode.FULLSCREEN, fields)
+                        .setTypeFilter(TypeFilter.ADDRESS)
+                        .setCountry("IN")
+                        .build(EditStore.this);
+                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+            }
+        });
+
+        et_area.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                // When textview lost focus check the textview data valid or not
+                if (hasFocus) {
+                    if (!areasList.contains(et_area.getText().toString())) {
+                        et_area.setText(""); // clear your TextView
+                        deepl.setVisibility(View.VISIBLE);
+                    }
+                }
+                else
+                {
+                    deepl.setVisibility(View.GONE);
+                }
+            }
+        });
+
         //autoCompleteView.setThreshold(1);
        /* autoCompleteView.addTextChangedListener(new TextWatcher() {
 
@@ -129,7 +172,7 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
                 // TODO Auto-generated method stub
             }
         });*/
-        Places.initialize(getApplicationContext(), "AIzaSyCvdgdoCZc4bkufNsTKmaKGRw3egMIn_cs");
+        Places.initialize(getApplicationContext(), Constants.key);
 
         Intent storeDataEdit = getIntent();
         if (storeDataEdit != null) {
@@ -426,13 +469,35 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 Toast.makeText(this, "Place: " + place.getName() + ", " + place.getId(), Toast.LENGTH_SHORT).show();
                 Log.e("Location", "Place: " + place.getName() + ", " + place.getId());
-                et_location.getText().clear();
-                et_location.setText(place.getAddress());
+                LatLng latLng = place.getLatLng();
+
+                Geocoder geocoder = new Geocoder(EditStore.this, Locale.getDefault());
+                List<Address> addresses = null;
+
+                try {
+                    addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                } catch (Exception ioException) {
+                    Log.e("", "Error in getting address for the location");
+                }
+
+                if (addresses == null || addresses.size()  == 0) {
+                    String msg = "No address found for the location";
+
+                } else {
+                    Address address = addresses.get(0);
+                    StringBuffer addressDetails = new StringBuffer();
+                    String area = address.getSubLocality();
+
+                    et_area.getText().clear();
+                    et_area.setText(area);
+                }
+
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
                 Status status = Autocomplete.getStatusFromIntent(data);
@@ -553,6 +618,10 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
                             districtsList.add(String.valueOf(darray.get(i)));
                         }
                         ArrayAdapter dadapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, districtsList);
+                        if(districtsList.size() > 0 )
+                        {
+                            et_district.setEnabled(true);
+                        }
                         et_district.setAdapter(dadapter);
                         et_district.setThreshold(1);
 
@@ -581,6 +650,10 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
                             areasList.add(String.valueOf(aarray.get(i)));
                         }
                         ArrayAdapter aadapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, areasList);
+                        if(areasList.size() > 0)
+                        {
+                            et_area.setEnabled(true);
+                        }
                         et_area.setAdapter(aadapter);
                         et_area.setThreshold(1);
 

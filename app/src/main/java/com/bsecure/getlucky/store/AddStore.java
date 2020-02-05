@@ -129,13 +129,11 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
         et_district = findViewById(R.id.et_district);
         et_area = findViewById(R.id.et_area);
 
-        getStates();
-
         deep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
                 Intent intent = new Autocomplete.IntentBuilder(
                         AutocompleteActivityMode.FULLSCREEN, fields)
                         .setTypeFilter(TypeFilter.ADDRESS)
@@ -144,6 +142,26 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                 startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
             }
         });
+
+        et_area.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                // When textview lost focus check the textview data valid or not
+                if (hasFocus) {
+                    if (!areasList.contains(et_area.getText().toString())) {
+                        et_area.setText(""); // clear your TextView
+                        deepl.setVisibility(View.VISIBLE);
+                    }
+                }
+                else
+                {
+                    deepl.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        getStates();
+
 
         i_category = findViewById(R.id.i_category);
         i_category.setOnClickListener(this);
@@ -526,32 +544,32 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                 Toast.makeText(this, "Place: " + place.getName() + ", " + place.getId(), Toast.LENGTH_LONG).show();
                 Log.e("Location", "Place: " + place.getName() + ", " + place.getId());
                 //Toast.makeText(this, place.getAddress().toString(), Toast.LENGTH_LONG).show();
-//                LatLng latLng = place.getLatLng();
-//
-//                Geocoder geocoder = new Geocoder(AddStore.this, Locale.getDefault());
-//                List<Address> addresses = null;
-//
-//                try {
-//                    addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-//                } catch (Exception ioException) {
-//                    Log.e("", "Error in getting address for the location");
-//                }
-//
-//                if (addresses == null || addresses.size()  == 0) {
-//                    String msg = "No address found for the location";
-//
-//                } else {
-//                    Address address = addresses.get(0);
-//                    StringBuffer addressDetails = new StringBuffer();
-//                    String area = address.getSubLocality();
-                area = place.getName();//
+                LatLng latLng = place.getLatLng();
+
+                Geocoder geocoder = new Geocoder(AddStore.this, Locale.getDefault());
+                List<Address> addresses = null;
+
+                try {
+                    addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                } catch (Exception ioException) {
+                    Log.e("", "Error in getting address for the location");
+                }
+
+                if (addresses == null || addresses.size()  == 0) {
+                    String msg = "No address found for the location";
+
+                } else {
+                    Address address = addresses.get(0);
+                    StringBuffer addressDetails = new StringBuffer();
+                    String area = address.getSubLocality();
+
                 et_area.getText().clear();
                 et_area.setText(area);
-//                }
+               }
 
 
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                // TODO: Handle the error.
+                // TODO: Handle the error.500
                 Status status = Autocomplete.getStatusFromIntent(data);
 
                 Toast.makeText(this, status.getStatusMessage(), Toast.LENGTH_SHORT).show();
@@ -699,7 +717,11 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                         for (int i = 0; i < darray.length(); i++) {
                             districtsList.add(String.valueOf(darray.get(i)));
                         }
-                        final ArrayAdapter dadapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, districtsList);
+                        final ArrayAdapter dadapter = new ArrayAdapter(this, R.layout.single_item, districtsList);
+                        if(districtsList.size() > 0 )
+                        {
+                            et_district.setEnabled(true);
+                        }
                         et_district.setAdapter(dadapter);
                         et_district.setThreshold(1);
 
@@ -726,22 +748,15 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                         for (int i = 0; i < aarray.length(); i++) {
                             areasList.add(String.valueOf(aarray.get(i)));
                         }
-                        ArrayAdapter aadapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, areasList);
+                        ArrayAdapter aadapter = new ArrayAdapter(this, R.layout.single_item, areasList);
+                        if(areasList.size() > 0)
+                        {
+                            et_area.setEnabled(true);
+                        }
                         et_area.setAdapter(aadapter);
                         et_area.setThreshold(1);
 
-                        et_area.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                            @Override
-                            public void onFocusChange(View v, boolean hasFocus) {
-                                // When textview lost focus check the textview data valid or not
-                                if (!hasFocus) {
-                                    if (!areasList.contains(et_area.getText().toString())) {
-                                        et_area.setText(""); // clear your TextView
-                                        deepl.setVisibility(View.VISIBLE);
-                                    }
-                                }
-                            }
-                        });
+
 
                     } else {
                         Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
