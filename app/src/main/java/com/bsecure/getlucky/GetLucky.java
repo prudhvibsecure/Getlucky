@@ -46,6 +46,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.io.File;
 import java.util.Stack;
 
 import afu.org.checkerframework.checker.nullness.qual.NonNull;
@@ -399,8 +400,14 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
             case R.id.nav_logout:
 
-                AppPreferences.getInstance(this).addToStore("userData","",false);
-                AppPreferences.getInstance(this).addToStore("pin_view","",false);
+                File sharedPreferenceFile = new File("/data/data/"+ getPackageName()+ "/shared_prefs/");
+                File[] listFiles = sharedPreferenceFile.listFiles();
+                for (File file : listFiles) {
+                    file.delete();
+                }
+
+                //AppPreferences.getInstance(this).addToStore("userData","",false);
+                //AppPreferences.getInstance(this).addToStore("pin_view","",false);
                 startActivity(new Intent(this, Login.class));
                 GetLucky.this.finish();
                 break;

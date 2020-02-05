@@ -230,6 +230,36 @@
                 android:hint="Area"
                 />
 
+            <RelativeLayout
+                android:id="@+id/deepl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/et_area"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Could'nt Find Area?"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/deep"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Try Deep Search"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_toRightOf="@+id/text"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:linksClickable="true"/>
+
+            </RelativeLayout>
+
+
+
             <!--<androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/location"
                 android:layout_width="match_parent"
@@ -260,7 +290,7 @@
                 android:id="@+id/mobile_no"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/et_area"
+                android:layout_below="@+id/deepl"
                 android:layout_marginTop="20dp"
                 android:maxLength="10"
                 android:background="@drawable/square"

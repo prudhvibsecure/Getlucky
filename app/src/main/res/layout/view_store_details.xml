@@ -58,7 +58,7 @@
             android:layout_height="200dp"
             android:adjustViewBounds="true"
             android:background="@mipmap/ic_no_image"
-            app:layout_constraintDimensionRatio="3:2" />
+            android:scaleType="fitXY" />
 
         <ImageView
             android:id="@+id/sqr"

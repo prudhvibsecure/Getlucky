@@ -3,6 +3,7 @@ package com.bsecure.getlucky.store;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
@@ -20,6 +21,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +51,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -66,6 +69,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -92,14 +96,19 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
     double temp_percent = 0, refer_percent = 0, store_refer_percent = 0, admin_percent = 0, total_percent = 0, offer_percent = 0;
     private static DecimalFormat df = new DecimalFormat("0.00");
     double min = 0, max = 0;
-    ArrayList<String>statesList;
-    ArrayList<String>districtsList;
-    ArrayList<String>areasList;
+    ArrayList<String> statesList;
+    ArrayList<String> districtsList;
+    ArrayList<String> areasList;
+    RelativeLayout deepl;
+    TextView deep;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_store);
+
+        deepl = findViewById(R.id.deepl);
+        deep = findViewById(R.id.deep);
 
         findViewById(R.id.bacl_btn).setOnClickListener(this);
         findViewById(R.id.submit).setOnClickListener(this);
@@ -111,6 +120,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
         et_storenm = findViewById(R.id.st_name);
         et_mobile = findViewById(R.id.mobile_no);
         et_cat = findViewById(R.id.st_category);
+        et_cat = findViewById(R.id.st_category);
         cust_key = findViewById(R.id.cust_key);
         i_keys = findViewById(R.id.i_keys);
         i_keys.setOnClickListener(this);
@@ -121,6 +131,19 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
 
         getStates();
 
+        deep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+                Intent intent = new Autocomplete.IntentBuilder(
+                        AutocompleteActivityMode.FULLSCREEN, fields)
+                        .setTypeFilter(TypeFilter.ADDRESS)
+                        .setCountry("IN")
+                        .build(AddStore.this);
+                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+            }
+        });
 
         i_category = findViewById(R.id.i_category);
         i_category.setOnClickListener(this);
@@ -185,7 +208,8 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
             }
         });*/
         cust_key.setThreshold(1);
-        Places.initialize(getApplicationContext(), "AIzaSyCvdgdoCZc4bkufNsTKmaKGRw3egMIn_cs");
+        //(getApplicationContext(), "AIzaSyCvdgdoCZc4bkufNsTKmaKGRw3egMIn_cs");
+        Places.initialize(getApplicationContext(), Constants.key);
 
     }
 
@@ -291,7 +315,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                     Toast.makeText(this, "Please Choose Category", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent search_keys = new Intent(this, AddStoreKeysSearch.class);
-                    search_keys.putExtra("key_selected_keys","");
+                    search_keys.putExtra("key_selected_keys", "");
                     search_keys.putExtra("key_selected_keys_tx", et_keywords.getText().toString());
                     startActivityForResult(search_keys, 200);
                 }
@@ -329,7 +353,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
         if (keyword_cust.startsWith("[") & keyword_cust.endsWith("]")) {
             keyword_cust = keyword_cust.replace("[", "");
             keyword_cust = keyword_cust.replace("]", "");
-            keyword_cust.replaceAll(", ",",");
+            keyword_cust.replaceAll(", ", ",");
         }
 //        if (keyword_cust.length() == 0) {
 //            Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
@@ -342,22 +366,19 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
         }*/
 
         String state = et_state.getText().toString().trim();
-        if(state.length() == 0)
-        {
+        if (state.length() == 0) {
             Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
         String district = et_district.getText().toString().trim();
-        if(district.length() == 0)
-        {
+        if (district.length() == 0) {
             Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
         String area = et_area.getText().toString().trim();
-        if(area.length() == 0)
-        {
+        if (area.length() == 0) {
             Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -397,7 +418,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
             object.put("custom_keywords", keyword_cust);
             object.put("keywords", keyword);
             object.put("store_image", poaste_img);
-              new MethodResquest(this, this, Constants.PATH + "add_store", object.toString(), 100);
+            new MethodResquest(this, this, Constants.PATH + "add_store", object.toString(), 100);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -502,10 +523,33 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
-                Toast.makeText(this, "Place: " + place.getName() + ", " + place.getId(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Place: " + place.getName() + ", " + place.getId(), Toast.LENGTH_LONG).show();
                 Log.e("Location", "Place: " + place.getName() + ", " + place.getId());
-                et_location.getText().clear();
-                et_location.setText(place.getAddress());
+                //Toast.makeText(this, place.getAddress().toString(), Toast.LENGTH_LONG).show();
+//                LatLng latLng = place.getLatLng();
+//
+//                Geocoder geocoder = new Geocoder(AddStore.this, Locale.getDefault());
+//                List<Address> addresses = null;
+//
+//                try {
+//                    addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+//                } catch (Exception ioException) {
+//                    Log.e("", "Error in getting address for the location");
+//                }
+//
+//                if (addresses == null || addresses.size()  == 0) {
+//                    String msg = "No address found for the location";
+//
+//                } else {
+//                    Address address = addresses.get(0);
+//                    StringBuffer addressDetails = new StringBuffer();
+//                    String area = address.getSubLocality();
+                area = place.getName();//
+                et_area.getText().clear();
+                et_area.setText(area);
+//                }
+
+
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
                 Status status = Autocomplete.getStatusFromIntent(data);
@@ -576,7 +620,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                     if (myObj.optString("statuscode").equalsIgnoreCase("200")) {
                         Toast.makeText(this, myObj.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                         sendBroadcast(new Intent("com.store_refrsh"));
-                        AppPreferences.getInstance(this).addToStore("customer_number","2",true);
+                        AppPreferences.getInstance(this).addToStore("customer_number", "2", true);
                         String sid = myObj.optString("store_id");
                         goToOffer(sid);
                         //this.finish();
@@ -613,10 +657,9 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                 case 110:
 
                     JSONObject object1 = new JSONObject(response.toString());
-                    if(object1.optString("statuscode").equalsIgnoreCase("200"))
-                    {
+                    if (object1.optString("statuscode").equalsIgnoreCase("200")) {
                         Intent in = new Intent(AddStore.this, StoreCharge.class);
-                        in.putExtra("code","0");
+                        in.putExtra("code", "0");
                         startActivity(in);
                     }
 
@@ -628,8 +671,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                     if (sobject.optString("statuscode").equalsIgnoreCase("200")) {
                         statesList = new ArrayList<>();
                         JSONArray sarray = sobject.getJSONArray("locations");
-                        for(int i = 0;i<sarray.length();i++)
-                        {
+                        for (int i = 0; i < sarray.length(); i++) {
                             statesList.add(String.valueOf(sarray.get(i)));
                         }
                         ArrayAdapter sadapter = new ArrayAdapter(this, R.layout.single_item, statesList);
@@ -642,9 +684,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                                 getDistricts(tv.getText().toString());
                             }
                         });
-                    }
-                    else
-                    {
+                    } else {
                         Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
                     }
 
@@ -656,8 +696,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                     if (dobject.optString("statuscode").equalsIgnoreCase("200")) {
                         districtsList = new ArrayList<>();
                         JSONArray darray = dobject.getJSONArray("locations");
-                        for(int i = 0;i<darray.length();i++)
-                        {
+                        for (int i = 0; i < darray.length(); i++) {
                             districtsList.add(String.valueOf(darray.get(i)));
                         }
                         final ArrayAdapter dadapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, districtsList);
@@ -672,9 +711,7 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                             }
                         });
 
-                    }
-                    else
-                    {
+                    } else {
                         Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
                     }
 
@@ -686,17 +723,27 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                     if (aobject.optString("statuscode").equalsIgnoreCase("200")) {
                         areasList = new ArrayList<>();
                         JSONArray aarray = aobject.getJSONArray("locations");
-                        for(int i = 0;i<aarray.length();i++)
-                        {
+                        for (int i = 0; i < aarray.length(); i++) {
                             areasList.add(String.valueOf(aarray.get(i)));
                         }
                         ArrayAdapter aadapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, areasList);
                         et_area.setAdapter(aadapter);
                         et_area.setThreshold(1);
 
-                    }
-                    else
-                    {
+                        et_area.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                            @Override
+                            public void onFocusChange(View v, boolean hasFocus) {
+                                // When textview lost focus check the textview data valid or not
+                                if (!hasFocus) {
+                                    if (!areasList.contains(et_area.getText().toString())) {
+                                        et_area.setText(""); // clear your TextView
+                                        deepl.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            }
+                        });
+
+                    } else {
                         Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
                     }
 
@@ -708,7 +755,6 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
         }
 
     }
-
 
 
     private void goToOffer(final String sid) {
@@ -783,15 +829,11 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
                 ((EditText) add_Offer.findViewById(R.id.add_min)).setCursorVisible(true);
             }
         });
-        ((EditText) add_Offer.findViewById(R.id.add_min)).setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
+        ((EditText) add_Offer.findViewById(R.id.add_min)).setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                if (hasFocus)
-                {
-                    if (((EditText) add_Offer.findViewById(R.id.add_min)).getText().toString().compareTo("1")==0)
-                    {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    if (((EditText) add_Offer.findViewById(R.id.add_min)).getText().toString().compareTo("1") == 0) {
                         ((EditText) add_Offer.findViewById(R.id.add_min)).setText("");
                     }
                 }
@@ -810,13 +852,10 @@ public class AddStore extends AppCompatActivity implements View.OnClickListener,
             }
         });
 
-        ((EditText) add_Offer.findViewById(R.id.add_max)).setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
+        ((EditText) add_Offer.findViewById(R.id.add_max)).setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                if (hasFocus)
-                {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
                     ((EditText) add_Offer.findViewById(R.id.add_max)).setHint("");
                     //((EditText) add_Offer.findViewById(R.id.add_max)).setText("");
                 }

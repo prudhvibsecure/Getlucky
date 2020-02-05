@@ -26,9 +26,14 @@
         <activity android:name=".Feedback" />
         <activity android:name=".wallet.StoreCharge" />
 
+        <!--<meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCvdgdoCZc4bkufNsTKmaKGRw3egMIn_cs" />-->
+
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCvdgdoCZc4bkufNsTKmaKGRw3egMIn_cs" />
+            android:value="AIzaSyCSgCTTAPef2MpDVXjvzmXj37Db97WJmjs" />
 
         <activity
             android:name=".GetLucky"

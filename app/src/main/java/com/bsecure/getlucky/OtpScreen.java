@@ -171,6 +171,14 @@ public class OtpScreen extends AppCompatActivity implements RequestHandler {
                         }
 
                     } else {
+                        pin_et.setText("");
+                        pin_et.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                InputMethodManager keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                keyboard.showSoftInput(pin_et, 0);
+                            }
+                        }, 50);
                         Toast.makeText(this, result.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
 

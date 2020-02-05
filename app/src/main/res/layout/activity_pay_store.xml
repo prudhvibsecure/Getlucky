@@ -30,7 +30,7 @@
                 android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:padding="10dp"
-                android:text="Recommend Store"
+                android:text="PAY"
                 android:textAllCaps="true"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="@dimen/_16sdp"

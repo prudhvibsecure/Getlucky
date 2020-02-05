@@ -2,27 +2,35 @@ package com.bsecure.getlucky;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bsecure.getlucky.adpters.OfferAdapter;
 import com.bsecure.getlucky.adpters.SpecialOfferAdapter;
 import com.bsecure.getlucky.common.AppPreferences;
+import com.bsecure.getlucky.fragments.QRDialogFragment;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.models.OfferModel;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.MethodResquest;
 import com.bumptech.glide.Glide;
+import com.google.zxing.WriterException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,9 +38,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidmads.library.qrgenearator.QRGContents;
+import androidmads.library.qrgenearator.QRGEncoder;
+import androidmads.library.qrgenearator.QRGSaver;
+
 public class ViewStoreDetails_Home extends AppCompatActivity implements View.OnClickListener, RequestHandler, SpecialOfferAdapter.SpecialOfferListListener, OfferAdapter.OfferListListener {
 
-    ImageView store_img, view_on_map;
+    ImageView store_img, view_on_map, sqr;
     TextView tv_store_name, store_address, tv_spoffer, tv_offers, store_code;
     RecyclerView sp_offer_vv, offer_vv;
     private SpecialOfferAdapter specialOfferAdapter;
@@ -40,11 +52,29 @@ public class ViewStoreDetails_Home extends AppCompatActivity implements View.OnC
     private List<OfferModel> spList, offerModelList;
     private String text_stats, message, msg;
     private Dialog InactiveDiloag, mDialog, editDiloag;
+    String savePath = Environment.getExternalStorageDirectory().toString() + "/GetLucky/QRCode/";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_store_details_home);
+
+        sqr = findViewById(R.id.sqr);
+        sqr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Bundle bundle = new Bundle();
+                bundle.putString("image", savePath);
+                String test = getIntent().getStringExtra("store_code");
+                bundle.putString("code", getIntent().getStringExtra("store_code"));
+
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                QRDialogFragment newFragment = QRDialogFragment.newInstance();
+                newFragment.setArguments(bundle);
+                newFragment.show(ft, "slideshow");
+            }
+        });
 
         store_img = findViewById(R.id.post_image);
         tv_store_name = findViewById(R.id.store_name);
@@ -57,8 +87,8 @@ public class ViewStoreDetails_Home extends AppCompatActivity implements View.OnC
         tv_offers = findViewById(R.id.tv_offers);
         tv_offers.setOnClickListener(this);
 
-        view_on_map = findViewById(R.id.view_on_map);
-        view_on_map.setOnClickListener(this);
+        //view_on_map = findViewById(R.id.view_on_map);
+        //view_on_map.setOnClickListener(this);
 
         sp_offer_vv = findViewById(R.id.sp_recyler);
         offer_vv = findViewById(R.id.offer_recyler);
@@ -73,7 +103,7 @@ public class ViewStoreDetails_Home extends AppCompatActivity implements View.OnC
         }
         getStoreData();
 
-
+        getCode();
     }
 
     private void getStoreData() {
@@ -99,11 +129,11 @@ public class ViewStoreDetails_Home extends AppCompatActivity implements View.OnC
                 finish();
                 break;
 
-            case R.id.view_on_map:
+           /* case R.id.view_on_map:
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
                 Uri.parse("google.navigation:q="+getIntent().getStringExtra("store_add")));
                 startActivity(intent);
-                break;
+                break;*/
             case R.id.tv_spoffer:
                 tv_spoffer.setBackground(getResources().getDrawable(R.drawable.button_bg_submit_blue));
                 tv_offers.setBackground(getResources().getDrawable(R.drawable.button_bg_cancel_gray));
@@ -223,5 +253,36 @@ public class ViewStoreDetails_Home extends AppCompatActivity implements View.OnC
     @Override
     public void onRowClickedPos2(List<OfferModel> matchesList, int position, RadioButton selct_rd) {
 
+    }
+
+    private void getCode() {
+        try {
+            boolean save ;
+            WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
+            Display display = manager.getDefaultDisplay();
+            Point point = new Point();
+            display.getSize(point);
+            int width = point.x;
+            int height = point.y;
+            int smallerDimension = width < height ? width : height;
+            smallerDimension = smallerDimension * 3 / 4;
+            String inputValue = getIntent().getStringExtra("store_code");
+            QRGEncoder qrgEncoder = new QRGEncoder(
+                    inputValue, null,
+                    QRGContents.Type.TEXT,
+                    smallerDimension);
+            try {
+
+                String result;
+                Bitmap bitmap = qrgEncoder.encodeAsBitmap();
+                sqr.setImageBitmap(bitmap);
+                save = QRGSaver.save(savePath, inputValue, bitmap, QRGContents.ImageType.IMAGE_JPEG);
+                result = save ? "Image Saved" : "Image Not Saved";
+                // Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
+            } catch (WriterException e) {
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

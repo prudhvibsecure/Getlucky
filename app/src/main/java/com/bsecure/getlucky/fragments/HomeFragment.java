@@ -48,7 +48,6 @@ import com.bsecure.getlucky.interfaces.IItemHandler;
 import com.bsecure.getlucky.interfaces.RequestHandler;
 import com.bsecure.getlucky.models.StoreListModel;
 import com.bsecure.getlucky.network.GPSTracker;
-import com.bsecure.getlucky.services.GetAddressIntentService;
 import com.bsecure.getlucky.utils.Utils;
 import com.bsecure.getlucky.volleyhttp.Constants;
 import com.bsecure.getlucky.volleyhttp.HTTPPostTask;
@@ -282,7 +281,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
             public void onLocationResult(LocationResult locationResult) {
                 currentLocation = locationResult.getLocations().get(0);
                 if (isNetworkAvailable()) {
-                    getAddress();
+                    //getAddress();
                 }
             }
         };
@@ -506,6 +505,7 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
             login.putExtra("store_ph", matchesList.get(pos).getStore_phone_number());
             login.putExtra("type", "0");
             login.putExtra("store_code",matchesList.get(pos).getStore_referral_code());
+            String test = matchesList.get(pos).getStore_referral_code();
             //login.putExtra("store_ph",matchesList.get(pos).getp());
             startActivity(login);
             getActivity().overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
@@ -672,7 +672,9 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
         GPSTracker gpsTracker = new GPSTracker(getActivity());
         if (gpsTracker.getIsGPSTrackingEnabled()) {
 
-            lat = gpsTracker.getLatitude();
+            List<Address>address = gpsTracker.getGeocoderAddress(getActivity());
+
+            /*lat = gpsTracker.getLatitude();
             lang = gpsTracker.getLongitude();
 
             Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
@@ -689,17 +691,17 @@ public class HomeFragment extends ParentFragment implements IItemHandler, Google
 
             } else {
                 Address address = addresses.get(0);
-                StringBuffer addressDetails = new StringBuffer();
+                StringBuffer addressDetails = new StringBuffer();*/
 
 
-                area = address.getSubLocality();
-                city = address.getLocality();
-                country = address.getCountryName();
-                state = address.getAdminArea();
+                area = address.get(0).getSubLocality();
+                city = address.get(0).getLocality();
+                country = address.get(0).getCountryName();
+                state = address.get(0).getAdminArea();
                 showResults(area+","+city+","+state);
 
                 //saveLocation();
-            }
+            //}
         } else {
             // can't get location
             // GPS or Network is not enabled

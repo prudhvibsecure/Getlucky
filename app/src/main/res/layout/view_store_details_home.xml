@@ -35,19 +35,21 @@
                 android:layout_marginLeft="-25dp"
                 android:src="@mipmap/logo" />
 
-            <ImageView
+            <!--<ImageView
                 android:id="@+id/view_on_map"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                android:layout_marginRight="5dp"
                 android:src="@mipmap/ic_view_map" />
-
+-->
         </LinearLayout>
 
     </androidx.appcompat.widget.Toolbar>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+
+
+   <!-- <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp">
@@ -60,7 +62,30 @@
             android:background="@mipmap/ic_no_image"
             app:layout_constraintDimensionRatio="3:2" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/post_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:adjustViewBounds="true"
+            android:background="@mipmap/ic_no_image"
+            android:scaleType="fitXY"
+            />
+
+        <ImageView
+            android:id="@+id/sqr"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="0dp" />
+
+    </RelativeLayout>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
