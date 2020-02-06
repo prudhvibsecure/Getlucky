@@ -18,7 +18,7 @@
         android:layout_height="30dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:src="@drawable/download"
+        android:src="@mipmap/ic_download"
         android:tint="@color/black"
         android:layout_margin="20dp"/>
 </RelativeLayout>

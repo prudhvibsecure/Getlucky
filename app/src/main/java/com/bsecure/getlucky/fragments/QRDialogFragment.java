@@ -90,10 +90,6 @@ public class QRDialogFragment extends DialogFragment implements IDownloadCallbac
     }
 
 
-
-
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +100,6 @@ public class QRDialogFragment extends DialogFragment implements IDownloadCallbac
     public void onStateChange(int what, int arg1, int arg2, Object obj, int requestId) {
 
     }
-
 
 
     private long DownloadData(Uri uri, String ename) {
@@ -190,8 +185,8 @@ public class QRDialogFragment extends DialogFragment implements IDownloadCallbac
 
     private void getCode() {
         try {
-            boolean save ;
-            WindowManager manager = (WindowManager)getActivity().getSystemService(WINDOW_SERVICE);
+            boolean save;
+            WindowManager manager = (WindowManager) getActivity().getSystemService(WINDOW_SERVICE);
             Display display = manager.getDefaultDisplay();
             Point point = new Point();
             display.getSize(point);
@@ -214,7 +209,7 @@ public class QRDialogFragment extends DialogFragment implements IDownloadCallbac
                 // Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
             } catch (WriterException e) {
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -238,7 +233,7 @@ public class QRDialogFragment extends DialogFragment implements IDownloadCallbac
         }
     }
 
-    private  File getOutputMediaFile(){
+    private File getOutputMediaFile() {
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
         File mediaStorageDir = new File(Environment.getExternalStorageDirectory()
@@ -250,15 +245,15 @@ public class QRDialogFragment extends DialogFragment implements IDownloadCallbac
         // between applications and persist after your app has been uninstalled.
 
         // Create the storage directory if it does not exist
-        if (! mediaStorageDir.exists()){
-            if (! mediaStorageDir.mkdirs()){
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
                 return null;
             }
         }
         // Create a media file name
         //String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmm").format(new Date());
         File mediaFile;
-        String mImageName="GL_"+ code +".jpg";
+        String mImageName = "GL_" + code + ".jpg";
         mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
         return mediaFile;
     }

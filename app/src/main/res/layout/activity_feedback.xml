@@ -58,29 +58,30 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginTop="20dp" />
 
    <EditText
        android:id="@+id/feed"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:lines="6"
+       android:lines="5"
        android:gravity="start"
        android:padding="10dp"
+       android:hint="Enter Your Feedback"
        android:background="@drawable/square"
        android:layout_margin="20dp"
        />
 
     <Button
         android:id="@+id/proceed"
-        android:layout_width="120dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Proceed"
         android:textStyle="bold"
+        android:padding="10dp"
         android:background="@drawable/gradient"
         android:layout_gravity="center"
-        android:layout_marginTop="30dp"/>
+        android:layout_marginTop="20dp"/>
 
 
 </LinearLayout>

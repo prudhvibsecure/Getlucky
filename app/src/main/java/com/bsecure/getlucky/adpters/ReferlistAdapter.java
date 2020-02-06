@@ -1,6 +1,7 @@
 package com.bsecure.getlucky.adpters;
 
 import android.content.Context;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -102,7 +103,7 @@ public class ReferlistAdapter extends RecyclerView.Adapter<ReferlistAdapter.Cont
         try {
             final StoreListModel mycontactlist = matchesList.get(position);
             contactViewHolder.store_name.setText(mycontactlist.getStore_name());
-            contactViewHolder.ss_location.setText(mycontactlist.getStore_referral_code());
+            contactViewHolder.ss_location.setText(Html.fromHtml("<b>Refer Code </b>: " + mycontactlist.getStore_referral_code()));
             //applyEvents(contactViewHolder, matchesList, position);
         } catch (Exception e) {
             e.printStackTrace();

@@ -396,20 +396,15 @@ public class GetLucky extends AppCompatActivity implements NavigationView.OnNavi
 
             case R.id.nav_suggestions:
                 startActivity(new Intent(GetLucky.this, Feedback.class));
+                overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
 
             case R.id.nav_logout:
 
-                File sharedPreferenceFile = new File("/data/data/"+ getPackageName()+ "/shared_prefs/");
-                File[] listFiles = sharedPreferenceFile.listFiles();
-                for (File file : listFiles) {
-                    file.delete();
-                }
-
-                //AppPreferences.getInstance(this).addToStore("userData","",false);
-                //AppPreferences.getInstance(this).addToStore("pin_view","",false);
+                AppPreferences.getInstance(this).clearSharedPreferences(true);
                 startActivity(new Intent(this, Login.class));
                 GetLucky.this.finish();
+                overridePendingTransition(R.anim.fade_in_anim, R.anim.fade_out_anim);
                 break;
         }
 

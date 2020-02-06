@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -76,14 +77,15 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
     private AutoCompleteTextView autoCompleteView, et_state, et_district, et_area;
     private Uri mImageUri;
     private ArrayList<String> list = null;
-    private String cat_lstwords,ids="",my_cat_array="",my_key_array="",m_select_list="", store_id;
+    private String cat_lstwords, ids = "", my_cat_array = "", my_key_array = "", m_select_list = "", store_id;
     private ContactsCompletionView cust_key;
-    ArrayList<String>statesList;
-    ArrayList<String>districtsList;
-    ArrayList<String>areasList;
+    ArrayList<String> statesList;
+    ArrayList<String> districtsList;
+    ArrayList<String> areasList;
 
     RelativeLayout deepl;
     TextView deep;
+    String mKeyword="";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -145,9 +147,7 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
                         et_area.setText(""); // clear your TextView
                         deepl.setVisibility(View.VISIBLE);
                     }
-                }
-                else
-                {
+                } else {
                     deepl.setVisibility(View.GONE);
                 }
             }
@@ -176,7 +176,7 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
 
         Intent storeDataEdit = getIntent();
         if (storeDataEdit != null) {
-            store_id= storeDataEdit.getStringExtra("store_id");
+            store_id = storeDataEdit.getStringExtra("store_id");
             et_storenm.setText(storeDataEdit.getStringExtra("store_name"));
             et_mobile.setText(storeDataEdit.getStringExtra("store_phone_number"));
             et_cat.setText(storeDataEdit.getStringExtra("categories"));
@@ -184,22 +184,29 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
             et_state.setText(storeDataEdit.getStringExtra("state"));
             et_district.setText(storeDataEdit.getStringExtra("city"));
             et_area.setText(storeDataEdit.getStringExtra("area"));
-            cust_key.handleDone();
-            cust_key.addObject(new ChipsItem(storeDataEdit.getStringExtra("custom_keywords")));
-            cust_key.setText(cust_key.getText());
-            poaste_img= storeDataEdit.getStringExtra("store_image");
-            if (poaste_img.length()>0){
-                poaste_img="";
+            String kk=storeDataEdit.getStringExtra("custom_keywords");
+            if (!TextUtils.isEmpty(kk)) {
+                if (kk.contains(",")) {
+                    String[] temp = kk.split(",");
+                    for (int i = 0; i < temp.length; i++) {
+                        String em = temp[i].trim();
+                        cust_key.addObject(new ChipsItem(em));
+                    }
+                }
+            }
+            poaste_img = storeDataEdit.getStringExtra("store_image");
+            if (poaste_img.length() > 0) {
+                poaste_img = "";
             }
             //et_location.setText(storeDataEdit.getStringExtra("area")+","+storeDataEdit.getStringExtra("city")+","+storeDataEdit.getStringExtra("pin_code")+","+storeDataEdit.getStringExtra("state")+","+storeDataEdit.getStringExtra("country"));
             String path = Constants.PATH + "assets/upload/avatar/" + storeDataEdit.getStringExtra("store_image");
             Glide.with(this).load(path).into(poster);
 
-             my_cat_array=storeDataEdit.getStringExtra("categories_array");
-             my_key_array=storeDataEdit.getStringExtra("keywords_array");
+            my_cat_array = storeDataEdit.getStringExtra("categories_array");
+            my_key_array = storeDataEdit.getStringExtra("keywords_array");
 
             try {
-                if (my_cat_array.length()!=0) {
+                if (my_cat_array.length() != 0) {
                     JSONArray catarry = new JSONArray(my_cat_array);
                     if (catarry.length() > 0) {
                         for (int k = 0; k < catarry.length(); k++) {
@@ -212,11 +219,11 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-             area=storeDataEdit.getStringExtra("area");
-             city=storeDataEdit.getStringExtra("city");
-             pin_code=storeDataEdit.getStringExtra("pin_code");
-            state=storeDataEdit.getStringExtra("state");
-            country=storeDataEdit.getStringExtra("country");
+            area = storeDataEdit.getStringExtra("area");
+            city = storeDataEdit.getStringExtra("city");
+            pin_code = storeDataEdit.getStringExtra("pin_code");
+            state = storeDataEdit.getStringExtra("state");
+            country = storeDataEdit.getStringExtra("country");
         }
 
 
@@ -340,7 +347,7 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
         if (keyword_cust.startsWith("[") & keyword_cust.endsWith("]")) {
             keyword_cust = keyword_cust.replace("[", "");
             keyword_cust = keyword_cust.replace("]", "");
-            keyword_cust.replaceAll(", ",",");
+            keyword_cust.replaceAll(", ", ",");
         }
         //String location = et_location.getText().toString().trim();
         /*if (location.length() == 0) {
@@ -349,22 +356,19 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
         }*/
 
         String state = et_state.getText().toString().trim();
-        if(state.length() == 0)
-        {
+        if (state.length() == 0) {
             Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
         String district = et_district.getText().toString().trim();
-        if(district.length() == 0)
-        {
+        if (district.length() == 0) {
             Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
         String area = et_area.getText().toString().trim();
-        if(area.length() == 0)
-        {
+        if (area.length() == 0) {
             Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -392,7 +396,7 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
             JSONArray ayArray = new JSONArray(session_data);
             // customer_id,store_name,area,city,state,country,pin_code,store_phone_number,store_image,categories,keywords
             JSONObject object = new JSONObject();
-            object.put("store_id",  store_id);
+            object.put("store_id", store_id);
             object.put("customer_id", ayArray.getJSONObject(0).optString("customer_id"));
             object.put("store_name", st_name);
             if (area == null)
@@ -401,7 +405,7 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
             object.put("city", city);
             object.put("state", state);
             object.put("country", "India");
-           // object.put("pin_code", pin_code);
+            // object.put("pin_code", pin_code);
             object.put("store_phone_number", mobile);
             object.put("categories", st_cat);
             object.put("categories_id", ids);
@@ -486,7 +490,7 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
                     Log.e("", "Error in getting address for the location");
                 }
 
-                if (addresses == null || addresses.size()  == 0) {
+                if (addresses == null || addresses.size() == 0) {
                     String msg = "No address found for the location";
 
                 } else {
@@ -586,8 +590,7 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
                     if (sobject.optString("statuscode").equalsIgnoreCase("200")) {
                         statesList = new ArrayList<>();
                         JSONArray sarray = sobject.getJSONArray("locations");
-                        for(int i = 0;i<sarray.length();i++)
-                        {
+                        for (int i = 0; i < sarray.length(); i++) {
                             statesList.add(String.valueOf(sarray.get(i)));
                         }
                         ArrayAdapter sadapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, statesList);
@@ -599,9 +602,7 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
                                 getDistricts(statesList.get(position));
                             }
                         });
-                    }
-                    else
-                    {
+                    } else {
                         Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
                     }
 
@@ -613,13 +614,11 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
                     if (dobject.optString("statuscode").equalsIgnoreCase("200")) {
                         districtsList = new ArrayList<>();
                         JSONArray darray = dobject.getJSONArray("locations");
-                        for(int i = 0;i<darray.length();i++)
-                        {
+                        for (int i = 0; i < darray.length(); i++) {
                             districtsList.add(String.valueOf(darray.get(i)));
                         }
                         ArrayAdapter dadapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, districtsList);
-                        if(districtsList.size() > 0 )
-                        {
+                        if (districtsList.size() > 0) {
                             et_district.setEnabled(true);
                         }
                         et_district.setAdapter(dadapter);
@@ -631,9 +630,7 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
                                 getAreas(districtsList.get(position));
                             }
                         });
-                    }
-                    else
-                    {
+                    } else {
                         Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
                     }
 
@@ -645,21 +642,17 @@ public class EditStore extends AppCompatActivity implements View.OnClickListener
                     if (aobject.optString("statuscode").equalsIgnoreCase("200")) {
                         areasList = new ArrayList<>();
                         JSONArray aarray = aobject.getJSONArray("locations");
-                        for(int i = 0;i<aarray.length();i++)
-                        {
+                        for (int i = 0; i < aarray.length(); i++) {
                             areasList.add(String.valueOf(aarray.get(i)));
                         }
                         ArrayAdapter aadapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, areasList);
-                        if(areasList.size() > 0)
-                        {
+                        if (areasList.size() > 0) {
                             et_area.setEnabled(true);
                         }
                         et_area.setAdapter(aadapter);
                         et_area.setThreshold(1);
 
-                    }
-                    else
-                    {
+                    } else {
                         Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
                     }
 
